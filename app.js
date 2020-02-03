@@ -5,17 +5,11 @@ const app = express();
 let port = 1234;
 
 const product = require('./routes/solutions.route'); // Imports routes for the products
+const story = require('./routes/story.route');
 
-// Set up mongoose connection
-const mongoose = require('mongoose');
-let dev_db_url = 'mongodb://localhost:27017/';
-let mongoDB = process.env.MONGODB_URI || dev_db_url;
-mongoose.connect(mongoDB);
-mongoose.Promise = global.Promise;
-let db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
+//define middle layer
 app.use('/solution', product);
+app.use('/solution',story)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -33,7 +27,13 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+             message: err.message,
+             error: err
+           });
 });
 
 module.exports = app;
+
+//launch server
+app.listen(port,() => console.log(`Example app listening on port ${port}!`))
