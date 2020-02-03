@@ -1,15 +1,21 @@
 language: node_js
+
 node_js:
 - 10
 
 script:
-- npm test
+  - npm test
+  - sonar-scanner
+
+services:
+  - mongodb
+
+before_script:
+  - sleep 15
+  - mongo mydb_test --eval 'db.createUser({user:"user",pwd:"password",roles:["readWrite"]});'
 
 addons:
   sonarcloud:
     organization: "climatetree"
     token:
       secure: "wVhmUYrxGjcw59+TsDv73iOM5lwfrao+IUZpX7xUwJl2unOHrJvPU70+sPT4nYnYyKVgu93W8m/grKINntoFeUl+P9IWPwumeRLuKGvxyaD7G9FzET6upkZGOcHmZy6K6bVVpNS0FxVx9oLCTFG4RCCKjJg1URO6DGduyNaftwjqgM7vfZBcdaCcXVtroGAtdYN9nsdHBvdJMfJ3ospQAT1QTMm0xD0ONkf/dlxoLBBzmc3kUaDfxk7+IFLzIDz+MjvSt3CuZd9tzfwThByPNkFB8AeQw4ivcie1juYUSY8ushEm3TI2BrPAdPmFJ3G5JhqVIU1fHljMDjiLXerXIEX8/WoQqwsGF6kr+ba3TT5YUPPyqz9A75xYk4NNeA0ZoqnUHBuBW7PpdjOuzojckJDi32ryIT5u/sysueruOTIn712gdXWN9N+AHmNryX5qAmrD7gIHzIQRHuyCeysCBBwci868F54jCsV6G+D2ncjRDi0pNoo4iSsflLbK8NqknKE7iCU1vXRzvHeCPlNobFo7ML2fpWh6A7Xv7JOS6emfggcIYCKI9EdbApzLYIbrkkz9AufmRX0/CHbvWJLkyJKlv604u4GSoZMjO6oH0CtHqUPSpg58t3ebRxNDXOrq6hnzF+RSSQuK9khoOhzdtyavdl5Ld+aYuRTMBsqXvhU="
-
-script:
-  - sonar-scanner
