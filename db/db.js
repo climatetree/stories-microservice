@@ -4,7 +4,9 @@
 
 module.exports = function () {
     const mongoose = require('mongoose'),Admin=mongoose.mongo.Admin;
-    let dev_db_url = 'mongodb://localhost:27017/climateTree';
+    let mongoURL =process.env.MONGO_URL || 'localhost';
+    let mongoPORT = process.env.MONGO_PORT|| '27017';
+    let dev_db_url = `mongodb://${mongoURL}:${mongoPORT}/climateTree`;
     let mongoDB = process.env.MONGODB_URI || dev_db_url;
     mongoose.connect(mongoDB);
   };
