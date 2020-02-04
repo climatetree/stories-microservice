@@ -2,22 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
 const app = express();
 
+//set port number
 let port = 1234;
-
-const product = require('./routes/solutions.route'); // Imports routes for the products
-const story = require('./routes/story.route');
-
-//define middle layer
-app.use('/solution', product);
-app.use('/solution',story)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+//Todo: Causing {"message":"createError is not defined","error":{}} error when API hit. Uncomment after figuring out why
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -33,7 +28,12 @@ app.use(function(err, req, res, next) {
            });
 });
 
-module.exports = app;
+require('./db/db')()
+
+const storyService = require('./routes/story.route.server')
+storyService(app)
 
 //launch server
 app.listen(port,() => console.log(`Example app listening on port ${port}!`))
+
+module.exports = app;
