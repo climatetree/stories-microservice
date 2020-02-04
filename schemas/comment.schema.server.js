@@ -7,4 +7,4 @@ const commentSchema = mongoose.Schema({
     date: Date 
 });
 
-module.exports = commentSchema
+module.exports = commentSchema;
