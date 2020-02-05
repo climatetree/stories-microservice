@@ -28,12 +28,10 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "testResultsProcessor": "jest-sonar-reporter",
     "collectCoverage": true
   },
   "devDependencies": {
     "jest": "^25.1.0",
-    "jest-sonar-reporter": "^2.0.0",
     "mongodb-memory-server": "^6.2.4",
     "supertest": "^4.0.2"
   }
