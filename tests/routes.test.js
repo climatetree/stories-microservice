@@ -252,7 +252,7 @@ describe('Story endpoints /stories', () => {
             }
     
             const validStory = new StoryModel(story);
-            const savedStory = await validStory.save();
+            await validStory.save();
 
            const res = await request(app).get('/stories/story/1');
            expect(res.statusCode).toEqual(200);
@@ -271,7 +271,7 @@ function initializeStoryCollection() {
             user_id : 344,
             hyperlink : "https://climate.isro.gov/help/",
             rating : 2,
-            story_title : "News report",
+            story_title : "News Flash",
             place_ids : [
                 0,
                 7
@@ -280,10 +280,10 @@ function initializeStoryCollection() {
             date : "11/16/2018 02:01 AM",
             solution : [
                 "Solar Farms",
-                "Walkable Cities",
+                "E-Bikes",
                 "Insulation"
             ],
-            sector : "Food",
+            sector : "Energy",
             comments : [
                 {
                     comment_id : 1,
@@ -311,13 +311,13 @@ function initializeStoryCollection() {
             user_id : 129,
             hyperlink : "https://un.org/climate/",
             rating : 3,
-            story_title : "News report",
+            story_title : "News Headlines",
             place_ids : [
                 0,
                 1,
                 2
             ],
-            media_type : "text",
+            media_type : "image",
             date : "10/31/2016 12:33 AM",
             solution : [
                 "Landfill Methane",
