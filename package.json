@@ -28,7 +28,8 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "testResultsProcessor": "jest-sonar-reporter"
+    "testResultsProcessor": "jest-sonar-reporter",
+    "collectCoverage": true
   },
   "devDependencies": {
     "jest": "^25.1.0",
