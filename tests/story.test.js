@@ -112,10 +112,10 @@ it('can return all the stories in the database - findAllStories API', async () =
     expect(resultStories.toString()).toEqual(stories.toString());
 });
 
-it('can return a story by storyId - findStoryById API', async () => {
+it('can return a story by storyId - findStoryByStoryID API', async () => {
     await storyDao.createStory(story1);
     await storyDao.createStory(story2);
 
-    const resultStory = await storyDao.findStoryById(story1.story_id);
+    const resultStory = await storyDao.findStoryByStoryID(story1.story_id);
     expect(resultStory.toString()).toEqual(story1.toString());
 });
