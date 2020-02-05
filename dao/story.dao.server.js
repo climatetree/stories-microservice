@@ -1,12 +1,13 @@
 const storyModel = require('../models/story.model.server')
 
-findAllStories = () =>
-    storyModel.find()
+findAllStories = () => storyModel.find();
 
-findStoryById = storyId =>
-    storyModel.find({"story_id": storyId})
+findStoryByStoryID = storyID => storyModel.find({story_id: storyID});
+
+findStoryByPlaceID = placeID => storyModel.find({place_ids:{$all:[placeID]}});
 
 module.exports = {
     findAllStories,
-    findStoryById
-}
+    findStoryByStoryID,
+    findStoryByPlaceID
+};
