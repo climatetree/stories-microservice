@@ -1,10 +1,10 @@
-const storyModel = require('../models/story.model.server')
+const StoryModel = require('../models/story.model.server')
 
 findAllStories = () =>
-    storyModel.find()
+    StoryModel.find()
 
 findStoryById = storyId =>
-    storyModel.find({"story_id": storyId})
+    StoryModel.findOne({"story_id": storyId})
 
 module.exports = {
     findAllStories,

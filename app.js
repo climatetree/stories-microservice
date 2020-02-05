@@ -33,7 +33,4 @@ require('./db/db')()
 const storyService = require('./routes/story.route.server')
 storyService(app)
 
-//launch server
-app.listen(port,() => console.log(`Example app listening on port ${port}!`))
-
 module.exports = app;
