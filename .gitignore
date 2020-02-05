@@ -30,3 +30,7 @@ target/
 /.nb-gradle/
 build/
 node_modules/
+coverage
+
+#coverage-report
+test-report.xml
