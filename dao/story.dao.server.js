@@ -8,9 +8,15 @@ findStoryByPlaceID = placeID => storyModel.find({place_ids:{$all:[placeID]}});
 
 createStory = story => storyModel.create(story);
 
+deleteStory = storyId => storyModel.remove({story_id: storyId})
+
+updateStory = (storyId, story) => storyModel.update({story_id: storyId}, {$set: story})
+
 module.exports = {
     findAllStories,
     findStoryByStoryID,
     findStoryByPlaceID,
-    createStory
+    createStory,
+    deleteStory,
+    updateStory
 }

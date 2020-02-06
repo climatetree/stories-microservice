@@ -6,9 +6,13 @@
 ## Project Structure
 https://tinyurl.com/uesvbo4
 ## APIs for now
-1. /stories -> findAllStories
-2. /stories/story/:storyID -> findStoryByStoryID
-3. /stories/place/:placeID -> findStoryByPlaceID
+1. GET /stories -> findAllStories
+2. GET /stories/story/:storyID -> findStoryByStoryID
+3. POST /stories/create -> createStory
+4. DELETE /stories/:storyId -> deleteStory
+5. PUT /stories/:storyId -> updateStory
+6. GET /stories/place/:placeID -> findStoryByPlaceID
+
 ## APIs in progress
 ## APIs to do
 
