@@ -2,28 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
 const app = express();
 
+//set port number
 let port = 1234;
-
-const product = require('./routes/solutions.route'); // Imports routes for the products
-
-// Set up mongoose connection
-const mongoose = require('mongoose');
-let dev_db_url = 'mongodb://localhost:27017/';
-let mongoDB = process.env.MONGODB_URI || dev_db_url;
-mongoose.connect(mongoDB);
-mongoose.Promise = global.Promise;
-let db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-app.use('/solution', product);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+//Todo: Causing {"message":"createError is not defined","error":{}} error when API hit. Uncomment after figuring out why
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -33,7 +22,18 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+             message: err.message,
+             error: err
+           });
 });
+
+require('./db/db')()
+
+const storyService = require('./routes/story.route.server')
+storyService(app)
+
+//launch server
+app.listen(port,() => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app;

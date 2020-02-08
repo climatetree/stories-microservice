@@ -14,6 +14,7 @@ target/
 .sts4-cache
 .mvn
 .DS_Store
+.idea
 
 ### IntelliJ IDEA ###
 .idea
@@ -29,3 +30,7 @@ target/
 /.nb-gradle/
 build/
 node_modules/
+coverage
+
+#coverage-report
+test-report.xml
