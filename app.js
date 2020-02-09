@@ -2,9 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
 const app = express();
 
-//set port number
-let port = 1234;
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 

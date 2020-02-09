@@ -1,24 +1,36 @@
 const request = require('supertest');
+const http = require('http');
 
 const dbHandler = require('./db.handler');
 const storyDao = require('../dao/story.dao.server');
 const storyModel = require('../models/story.model.server');
 
 const app = require('../app');
+let server, agent;
 
 
 describe('End Points for Stories', () => {
 /**
  * connect to the in-memory database before running the tests
  */
-    beforeAll(async() => await dbHandler.connect());
+    beforeAll(async(done) => {
+        await dbHandler.connect();
+        server = app.listen(3000, (err) => {
+            if (err) return done(err);
+      
+             agent = request.agent(server); // since the application is already listening, it should use the allocated port
+             done();
+    });
+});
 
     /**
      * after all the tests clear the database and close the database connection
      */
-    afterAll(async() => {
-        await dbHandler.clearDatabase();
-        await dbHandler.closeDatabase();
+    afterAll(async(done) => {
+        dbHandler.clearDatabase();
+        dbHandler.closeDatabase();
+        return  server && server.close(done);
+
     });
 
     /**
@@ -144,7 +156,3 @@ describe('End Points for Stories', () => {
 
     });
 })
-
-
-
-
