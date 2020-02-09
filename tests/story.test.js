@@ -121,6 +121,33 @@ const story3 = new storyModel({
     ]
 });
 
+const story4 = new storyModel({
+    story_id: 4,
+    user_id: 104,
+    hyperlink: 'https://abc.abc.gov/climate/',
+    rating: 1,
+    story_title: 'ISRO ABC',
+    place_ids: [
+        9,
+		5,
+		5
+    ],
+    media_type: 'text',
+    date: '03/14/2009 11:48 PM',
+    solution: [
+        'Glass'
+    ],
+    sector: 'Food',
+    comments: [
+        {
+			comment_id : 1,
+			user_id : 156,
+			content : 'update',
+			date : '11/08/2012 04:23 AM'
+		}
+    ]
+});
+
 /**
  * Test suite for stories APIs
  */
@@ -139,6 +166,18 @@ it('can delete a story from the database - deleteStory API', async () => {
     const stories = [story1, story2];
     const resultStories = await storyDao.findAllStories();
     expect(resultStories.toString()).toEqual(stories.toString());
+});
+
+it('can update a story in the database - updateStory API', async () => {
+    await storyDao.createStory(story4);
+
+    await storyDao.updateStory(story4.story_id, {story_title: 'updated'});
+    story4.story_title = 'updated';
+
+    const resultStory = await storyDao.findStoryByStoryID(story4.story_id);
+    expect(resultStory[0].toString()).toEqual(story4.toString());
+
+    await storyDao.deleteStory(story4.story_id);
 });
 
 it('can return all the stories in the database - findAllStories API', async () => {
