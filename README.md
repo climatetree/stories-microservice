@@ -43,4 +43,4 @@ https://tinyurl.com/uesvbo4
 4.	Run the command ‘npm start’ to run the application. 
 
 ### Test node setup:
-1.	Open a web browser, type the URL as “http://localhost:1234/stories”. If you get data returned to you, your local setup is good to go.
+1.	Open a web browser, type the URL as “http://localhost:3000/stories”. If you get data returned to you, your local setup is good to go.
