@@ -2,7 +2,7 @@ const storyModel = require('../models/story.model.server')
 
 findAllStories = () => storyModel.find();
 
-findStoryByStoryID = storyID => storyModel.find({story_id: storyID});
+findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
 findStoryByPlaceID = placeID => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}});
 

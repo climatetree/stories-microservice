@@ -2,9 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
 const app = express();
 
-//set port number
-let port = 1234;
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -33,7 +30,5 @@ require('./db/db')()
 const storyService = require('./routes/story.route.server')
 storyService(app)
 
-//launch server
-app.listen(port,() => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app;
