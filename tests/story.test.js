@@ -165,6 +165,7 @@ const story4 = new storyModel({
     ]
 });
 
+
 /**
  * Test suite for stories APIs
  */
@@ -209,13 +210,13 @@ it('can update a story in the database - updateStory API', async () => {
     await storyDao.deleteStory(story4.story_id);
 });
 
-    it('can return a story by storyId - findStoryByStoryID API', async () => {
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
+it('can return a story by storyId - findStoryByStoryID API', async () => {
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
 
-        const resultStory = await storyDao.findStoryByStoryID(story1.story_id);
-        expect(resultStory.toString()).toEqual(story1.toString());
-    });
+    const resultStory = await storyDao.findStoryByStoryID(story1.story_id);
+    expect(resultStory.toString()).toEqual(story1.toString());
+});
 
 
 it('can find stories by placeID - findStoryByPlaceID API', async () => {
@@ -242,7 +243,4 @@ it('can find stories by placeID - findStoryByPlaceID API', async () => {
         });
 
     });
-})
-
-
-  
+});
