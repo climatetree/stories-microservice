@@ -9,6 +9,7 @@ module.exports = function () {
     const databaseName='climateTree';
     const key='KKYmGrO8a2NUL6jGaawC3BPd0eM5YxRA8gVucNsCAcTikrfl0BQVaY1bqNcaslvYoHJQU9QmYqzcuw2c03hypQ==';
     const mongoUri = `mongodb://${accountName}:${key}@${accountName}.documents.azure.com:${mongoPORT}/${databaseName}?ssl=true`;
+    const localhost='mongodb://localhost:27017/climateTree'
     mongoose.set('debug', true);
     mongoose.connect(mongoUri,{useNewUrlParser: true});
   };
