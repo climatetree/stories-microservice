@@ -7,7 +7,7 @@ module.exports = app => {
             res.json(stories);
         });
 
-    findStoryByStoryID = (req, res) => {}
+    findStoryByStoryID = (req, res) =>
         storyDao.findStoryByStoryID(req.params.storyID).then(story => {
             console.log(story);
             res.json(story);

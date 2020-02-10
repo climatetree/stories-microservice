@@ -4,7 +4,7 @@ findAllStories = () => storyModel.find();
 
 findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
-findStoryByPlaceID = placeID => storyModel.findOne({place_ids:{$all:[placeID]}});
+findStoryByPlaceID = placeID => storyModel.find({place_ids:{$all:[placeID]}});
 
 createStory = story => storyModel.create(story);
 

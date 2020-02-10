@@ -70,65 +70,144 @@ describe('End Points for Stories', () => {
             }
         ]
     });
+const story2 = new storyModel({
+    story_id: 2,
+    user_id: 102,
+    hyperlink: 'https://climate.isro.gov/climate/',
+    rating: 1,
+    story_title: 'ISRO Climate change report',
+    place_ids: [
+        1,
+		3,
+		5
+    ],
+    media_type: 'text',
+    date: '08/11/2009 11:48 PM',
+    solution: [
+        'Smart Glass',
+		'District Heating',
+		'LED Lighting (Household)'
+    ],
+    sector: 'Food',
+    comments: [
+        {
+			comment_id : 1,
+			user_id : 156,
+			content : 'very informative',
+			date : '11/08/2012 04:23 AM'
+		},
+		{
+			comment_id : 2,
+			user_id : 64,
+			content : 'good post',
+			date : '05/02/2018 06:15 PM'
+		},
+		{
+			comment_id : 3,
+			user_id : 260,
+			content : 'good post',
+			date : '07/20/2012 07:24 PM'
+		}
+    ]
+});
 
-    const story2 = new storyModel({
-        story_id: 2,
-        user_id: 102,
-        hyperlink: 'https://climate.isro.gov/climate/',
-        rating: 1,
-        story_title: 'ISRO Climate change report',
-        place_ids: [
-            0,
-            3,
-            5
-        ],
-        media_type: 'text',
-        date: '08/11/2009 11:48 PM',
-        solution: [
-            'Smart Glass',
-            'District Heating',
-            'LED Lighting (Household)'
-        ],
-        sector: 'Food',
-        comments: [
-            {
-                comment_id : 1,
-                user_id : 156,
-                content : 'very informative',
-                date : '11/08/2012 04:23 AM'
-            },
-            {
-                comment_id : 2,
-                user_id : 64,
-                content : 'good post',
-                date : '05/02/2018 06:15 PM'
-            },
-            {
-                comment_id : 3,
-                user_id : 260,
-                content : 'good post',
-                date : '07/20/2012 07:24 PM'
-            }
-        ]
+const story3 = new storyModel({
+    story_id: 3,
+    user_id: 103,
+    hyperlink: 'https://abc.isro.gov/climate/',
+    rating: 1,
+    story_title: 'ISRO ABC Climate change report',
+    place_ids: [
+        4,
+		8,
+		5
+    ],
+    media_type: 'text',
+    date: '03/14/2009 11:48 PM',
+    solution: [
+        'Glass'
+    ],
+    sector: 'Food',
+    comments: [
+        {
+			comment_id : 4,
+			user_id : 156,
+			content : 'delete',
+			date : '11/08/2012 04:23 AM'
+		}
+    ]
+});
+
+const story4 = new storyModel({
+    story_id: 4,
+    user_id: 104,
+    hyperlink: 'https://abc.abc.gov/climate/',
+    rating: 1,
+    story_title: 'ISRO ABC',
+    place_ids: [
+        9,
+		5,
+		5
+    ],
+    media_type: 'text',
+    date: '03/14/2009 11:48 PM',
+    solution: [
+        'Glass'
+    ],
+    sector: 'Food',
+    comments: [
+        {
+			comment_id : 1,
+			user_id : 156,
+			content : 'update',
+			date : '11/08/2012 04:23 AM'
+		}
+    ]
+});
+
+/**
+ * Test suite for stories APIs
+ */
+
+it('can return all the stories in the database - findAllStories API', async () => {
+    const stories = [story1, story2];
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
+
+    const resultStories = await storyDao.findAllStories();
+    expect(resultStories.toString()).toEqual(stories.toString());
+
+    
     });
 
-    /**
-     * Test suite for stories APIs
-     */
-    it('can create a new story in the database - createStory API', async () => {
-        const resultStory = await storyDao.createStory(story1);
-        expect(resultStory).toEqual(story1);
-    });
+it('can create a new story in the database - createStory API', async () => {
+    const resultStory = await storyDao.createStory(story1);
+    expect(resultStory).toEqual(story1);
+});
 
-    it('can return all the stories in the database - findAllStories API', async () => {
-        const stories = [story1, story2];
+it('can delete a story from the database - deleteStory API', async () => {
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
+    await storyDao.createStory(story3);
 
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
+    await storyDao.deleteStory(story3.story_id);
 
-        const resultStories = await storyDao.findAllStories();
-        expect(resultStories.toString()).toEqual(stories.toString());
-    });
+    const stories = [story1, story2];
+    const resultStories = await storyDao.findAllStories();
+    expect(resultStories.toString()).toEqual(stories.toString());
+});
+
+it('can update a story in the database - updateStory API', async () => {
+    await storyDao.createStory(story4);
+
+    await storyDao.updateStory(story4.story_id, {story_title: 'updated'});
+    story4.story_title = 'updated';
+
+    const resultStory = await storyDao.findStoryByStoryID(story4.story_id);
+    expect(resultStory.toString()).toEqual(story4.toString());
+
+    await storyDao.deleteStory(story4.story_id);
+});
 
     it('can return a story by storyId - findStoryByStoryID API', async () => {
         await storyDao.createStory(story1);
@@ -137,6 +216,14 @@ describe('End Points for Stories', () => {
         const resultStory = await storyDao.findStoryByStoryID(story1.story_id);
         expect(resultStory.toString()).toEqual(story1.toString());
     });
+
+
+it('can find stories by placeID - findStoryByPlaceID API', async () => {
+    place_id = 1;
+    stories = [story1, story2];
+    const resultStories = await storyDao.findStoryByPlaceID(place_id);
+    expect(resultStories.toString()).toEqual(stories.toString());
+});
 
     describe('GET/',  () => {
 
@@ -156,3 +243,6 @@ describe('End Points for Stories', () => {
 
     });
 })
+
+
+  
