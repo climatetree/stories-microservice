@@ -33,6 +33,6 @@ module.exports = app => {
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.post('/stories/create', createStory);
-    app.delete('/stories/:storyId', deleteStory);
-    app.put('/stories/:storyId', updateStory);
+    app.delete('/stories/delete/:storyId', deleteStory);
+    app.put('/stories/update/:storyId', updateStory);
 };
