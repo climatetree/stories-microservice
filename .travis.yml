@@ -1,27 +1,26 @@
 language: node_js
-
 node_js:
 - 10
-
 script:
-  - npm test
-  - sonar-scanner
-
+- npm test
+- sonar-scanner
 services:
-  - mongodb
-
+- mongodb
 before_script:
-  - sleep 15
-  - mongo mydb_test --eval 'db.createUser({user:"user",pwd:"password",roles:["readWrite"]});'
-
+- sleep 15
+- mongo mydb_test --eval 'db.createUser({user:"user",pwd:"password",roles:["readWrite"]});'
 addons:
   sonarcloud:
-    organization: "climatetree"
+    organization: climatetree
     token:
-      secure: "wVhmUYrxGjcw59+TsDv73iOM5lwfrao+IUZpX7xUwJl2unOHrJvPU70+sPT4nYnYyKVgu93W8m/grKINntoFeUl+P9IWPwumeRLuKGvxyaD7G9FzET6upkZGOcHmZy6K6bVVpNS0FxVx9oLCTFG4RCCKjJg1URO6DGduyNaftwjqgM7vfZBcdaCcXVtroGAtdYN9nsdHBvdJMfJ3ospQAT1QTMm0xD0ONkf/dlxoLBBzmc3kUaDfxk7+IFLzIDz+MjvSt3CuZd9tzfwThByPNkFB8AeQw4ivcie1juYUSY8ushEm3TI2BrPAdPmFJ3G5JhqVIU1fHljMDjiLXerXIEX8/WoQqwsGF6kr+ba3TT5YUPPyqz9A75xYk4NNeA0ZoqnUHBuBW7PpdjOuzojckJDi32ryIT5u/sysueruOTIn712gdXWN9N+AHmNryX5qAmrD7gIHzIQRHuyCeysCBBwci868F54jCsV6G+D2ncjRDi0pNoo4iSsflLbK8NqknKE7iCU1vXRzvHeCPlNobFo7ML2fpWh6A7Xv7JOS6emfggcIYCKI9EdbApzLYIbrkkz9AufmRX0/CHbvWJLkyJKlv604u4GSoZMjO6oH0CtHqUPSpg58t3ebRxNDXOrq6hnzF+RSSQuK9khoOhzdtyavdl5Ld+aYuRTMBsqXvhU="
-
+      secure: wVhmUYrxGjcw59+TsDv73iOM5lwfrao+IUZpX7xUwJl2unOHrJvPU70+sPT4nYnYyKVgu93W8m/grKINntoFeUl+P9IWPwumeRLuKGvxyaD7G9FzET6upkZGOcHmZy6K6bVVpNS0FxVx9oLCTFG4RCCKjJg1URO6DGduyNaftwjqgM7vfZBcdaCcXVtroGAtdYN9nsdHBvdJMfJ3ospQAT1QTMm0xD0ONkf/dlxoLBBzmc3kUaDfxk7+IFLzIDz+MjvSt3CuZd9tzfwThByPNkFB8AeQw4ivcie1juYUSY8ushEm3TI2BrPAdPmFJ3G5JhqVIU1fHljMDjiLXerXIEX8/WoQqwsGF6kr+ba3TT5YUPPyqz9A75xYk4NNeA0ZoqnUHBuBW7PpdjOuzojckJDi32ryIT5u/sysueruOTIn712gdXWN9N+AHmNryX5qAmrD7gIHzIQRHuyCeysCBBwci868F54jCsV6G+D2ncjRDi0pNoo4iSsflLbK8NqknKE7iCU1vXRzvHeCPlNobFo7ML2fpWh6A7Xv7JOS6emfggcIYCKI9EdbApzLYIbrkkz9AufmRX0/CHbvWJLkyJKlv604u4GSoZMjO6oH0CtHqUPSpg58t3ebRxNDXOrq6hnzF+RSSQuK9khoOhzdtyavdl5Ld+aYuRTMBsqXvhU=
 deploy:
   provider: script
   script: bash ./docker_push.sh
   on:
     branch: master
+notifications:
+  slack:
+    secure: LnH1z7oVD3AmUt5ufq8D44PF4pbw8XbDVvlhZsKlvo4rOpXt7e+nRgor+4PJOOX3ak60lY7K2PWkGTdOiJumZo2yXoC9fGTylhnnt0ry42/1WpjAFNBUNOMgPjVyOok8ATpTTdqIlrNbthf61kxm80+Ger//c7yAyQogYmDrgXSvYd2FqsfwF8lpBsynrUAyMxAywv4WQTIO+yF9ImjK9vkeerx+OigpLVN3J9OBfP9SFfNcp43tJmKP9uaPhDeEVgQDsZhWRJT4u02z8am1gzckjb09gpy0XVUIJYVl3j6okieGpRR+iqeHZm4jAFp7ZlkQsSpHObDUaknXZ3W7NYEnVj36BowXgR/16zeMmw0HUTeRqbl4RCGUcKeqPIQFIaHTCEbE1XLztWK47yUkszbhz74FfpWqwpn8qhQTQcNQ9OasxHNbCJOcHmKINZgqnCmAj8586bWBH9KOyDO4g+SS54wAWm31rRDHKq97RHsHy6nHrKckgWh/JREwlkeVtjl/Cai1pv7R3/k21oQdEz8X+LRx/cmHql0Zg67vcrZUVJ1mkQifS7KfTxmmp9dCVG7Iy+gPPCLaVT5MB61mWhMTpcPqCF2kFvYIvfar+B5AJzJDSHquXLLtQEle9ctXZi8CTWviIhLwgXMxLBvpVD0qGb4zUCrVG5+eEeDmmrk=
+    on_success: never
+    on_failure: always
