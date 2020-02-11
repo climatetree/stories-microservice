@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const commentSchema = require('./comment.schema.server')
 
 const storySchema = mongoose.Schema({
-    story_id:Number,
     user_id:Number,
     hyperlink:String,
     rating:Number,
