@@ -49,7 +49,7 @@ module.exports = app => {
     deleteStory = (req, res) => {
         const {storyId} = req.params;
         if (!ObjectID.isValid(storyId)) {
-            return res.status(404).send();
+            return res.status(404).send({error: "Story doesn't exist!"});
           }
 
         storyDao.deleteStory(storyId).then((error, removed) => {
