@@ -6,6 +6,8 @@ findStoryByStoryID = storyID => storyModel.findOne({_id: storyID});
 
 findStoryByPlaceID = placeID => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}});
 
+findStoryByTitle = title => storyModel.find({story_title:{$regex: title,$options:'i'}})
+
 createStory = story => storyModel.create(story);
 
 deleteStory = storyId => storyModel.remove({_id: storyId});
@@ -16,7 +18,8 @@ module.exports = {
     findAllStories,
     findStoryByStoryID,
     findStoryByPlaceID,
+    findStoryByTitle,
     createStory,
     deleteStory,
-    updateStory
+    updateStory,
 };
