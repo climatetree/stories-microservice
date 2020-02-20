@@ -9,25 +9,23 @@ module.exports = app => {
 
     findStoryByPlaceID = (req,res)=>
         storyDao.findStoryByPlaceID(req.params.placeID).exec(function (err,stories) {
-            console.log(stories);
-            res.send(JSON.stringify(stories, null, '\t'))
+            res.json(stories)
     });
 
 
     findStoryByTitle = (req,res)=>
         storyDao.findStoryByTitle(req.params.title).exec(function (err,stories) {
-            console.log(req.params.title);
-            res.send(JSON.stringify(stories, null, '\t'))
+            res.json(stories)
         });
 
     createStory = (req, res) =>
         storyDao.createStory(req.body).then(story => res.json(story));
 
     deleteStory = (req, res) =>
-        storyDao.deleteStory(req.params.storyId).then(story => res.json(story));
+        storyDao.deleteStory(req.params.storyId,req.params.userId).then(story => res.json(story));
 
     updateStory = (req, res) =>
-        storyDao.updateStory(req.params.storyId, req.body).then(story => res.json(story));
+        storyDao.updateStory(req.params.storyId,req.params.userId, req.body).then(story => res.json(story));
   
 
     app.get('/stories', findAllStories);
@@ -35,6 +33,6 @@ module.exports = app => {
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle)
     app.post('/stories/create', createStory);
-    app.delete('/stories/delete/:storyId', deleteStory);
-    app.put('/stories/update/:storyId', updateStory);
+    app.delete('/stories/delete/:userId/:storyId', deleteStory);
+    app.put('/stories/update/:userId/:storyId', updateStory);
 };

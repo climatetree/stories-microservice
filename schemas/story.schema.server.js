@@ -15,12 +15,12 @@ const storySchema = mongoose.Schema({
 },{
     toObject: {
         transform: function (doc, ret) {
-            delete ret._id;
+
         }
     },
     toJson:{
         transform:function (doc,ret) {
-            delete ret._id;
+
         }
     }
 });

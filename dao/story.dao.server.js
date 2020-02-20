@@ -6,13 +6,13 @@ findStoryByStoryID = storyID => storyModel.findOne({_id: storyID});
 
 findStoryByPlaceID = placeID => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}});
 
-findStoryByTitle = title => storyModel.find({story_title:{$regex: title,$options:'i'}})
+findStoryByTitle = title => storyModel.find({story_title:{$regex: title,$options:'i'}});
 
 createStory = story => storyModel.create(story);
 
-deleteStory = storyId => storyModel.remove({_id: storyId});
+deleteStory = (storyId,userID) => storyModel.deleteOne({_id: storyId,user_id:userID});
 
-updateStory = (storyId, story) => storyModel.update({_id: storyId}, {$set: story});
+updateStory = (storyID,userID, story) => storyModel.update({_id: storyID,user_id:userID}, {$set: story});
 
 module.exports = {
     findAllStories,
