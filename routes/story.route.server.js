@@ -33,15 +33,14 @@ module.exports = app => {
             if(err) {
                 res.status(500).send({error});
             }
-            res.send(JSON.stringify(stories, null, '\t'));
+            res.json(stories);
 
     });
 
 
     findStoryByTitle = (req,res)=>
         storyDao.findStoryByTitle(req.params.title).exec(function (err,stories) {
-            console.log(req.params.title);
-            res.send(JSON.stringify(stories, null, '\t'))
+            res.json(stories)
         });
 
     createStory = (req, res) =>
