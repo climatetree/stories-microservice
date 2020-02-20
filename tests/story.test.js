@@ -235,5 +235,30 @@ it('can find stories by placeID - findStoryByPlaceID API', async () => {
                 .expect(200, done);
         });
 
+        it('/stories/:storyId - return 404 if story not found', function (done) {
+        
+            request(app).get('/stories/1')
+                .set('Accept', 'application/json')
+                .expect(404, done);
+        });
+
+    });
+
+    describe('DELETE/', () => {
+        it('/stories/delete/:storyId - return 404 if story not found', function (done) {
+        
+            request(app).delete('/stories/delete/1')
+                .set('Accept', 'application/json')
+                .expect(404, done);
+        });
+    });
+
+    describe('PUT/', () => {
+        it('/stories/update/:storyId - return 404 if story not found', function (done) {
+        
+            request(app).delete('/stories/update/1')
+                .set('Accept', 'application/json')
+                .expect(404, done);
+        });
     });
 });
