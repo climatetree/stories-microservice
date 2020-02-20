@@ -37,7 +37,7 @@ describe('End Points for Stories', () => {
      * Mock data
      */
     const story1 = new storyModel({
-        story_id: 1,
+        story_id: '5e4e197ee1bc5896994d2cb1',
         user_id: 101,
         hyperlink: 'https://epa.gov/evidence/',
         rating: 1,
@@ -71,7 +71,7 @@ describe('End Points for Stories', () => {
         ]
     });
 const story2 = new storyModel({
-    story_id: 2,
+    story_id: '5e4e197ee1bc5896994d2cb1',
     user_id: 102,
     hyperlink: 'https://climate.isro.gov/climate/',
     rating: 1,
@@ -112,7 +112,7 @@ const story2 = new storyModel({
 });
 
 const story3 = new storyModel({
-    story_id: 3,
+    story_id: '5e4e197ee1bc5896994d2cb1',
     user_id: 103,
     hyperlink: 'https://abc.isro.gov/climate/',
     rating: 1,
@@ -139,7 +139,7 @@ const story3 = new storyModel({
 });
 
 const story4 = new storyModel({
-    story_id: 4,
+    story_id: '5e4e197ee1bc5896994d2cb1',
     user_id: 104,
     hyperlink: 'https://abc.abc.gov/climate/',
     rating: 1,
@@ -191,7 +191,7 @@ it('can delete a story from the database - deleteStory API', async () => {
     await storyDao.createStory(story2);
     const createdStory = await storyDao.createStory(story3);
     
-    await storyDao.deleteStory(createdStory._id)
+    await storyDao.deleteStory(createdStory.story_id)
 
     const stories = [story1, story2];
     const resultStories = await storyDao.findAllStories();
@@ -201,20 +201,20 @@ it('can delete a story from the database - deleteStory API', async () => {
 it('can update a story in the database - updateStory API', async () => {
     const createdStory = await storyDao.createStory(story4);
 
-    await storyDao.updateStory(createdStory._id, {story_title: 'updated'});
+    await storyDao.updateStory(createdStory.story_id, {story_title: 'updated'});
     story4.story_title = 'updated';
 
-    const resultStory = await storyDao.findStoryByStoryID(createdStory._id);
+    const resultStory = await storyDao.findStoryByStoryID(createdStory.story_id);
     expect(resultStory.toString()).toEqual(story4.toString());
 
-    await storyDao.deleteStory(createdStory._id);
+    await storyDao.deleteStory(createdStory.story_id);
 });
 
 it('can return a story by storyId - findStoryByStoryID API', async () => {
     const createdStory = await storyDao.createStory(story1);
     await storyDao.createStory(story2);
 
-    const resultStory = await storyDao.findStoryByStoryID(createdStory._id);
+    const resultStory = await storyDao.findStoryByStoryID(createdStory.story_id);
     expect(resultStory.toString()).toEqual(story1.toString());
 });
 
