@@ -1,18 +1,22 @@
 const storyModel = require('../models/story.model.server')
+var ObjectID = require("bson-objectid");
 
 findAllStories = () => storyModel.find();
 
-findStoryByStoryID = storyID => storyModel.findOne({_id: storyID});
+findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
 findStoryByPlaceID = placeID => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}});
 
-findStoryByTitle = title => storyModel.find({story_title:{$regex: title,$options:'i'}})
+findStoryByTitle = title => storyModel.find({story_title:{$regex: title,$options:'i'}});
 
-createStory = story => storyModel.create(story);
+createStory = story => {
+    story['story_id']=ObjectID().str;
+    return storyModel.create(story);
+};
 
-deleteStory = storyId => storyModel.remove({_id: storyId});
+deleteStory = (storyId) => storyModel.deleteOne({story_id: storyId});
 
-updateStory = (storyId, story) => storyModel.update({_id: storyId}, {$set: story});
+updateStory = (storyID, story) => storyModel.update({story_id: storyID}, {$set: story});
 
 module.exports = {
     findAllStories,

@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const commentSchema = require('./comment.schema.server')
 
 const storySchema = mongoose.Schema({
+    story_id:String,
     user_id:Number,
     hyperlink:String,
     rating:Number,
@@ -15,12 +16,12 @@ const storySchema = mongoose.Schema({
 },{
     toObject: {
         transform: function (doc, ret) {
-            delete ret._id;
+            delete ret._id
         }
     },
     toJson:{
         transform:function (doc,ret) {
-            delete ret._id;
+            delete ret._id
         }
     }
 });
