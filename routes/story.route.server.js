@@ -15,8 +15,6 @@ module.exports = app => {
         }
 
         storyDao.findStoryByStoryID(req.params.storyID).then(story => {
-            console.log(story);
-
             if(!story) {
                 return res.status(404).send();
             }
@@ -24,13 +22,12 @@ module.exports = app => {
         }).catch((error) => {
             res.status(500).send({error});
         });
-    }
+    };
 
 
     findStoryByPlaceID = (req,res)=>
         storyDao.findStoryByPlaceID(req.params.placeID).exec(function (error,stories) {
-            console.log(stories);
-            if(err) {
+            if(error) {
                 res.status(500).send({error});
             }
             res.json(stories);
@@ -64,7 +61,7 @@ module.exports = app => {
         });
                                      
 
-    }
+    };
 
     updateStory = (req, res) => {
         const {storyId} = req.params;
@@ -74,13 +71,13 @@ module.exports = app => {
         storyDao.updateStory(storyId, req.body)
                 .then(story => res.json(story))
                 .catch((error) => res.status(500).send({error}));
-    }
+    };
   
 
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
-    app.get('/stories/title/:title',findStoryByTitle)
+    app.get('/stories/title/:title',findStoryByTitle);
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
