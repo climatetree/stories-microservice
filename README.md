@@ -1,7 +1,7 @@
 
 # stories-microservice
 [![Build Status](https://travis-ci.com/climatetree/backend-mongo.svg?branch=develop)](https://travis-ci.com/climatetree/backend-mongo)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.climatetree%3Abackend-mongo&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.climatetree%3Abackend-mongo)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.climatetree%3Astories-microservice&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.climatetree%3Astories-microservice)
 
 ## Project Structure
 https://tinyurl.com/uesvbo4
