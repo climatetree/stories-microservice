@@ -38,7 +38,7 @@ https://tinyurl.com/uesvbo4
 
 ### Node Setup:
 1.	Install node from https://nodejs.org/
-2.	Clone the repo with ‘git clone https://github.com/climatetree/backend-mongo.git’
+2.	Clone the repo with ‘git clone https://github.com/climatetree/stories-microservice.git’
 3.	Navigate into the cloned folder. Install express with “npm install express –save” on the command line
 4.	Run the command ‘npm start’ to run the application. 
 
