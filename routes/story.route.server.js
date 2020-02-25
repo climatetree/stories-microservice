@@ -2,6 +2,7 @@ const { ObjectID } = require('mongodb');
 
 
 storyDao = require('../dao/story.dao.server');
+
 module.exports = app => {
 
     findAllStories = (req, res) => 
@@ -72,7 +73,17 @@ module.exports = app => {
                 .then(story => res.json(story))
                 .catch((error) => res.status(500).send({error}));
     };
-  
+
+    likeStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                story.liked_by_users.push(req.params.userID);
+                storyDao.updateStory(story.story_id, story).then(updatedStory => {
+                    res.send(updatedStory);
+                });
+            });
+    };
+
 
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
@@ -81,4 +92,5 @@ module.exports = app => {
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
+    app.put('/stories/like/:storyID/:userID', likeStory);
 };
