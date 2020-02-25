@@ -226,6 +226,16 @@ it('can find stories by placeID - findStoryByPlaceID API', async () => {
     expect(resultStories.toString()).toEqual(stories.toString());
 });
 
+it('can find top n recent stories - findTopStories API', async () => {
+    await storyDao.createStory(story2);
+    await storyDao.createStory(story1);
+
+    const resultStories = await storyDao.findTopStories(3);
+    stories = [story1, story2]
+    expect(resultStories.toString()).toEqual(stories.toString())
+    expect(resultStories.length == 2)
+})
+
     describe('GET/',  () => {
 
         it('/stories - return all stories', function (done) {
