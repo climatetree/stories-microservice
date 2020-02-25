@@ -3,6 +3,8 @@ var ObjectID = require("bson-objectid");
 
 findAllStories = () => storyModel.find();
 
+findTopStories = (numberOfStories) => storyModel.find({}).sort({date: 'desc'}).limit(parseInt(numberOfStories));
+
 findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
 findStoryByPlaceID = placeID => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}});
@@ -23,6 +25,7 @@ module.exports = {
     findStoryByStoryID,
     findStoryByPlaceID,
     findStoryByTitle,
+    findTopStories,
     createStory,
     deleteStory,
     updateStory,
