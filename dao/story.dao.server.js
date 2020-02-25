@@ -1,7 +1,7 @@
 const storyModel = require('../models/story.model.server')
 var ObjectID = require("bson-objectid");
 
-findAllStories = () => storyModel.find();
+findAllStories = (limit, page) => storyModel.find().skip((page-1)*limit).limit(limit);
 
 findTopStories = (numberOfStories) => storyModel.find().sort({date: 'desc'}).limit(parseInt(numberOfStories));
 

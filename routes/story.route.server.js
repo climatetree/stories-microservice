@@ -4,8 +4,17 @@ const { ObjectID } = require('mongodb');
 storyDao = require('../dao/story.dao.server');
 module.exports = app => {
 
-    findAllStories = (req, res) => 
-        storyDao.findAllStories().then(stories => res.json(stories));
+    findAllStories = (req, res) => {
+        page = 1
+        limit = 100
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        storyDao.findAllStories(limit, page).then(stories => res.json(stories));
+    }
 
     findStoryByStoryID = (req, res) => {
         if(!ObjectID.isValid(req.params.storyID)) {
@@ -24,7 +33,6 @@ module.exports = app => {
         });
     };
 
-
     findStoryByPlaceID = (req,res)=>
         storyDao.findStoryByPlaceID(req.params.placeID).exec(function (error,stories) {
             if(error) {
@@ -34,11 +42,13 @@ module.exports = app => {
 
     });
 
-
     findStoryByTitle = (req,res)=>
         storyDao.findStoryByTitle(req.params.title).exec(function (err,stories) {
             res.json(stories)
         });
+
+    findTopStories = (req, res) =>
+        storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));
 
     createStory = (req, res) =>
         storyDao.createStory(req.body)
@@ -59,8 +69,6 @@ module.exports = app => {
             
             res.json(removed);
         });
-                                     
-
     };
 
     updateStory = (req, res) => {
@@ -72,9 +80,6 @@ module.exports = app => {
                 .then(story => res.json(story))
                 .catch((error) => res.status(500).send({error}));
     };
-
-    findTopStories = (req, res) => 
-        storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));
   
 
     app.get('/stories', findAllStories);
