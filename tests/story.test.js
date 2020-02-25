@@ -245,6 +245,13 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(200, done);
         });
 
+        it('/stories - return all stories paginated', function (done) {
+            request(app).get('/stories?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
         it('/stories/:storyId - return 404 if story not found', function (done) {
         
             request(app).get('/stories/1')
