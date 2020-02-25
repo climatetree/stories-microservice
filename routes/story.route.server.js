@@ -72,12 +72,16 @@ module.exports = app => {
                 .then(story => res.json(story))
                 .catch((error) => res.status(500).send({error}));
     };
+
+    findTopStories = (req, res) => 
+        storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));
   
 
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle);
+    app.get('/stories/topStories/:numberOfStories', findTopStories)
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
