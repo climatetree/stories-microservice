@@ -4,11 +4,6 @@ node_js:
 script:
 - npm test
 - sonar-scanner
-services:
-- mongodb
-before_script:
-- sleep 15
-- mongo mydb_test --eval 'db.createUser({user:"user",pwd:"password",roles:["readWrite"]});'
 addons:
   sonarcloud:
     organization: climatetree
