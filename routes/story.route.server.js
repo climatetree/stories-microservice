@@ -2,6 +2,7 @@ const { ObjectID } = require('mongodb');
 
 
 storyDao = require('../dao/story.dao.server');
+commentDao = require('../dao/comment.dao.server');
 module.exports = app => {
 
     findAllStories = (req, res) => 
@@ -72,7 +73,78 @@ module.exports = app => {
                 .then(story => res.json(story))
                 .catch((error) => res.status(500).send({error}));
     };
-  
+
+    // there is no check for userId being valid here. The expectation is that only validated users would be able to
+    // navigate to comment page
+    addComment = (req,res) => {
+        const storyId = req.body.storyId;
+        const userId = req.body.userId;
+        const content = req.body.content;
+        const date = req.body.date;
+
+        storyDao.findStoryByStoryID(storyId).then(story => {
+            if(story){
+                commentDao.addComment(userId,content,date).then(comment => {
+                    story.comments.push(comment);
+                    storyDao.updateStory(story.story_id,story).then(updatedStory => {
+                        res.send(updatedStory)
+                    })
+                })
+            }
+            else{
+                res.status(403).send({
+                    success: false,
+                    message: "Story does not exist or has been deleted."
+                })
+            }
+        })
+    };
+
+    // Only allows users to delete their own comment
+    //Todo: Modify to allow moderators or admin to delete as well.
+    deleteComment = (req,res) => {
+        const storyId = req.body.storyId;
+        const userId = req.body.userId;
+        const commentId = req.body.commentId;
+
+        storyDao.findStoryByStoryID(storyId).then(story => {
+            if(story){
+                commentDao.findCommentById(commentId).then(comment => {
+                    if(comment){
+                        if(comment.user_id == userId){
+                            story.comments = story.comments.filter(update => update._id != commentId);
+                            commentDao.deleteComment(commentId);
+                            storyDao.updateStory(story.story_id,story).then(updatedStory => {
+                                res.send(updatedStory)
+                            });
+                        }
+                        else{
+                            res.status(403).send({
+                                success: false,
+                                message: "User can only delete their own comments."
+                            });
+                        }
+                    }
+                    else{
+                        res.status(403).send({
+                            success: false,
+                            message: "Comment does not exist or has been deleted."
+                        });
+                    }
+                })
+            }
+            else{
+                    res.status(403).send({
+                    success: false,
+                    message: "Story does not exist or has been deleted."
+                });
+            }
+        });
+    };
+
+    findAllComments = (req, res) =>
+        commentDao.findAllComments().then(comments => res.json(comments));
+
 
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
@@ -81,4 +153,9 @@ module.exports = app => {
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
+
+    //Comments
+    app.post('/stories/story/comment',addComment);
+    app.get('/stories/comment',findAllComments);
+    app.delete('/stories/story/comment',deleteComment);
 };
