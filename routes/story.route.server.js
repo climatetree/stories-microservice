@@ -42,10 +42,19 @@ module.exports = app => {
 
     });
 
-    findStoryByTitle = (req,res)=>
-        storyDao.findStoryByTitle(req.params.title).exec(function (err,stories) {
+    findStoryByTitle = (req,res)=> {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        storyDao.findStoryByTitle(req.params.title, limit, page).exec(function (err,stories) {
             res.json(stories)
         });
+    }
 
     findTopStories = (req, res) =>
         storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));

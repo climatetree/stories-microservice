@@ -9,7 +9,7 @@ findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
 findStoryByPlaceID = placeID => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}});
 
-findStoryByTitle = title => storyModel.find({story_title:{$regex: title,$options:'i'}});
+findStoryByTitle = (title, limit, page) => storyModel.find({story_title:{$regex: title,$options:'i'}}).skip((page-1)*limit).limit(limit);
 
 createStory = story => {
     story['story_id']=ObjectID().str;
