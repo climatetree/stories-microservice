@@ -33,14 +33,22 @@ module.exports = app => {
         });
     };
 
-    findStoryByPlaceID = (req,res)=>
-        storyDao.findStoryByPlaceID(req.params.placeID).exec(function (error,stories) {
+    findStoryByPlaceID = (req,res)=> {
+        page = 1
+        limit = 100
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        storyDao.findStoryByPlaceID(req.params.placeID, limit, page).exec(function (error,stories) {
             if(error) {
                 res.status(500).send({error});
             }
             res.json(stories);
-
-    });
+        });
+    }
 
     findStoryByTitle = (req,res)=>
         storyDao.findStoryByTitle(req.params.title).exec(function (err,stories) {

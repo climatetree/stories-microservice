@@ -222,8 +222,18 @@ it('can return a story by storyId - findStoryByStoryID API', async () => {
 it('can find stories by placeID - findStoryByPlaceID API', async () => {
     place_id = 1;
     stories = [story1, story2];
-    const resultStories = await storyDao.findStoryByPlaceID(place_id);
+    const resultStories = await storyDao.findStoryByPlaceID(place_id, 20, 1);
     expect(resultStories.toString()).toEqual(stories.toString());
+});
+
+it('can find stories by placeID with page and limit- findStoryByPlaceID API', async () => {
+    place_id = 1;
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
+
+    const resultStories = await storyDao.findStoryByPlaceID(place_id, 1, 1);
+    expect(resultStories.toString()).toEqual(story1.toString());
+    expect(resultStories.length == 1)
 });
 
 it('can find top n recent stories - findTopStories API', async () => {
