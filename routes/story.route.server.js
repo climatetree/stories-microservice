@@ -51,6 +51,10 @@ module.exports = app => {
         if (req.query.limit){
             limit = parseInt(req.query.limit)
         }
+        if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
+            console.log("Error")
+            res.status(500).send({"Error": "Invalid Query Params"})
+        }
         storyDao.findStoryByTitle(req.params.title, limit, page).exec(function (err,stories) {
             res.json(stories)
         });
