@@ -124,12 +124,11 @@ describe('End Points for Stories', () => {
     });
 
     const comment1 = {
-        "storyId": "5e4e197ee1bc5896994d2cb1",
-        "userId": "123",
-        "content": "This is test comment",
-        "date": "2011-05-26T07:56:00.123Z"
+        story_id: "5e4e197ee1bc5896994d2cb1",
+        user_id: 123,
+        content: "This is test comment",
+        date: "2011-05-26T07:56:00.123Z"
     }
-
 
     /**
      * Test suite for functionality of comments on Stories
@@ -137,21 +136,22 @@ describe('End Points for Stories', () => {
 
     it('can create a comment on stories in the database - addComment API', async () => {
         await storyDao.createStory(story1);
-        const resultComment = await commentDao.addComment(comment1);
+        const resultComment = await commentDao.addComment(comment1.user_id, comment1.content, comment1.date);
+        // console.log(resultComment.content.toString())
+        // console.log("End")
+        // console.log(comment1.content.toString())
         expect(resultComment.content.toString()).toEqual(comment1.content.toString());
-
-
     });
 
-    describe('POST/',  () => {
+    // describe('POST/',  () => {
 
-        it('/stories - return all stories', function (done) {
-            request(app).get('/stories')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
+    //     it('/stories - return all stories', function (done) {
+    //         request(app).get('/stories')
+    //             .set('Accept', 'application/json')
+    //             .expect('Content-Type', /json/)
+    //             .expect(200, done);
+    //     });
 
-    });
+    // });
 
 });
