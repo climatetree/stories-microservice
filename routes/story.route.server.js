@@ -102,7 +102,7 @@ module.exports = app => {
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
-    app.put('/stories/like/:storyID/:userID', likeStory);
-    app.put('/stories/unlike/:storyID/:userID', unlikeStory);
+    app.put('/stories/:storyID/like/:userID', likeStory);
+    app.put('/stories/:storyID/unlike/:userID', unlikeStory);
     
 };   
