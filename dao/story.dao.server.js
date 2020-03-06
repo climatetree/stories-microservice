@@ -27,6 +27,15 @@ likeStory = (story, userID) => {
     }
 }
 
+unlikeStory = (story, userID) => {
+    for(var i=0; i<story.liked_by_users.length; i++){
+        if(story.liked_by_users[i] === userID){
+            story.liked_by_users.splice(i, 1);
+            return story;
+        }
+    }
+}
+
 module.exports = {
     findAllStories,
     findStoryByStoryID,
@@ -36,4 +45,5 @@ module.exports = {
     deleteStory,
     updateStory,
     likeStory,
+    unlikeStory,
 };

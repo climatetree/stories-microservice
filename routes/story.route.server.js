@@ -84,6 +84,16 @@ module.exports = app => {
             });
     };
 
+    unlikeStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                const updatedStory = storyDao.unlikeStory(story, req.params.userID);
+                storyDao.updateStory(story.story_id, updatedStory).then(updatedStory2 => {
+                    res.send(updatedStory2);
+                });
+            });
+    };
+
 
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
@@ -93,5 +103,6 @@ module.exports = app => {
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
     app.put('/stories/like/:storyID/:userID', likeStory);
+    app.put('/stories/unlike/:storyID/:userID', unlikeStory);
     
 };   
