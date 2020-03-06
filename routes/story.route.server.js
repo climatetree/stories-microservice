@@ -89,8 +89,8 @@ module.exports = app => {
             .then(story => {
                 const updatedStory = storyDao.unlikeStory(story, req.params.userID);
                 if(updatedStory) {
-                    storyDao.updateStory(story.story_id, updatedStory).then(updatedStory2 => {
-                        res.send(updatedStory2);
+                    storyDao.updateStory(story.story_id, updatedStory).then(response => {
+                        res.send(response);
                     });
                 } else {
                     res.send(story);
