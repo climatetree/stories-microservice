@@ -18,6 +18,15 @@ deleteStory = (storyId) => storyModel.deleteOne({story_id: storyId});
 
 updateStory = (storyID, story) => storyModel.update({story_id: storyID}, {$set: story});
 
+likeStory = (story, userID) => {
+    if(!story.liked_by_users.includes(userID)){
+        story.liked_by_users.push(userID);
+        return story;
+    } else {
+        return story;
+    }
+}
+
 module.exports = {
     findAllStories,
     findStoryByStoryID,
@@ -26,4 +35,5 @@ module.exports = {
     createStory,
     deleteStory,
     updateStory,
+    likeStory,
 };
