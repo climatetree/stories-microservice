@@ -34,6 +34,7 @@ unlikeStory = (story, userID) => {
             return story;
         }
     }
+    return null;
 }
 
 module.exports = {

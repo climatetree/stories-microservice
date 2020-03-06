@@ -88,9 +88,13 @@ module.exports = app => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
                 const updatedStory = storyDao.unlikeStory(story, req.params.userID);
-                storyDao.updateStory(story.story_id, updatedStory).then(updatedStory2 => {
-                    res.send(updatedStory2);
-                });
+                if(updatedStory) {
+                    storyDao.updateStory(story.story_id, updatedStory).then(updatedStory2 => {
+                        res.send(updatedStory2);
+                    });
+                } else {
+                    res.send(story);
+                }
             });
     };
 
