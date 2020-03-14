@@ -1,7 +1,9 @@
 const storyModel = require('../models/story.model.server')
 var ObjectID = require("bson-objectid");
 
-findAllStories = () => storyModel.find();
+findAllStories = (limit, page) => storyModel.find().skip((page-1)*limit).limit(limit);
+
+findTopStories = (numberOfStories) => storyModel.find().sort({date: 'desc'}).limit(parseInt(numberOfStories));
 
 findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
@@ -23,6 +25,7 @@ module.exports = {
     findStoryByStoryID,
     findStoryByPlaceID,
     findStoryByTitle,
+    findTopStories,
     createStory,
     deleteStory,
     updateStory,
