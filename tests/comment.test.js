@@ -76,19 +76,16 @@ describe('End Points for Stories', () => {
         sector: 'Food',
         comments: [
             {
-                comment_id : 1,
                 user_id : 156,
                 content : 'very informative',
                 date : '11/08/2012 04:23 AM'
             },
             {
-                comment_id : 2,
                 user_id : 64,
                 content : 'good post',
                 date : '05/02/2018 06:15 PM'
             },
             {
-                comment_id : 3,
                 user_id : 260,
                 content : 'good post',
                 date : '07/20/2012 07:24 PM'
@@ -115,7 +112,6 @@ describe('End Points for Stories', () => {
         sector: 'Food',
         comments: [
             {
-                comment_id : 4,
                 user_id : 156,
                 content : 'delete',
                 date : '11/08/2012 04:23 AM'
@@ -124,34 +120,50 @@ describe('End Points for Stories', () => {
     });
 
     const comment1 = {
-        story_id: "5e4e197ee1bc5896994d2cb1",
-        user_id: 123,
-        content: "This is test comment",
-        date: "2011-05-26T07:56:00.123Z"
-    }
+        user_id : 156,
+        content : 'update',
+        date : '11/08/2012 04:23 AM'
+    };
+
+    const comment2 = {
+        user_id : 123,
+        content : 'this is test comment',
+        date : '11/08/2012 04:23 AM'
+    };
+
+
 
     /**
      * Test suite for functionality of comments on Stories
      */
 
-    it('can create a comment on stories in the database - addComment API', async () => {
+    it('can return all the comments in the database', async () => {
+        const comments = [comment1, comment2];
+        await commentDao.addComment(comment1);
+        await commentDao.addComment(comment2);
+
+        const resultComments = await commentDao.findAllComments();
+        expect(resultComments.toString()).toEqual(comments.toString());
+    });
+
+    it('can create a comment', async () => {
         await storyDao.createStory(story1);
         const resultComment = await commentDao.addComment(comment1.user_id, comment1.content, comment1.date);
-        // console.log(resultComment.content.toString())
-        // console.log("End")
-        // console.log(comment1.content.toString())
         expect(resultComment.content.toString()).toEqual(comment1.content.toString());
     });
 
-    // describe('POST/',  () => {
+   it('can delete a comment',async () => {
+       await storyDao.createStory(story2);
+       const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
+       await commentDao.deleteComment(createdComment._id);
+       const comments = await commentDao.findAllComments();
+       expect(comments.contains(createdComment)).toBe(false);
+   });
 
-    //     it('/stories - return all stories', function (done) {
-    //         request(app).get('/stories')
-    //             .set('Accept', 'application/json')
-    //             .expect('Content-Type', /json/)
-    //             .expect(200, done);
-    //     });
-
-    // });
+    it('it can find comment by Id',async () => {
+        const createdComment = await commentDao.addComment(comment1.user_id, comment1.content, comment1.date);
+        const comment = await commentDao.findCommentById(createdComment._id);
+        expect(comment).toEqual(createdComment);
+    });
 
 });
