@@ -131,19 +131,17 @@ describe('End Points for Stories', () => {
         date : '11/08/2012 04:23 AM'
     };
 
-
-
     /**
      * Test suite for functionality of comments on Stories
      */
 
     it('can return all the comments in the database', async () => {
         const comments = [comment1, comment2];
-        await commentDao.addComment(comment1);
-        await commentDao.addComment(comment2);
+        await commentDao.addComment(comment1.user_id, comment1.content, comment1.date);
+        await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
 
         const resultComments = await commentDao.findAllComments();
-        expect(resultComments.toString()).toEqual(comments.toString());
+        expect(resultComments.length).toEqual(comments.length);
     });
 
     it('can create a comment', async () => {
@@ -155,15 +153,54 @@ describe('End Points for Stories', () => {
    it('can delete a comment',async () => {
        await storyDao.createStory(story2);
        const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
-       await commentDao.deleteComment(createdComment._id);
+       await commentDao.deleteComment(createdComment.comment_id);
        const comments = await commentDao.findAllComments();
-       expect(comments.contains(createdComment)).toBe(false);
+       expect(comments.includes(createdComment)).toBe(false);
    });
 
     it('it can find comment by Id',async () => {
         const createdComment = await commentDao.addComment(comment1.user_id, comment1.content, comment1.date);
-        const comment = await commentDao.findCommentById(createdComment._id);
-        expect(comment).toEqual(createdComment);
+        const comment = await commentDao.findCommentById(createdComment.comment_id);
+        expect(comment.comment_id.toString()).toEqual(createdComment.comment_id.toString());
     });
 
+    describe('POST/', () => {
+        it('/stories/story/comment - cannot a comment when story not found', function (done) {
+
+            request(app).post('/stories/story/comment').send({
+                "storyId": "5e4e197ee1bc5896994d2cb1",
+                "userId": 123,
+                "content": "This is test comment",
+                "date": "2011-05-26T07:56:00.123Z"
+            })
+                .set('Accept', 'application/json')
+                .expect(403, done);
+        });
+    });
+
+    describe('GET/',  () => {
+
+        it('/stories/comment - return all comments', function (done) {
+            request(app).get('/stories/comment')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+    });
+
+    describe('DELETE/',  () => {
+
+        it('/stories/story/comment - cannot delete a comment if the userId does not match', function (done) {
+            request(app).delete('/stories/story/comment').send({
+                "storyId": "5e52f1b01b45c660789837de",
+                "userId": 456,
+                "commentId": "5e6db1e7d105af099c922fca"
+            })
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(403, done);
+        });
+
+    });
 });

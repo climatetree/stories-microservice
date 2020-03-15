@@ -120,7 +120,7 @@ module.exports = app => {
                 commentDao.findCommentById(commentId).then(comment => {
                     if(comment){
                         if(comment.user_id == userId){
-                            story.comments = story.comments.filter(update => update._id != commentId);
+                            story.comments = story.comments.filter(update => update.comment_id != commentId);
                             commentDao.deleteComment(commentId);
                             storyDao.updateStory(story.story_id,story).then(updatedStory => {
                                 res.send(updatedStory)
