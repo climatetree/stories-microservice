@@ -25,9 +25,9 @@ describe('End Points for Stories', () => {
     /**
      * after all the tests clear the database and close the database connection
      */
-    afterAll(async(done) => {
-        dbHandler.clearDatabase();
-        dbHandler.closeDatabase();
+    afterAll(async (done) => {
+        await dbHandler.clearDatabase();
+        await dbHandler.closeDatabase();
         return  server && server.close(done);
     });
 
@@ -150,6 +150,20 @@ describe('End Points for Stories', () => {
                 .set('Accept', 'application/json')
                 .expect(403, done);
         });
+
+        it('/stories/story/comment - can add a comment when story is found', async (done) => {
+            const story = await storyDao.findAllStories(1,1).then((story) => {
+                return story[0];
+            });
+            request(app).post('/stories/story/comment').send({
+                "storyId": story.story_id,
+                "userId": 123,
+                "content": "This is test comment",
+                "date": "2011-05-26T07:56:00.123Z"
+            })
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
     });
 
     describe('GET/',  () => {
@@ -174,6 +188,20 @@ describe('End Points for Stories', () => {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(403, done);
+        });
+
+        it('/stories/story/comment - can delete a comment if the comment exists', async (done)  => {
+            const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
+            const story = await storyDao.findAllStories(1,1).then((story) => {
+                story[0].comments.push(createdComment);
+                return story[0];
+            });
+            request(app).delete('/stories/story/comment').send({
+                "storyId": story.story_id,
+                "userId": comment2.user_id,
+                "commentId": story.comments[0].comment_id
+            })
+                .expect(200, done);
         });
 
     });
