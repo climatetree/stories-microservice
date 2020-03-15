@@ -93,32 +93,6 @@ describe('End Points for Stories', () => {
         ]
     });
 
-    const story3 = new storyModel({
-        story_id: '5e4e197ee1bc5896994d2cb1',
-        user_id: 103,
-        hyperlink: 'https://abc.isro.gov/climate/',
-        rating: 1,
-        story_title: 'ISRO ABC Climate change report',
-        place_ids: [
-            4,
-            8,
-            5
-        ],
-        media_type: 'text',
-        date: '03/14/2009 11:48 PM',
-        solution: [
-            'Glass'
-        ],
-        sector: 'Food',
-        comments: [
-            {
-                user_id : 156,
-                content : 'delete',
-                date : '11/08/2012 04:23 AM'
-            }
-        ]
-    });
-
     const comment1 = {
         user_id : 156,
         content : 'update',
