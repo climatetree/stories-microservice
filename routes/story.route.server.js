@@ -85,6 +85,7 @@ module.exports = app => {
     // there is no check for userId being valid here. The expectation is that only validated users would be able to
     // navigate to comment page
     addComment = (req,res) => {
+
         const storyId = req.body.storyId;
         const userId = req.body.userId;
         const content = req.body.content;
@@ -97,7 +98,7 @@ module.exports = app => {
                     storyDao.updateStory(story.story_id,story).then(updatedStory => {
                         res.send(updatedStory)
                     })
-                })
+                });
             }
             else{
                 res.status(403).send({
@@ -119,8 +120,8 @@ module.exports = app => {
             if(story){
                 commentDao.findCommentById(commentId).then(comment => {
                     if(comment){
-                        if(comment.user_id == userId){
-                            story.comments = story.comments.filter(update => update.comment_id != commentId);
+                        if(comment.user_id === userId){
+                            story.comments = story.comments.filter(update => update.comment_id !== commentId);
                             commentDao.deleteComment(commentId);
                             storyDao.updateStory(story.story_id,story).then(updatedStory => {
                                 res.send(updatedStory)
