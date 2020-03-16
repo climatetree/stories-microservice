@@ -152,15 +152,17 @@ describe('End Points for Stories', () => {
         });
 
         it('/stories/story/comment - can add a comment when story is found', async (done) => {
-
+            const story = await storyDao.findAllStories(1,1).then((story) => {
+                return story[0];
+            });
             request(app).post('/stories/story/comment').send({
-                "storyId": "5e4e197ee1bc5896994d2cb1",
+                "storyId": story.story_id,
                 "userId": 123,
                 "content": "This is test comment",
                 "date": "2011-05-26T07:56:00.123Z"
             })
                 .set('Accept', 'application/json')
-                .expect(403, done);
+                .expect(200, done);
         });
     });
 
