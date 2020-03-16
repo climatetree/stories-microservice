@@ -89,7 +89,7 @@ module.exports = app => {
                 if(!story) {
                     return res.status(404).send();
                 }
-                const updatedStory = storyDao.likeStory(story, req.params.userID);
+                const updatedStory = storyDao.likeStory(story, parseInt(req.params.userID,10));
                 storyDao.updateStory(story.story_id, updatedStory).then(response => {
                     res.send(response);
                 });
@@ -99,7 +99,7 @@ module.exports = app => {
     let unlikeStory = (req, res) => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
-                const updatedStory = storyDao.unlikeStory(story, req.params.userID);
+                const updatedStory = storyDao.unlikeStory(story, parseInt(req.params.userID,10));
                 if(updatedStory) {
                     storyDao.updateStory(story.story_id, updatedStory).then(response => {
                         res.send(response);
