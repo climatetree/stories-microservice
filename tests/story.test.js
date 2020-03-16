@@ -309,7 +309,7 @@ it('can find top n recent stories - findTopStories API', async () => {
 
         it('/stories/:storyID/unlike/:userID - unlike a story', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story1);
+            const createdStory = await storyDao.createStory(story2);
             const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
             const story_id = resultLikedStory.story_id;
             
