@@ -82,7 +82,7 @@ module.exports = app => {
                 .catch((error) => res.status(500).send({error}));
     };
 
-    likeStory = (req, res) => {
+    let likeStory = (req, res) => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
                 const updatedStory = storyDao.likeStory(story, req.params.userID);
@@ -92,7 +92,7 @@ module.exports = app => {
             });
     };
 
-    unlikeStory = (req, res) => {
+    let unlikeStory = (req, res) => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
                 const updatedStory = storyDao.unlikeStory(story, req.params.userID);
