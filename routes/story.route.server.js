@@ -2,7 +2,7 @@ const { ObjectID } = require('mongodb');
 
 
 storyDao = require('../dao/story.dao.server');
-commentDao = require('../dao/comment.dao.server');
+const commentDao = require('../dao/comment.dao.server');
 module.exports = app => {
 
     findAllStories = (req, res) => {
@@ -84,7 +84,7 @@ module.exports = app => {
 
     // there is no check for userId being valid here. The expectation is that only validated users would be able to
     // navigate to comment page
-    addComment = (req,res) => {
+    let addComment = (req,res) => {
 
         const storyId = req.body.storyId;
         const userId = req.body.userId;
@@ -111,7 +111,7 @@ module.exports = app => {
 
     // Only allows users to delete their own comment
     //Todo: Modify to allow moderators or admin to delete as well.
-    deleteComment = (req,res) => {
+    let deleteComment = (req,res) => {
         const storyId = req.body.storyId;
         const userId = req.body.userId;
         const commentId = req.body.commentId;
@@ -151,7 +151,7 @@ module.exports = app => {
         });
     };
 
-    findAllComments = (req, res) =>
+    let findAllComments = (req, res) =>
         commentDao.findAllComments().then(comments => res.json(comments));
 
 
