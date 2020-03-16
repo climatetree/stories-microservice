@@ -2,7 +2,7 @@ const { ObjectID } = require('mongodb');
 
 
 storyDao = require('../dao/story.dao.server');
-const commentDao = require('../dao/comment.dao.server');
+let commentDao = require('../dao/comment.dao.server');
 module.exports = app => {
 
     findAllStories = (req, res) => {
