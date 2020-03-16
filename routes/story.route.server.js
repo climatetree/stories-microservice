@@ -85,6 +85,9 @@ module.exports = app => {
     let likeStory = (req, res) => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
+                if(!story) {
+                    return res.status(404).send();
+                }
                 const updatedStory = storyDao.likeStory(story, req.params.userID);
                 storyDao.updateStory(story.story_id, updatedStory).then(response => {
                     res.send(response);

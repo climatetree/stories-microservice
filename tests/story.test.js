@@ -307,11 +307,30 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(200, done);
         });
 
+        it('/stories/:storyID/like/:userID - like a story when story not found', async (done) => {
+            const user_id = 1;
+            const story_id = 90
+
+            request(app).put('/stories/'+story_id+'/like/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(404, done);
+        });
+
         it('/stories/:storyID/unlike/:userID - unlike a story', async (done) => {
             const user_id = 1;
             const createdStory = await storyDao.createStory(story2);
             const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
             const story_id = resultLikedStory.story_id;
+            
+            request(app).put('/stories/'+story_id+'/unlike/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('/stories/:storyID/unlike/:userID - unlike a story when userID is not available', async (done) => {
+            const user_id = 1;
+            const createdStory = await storyDao.createStory(story2);
+            const story_id = createdStory.story_id;
             
             request(app).put('/stories/'+story_id+'/unlike/'+user_id)
                 .set('Accept', 'application/json')
