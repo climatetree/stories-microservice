@@ -193,11 +193,9 @@ module.exports = app => {
     app.put('/stories/update/:storyId', updateStory);
     app.put('/stories/:storyID/like/:userID', likeStory);
     app.put('/stories/:storyID/unlike/:userID', unlikeStory);
-    
-};   
-
     //Comments
     app.post('/stories/story/comment',addComment);
     app.get('/stories/comment',findAllComments);
     app.delete('/stories/story/comment',deleteComment);
-};
+    
+};   
