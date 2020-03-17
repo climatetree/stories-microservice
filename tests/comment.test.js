@@ -193,8 +193,10 @@ describe('End Points for Stories', () => {
         it('/stories/story/comment - can delete a comment if the comment exists', async (done)  => {
             const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
             const story = await storyDao.findAllStories(1,1).then((story) => {
-                story[0].comments.push(createdComment);
-                return story[0];
+                if(story){
+                    story[0].comments.push(createdComment);
+                    return story[0];
+                }
             });
             request(app).delete('/stories/story/comment').send({
                 "storyId": story.story_id,

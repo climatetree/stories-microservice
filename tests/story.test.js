@@ -68,7 +68,8 @@ describe('End Points for Stories', () => {
                 content : "very informative",
                 date : "03/05/2013 03:01 AM"
             }
-        ]
+        ],
+        liked_by_users: []
     });
 const story2 = new storyModel({
     story_id: '5e4e197ee1bc5896994d2cb1',
@@ -108,7 +109,8 @@ const story2 = new storyModel({
 			content : 'good post',
 			date : '07/20/2012 07:24 PM'
 		}
-    ]
+    ],
+    liked_by_users: []
 });
 
 const story3 = new storyModel({
@@ -135,7 +137,8 @@ const story3 = new storyModel({
 			content : 'delete',
 			date : '11/08/2012 04:23 AM'
 		}
-    ]
+    ],
+    liked_by_users: []
 });
 
 const story4 = new storyModel({
@@ -162,7 +165,8 @@ const story4 = new storyModel({
 			content : 'update',
 			date : '11/08/2012 04:23 AM'
 		}
-    ]
+    ],
+    liked_by_users: []
 });
 
 
@@ -226,6 +230,21 @@ it('can find stories by placeID - findStoryByPlaceID API', async () => {
     expect(resultStories.toString()).toEqual(stories.toString());
 });
 
+it('user can like a story - likeStory API', async () => {
+    user_id = 1;
+    const createdStory = await storyDao.createStory(story1);
+    const resultStory = await storyDao.likeStory(createdStory, user_id);
+    expect(resultStory.liked_by_users.includes(user_id)).toBeTruthy();
+});
+
+it('user can unlike a story - unlikeStory API', async () => {
+    user_id = 1;
+    const createdStory = await storyDao.createStory(story1);
+    const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
+    const resultUnlikedStory = await storyDao.unlikeStory(resultLikedStory, user_id);
+    expect(resultUnlikedStory.liked_by_users.includes(user_id)).toBeFalsy();
+});
+
 it('can find top n recent stories - findTopStories API', async () => {
     await storyDao.createStory(story2);
     await storyDao.createStory(story1);
@@ -276,6 +295,46 @@ it('can find top n recent stories - findTopStories API', async () => {
             request(app).delete('/stories/update/1')
                 .set('Accept', 'application/json')
                 .expect(404, done);
+        });
+
+        it('/stories/:storyID/like/:userID - like a story', async (done) => {
+            const user_id = 1;
+            const createdStory = await storyDao.createStory(story1);
+            const story_id = createdStory.story_id;
+
+            request(app).put('/stories/'+story_id+'/like/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('/stories/:storyID/like/:userID - like a story when story not found', async (done) => {
+            const user_id = 1;
+            const story_id = 90
+
+            request(app).put('/stories/'+story_id+'/like/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(404, done);
+        });
+
+        it('/stories/:storyID/unlike/:userID - unlike a story', async (done) => {
+            const user_id = 1;
+            const createdStory = await storyDao.createStory(story2);
+            const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
+            const story_id = resultLikedStory.story_id;
+            
+            request(app).put('/stories/'+story_id+'/unlike/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('/stories/:storyID/unlike/:userID - unlike a story when userID is not available', async (done) => {
+            const user_id = 1;
+            const createdStory = await storyDao.createStory(story2);
+            const story_id = createdStory.story_id;
+            
+            request(app).put('/stories/'+story_id+'/unlike/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
         });
     });
 });

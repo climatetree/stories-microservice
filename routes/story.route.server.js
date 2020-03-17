@@ -1,8 +1,9 @@
 const { ObjectID } = require('mongodb');
 
 
-storyDao = require('../dao/story.dao.server');
+let storyDao = require('../dao/story.dao.server');
 let commentDao = require('../dao/comment.dao.server');
+
 module.exports = app => {
 
     findAllStories = (req, res) => {
@@ -80,6 +81,33 @@ module.exports = app => {
         storyDao.updateStory(storyId, req.body)
                 .then(story => res.json(story))
                 .catch((error) => res.status(500).send({error}));
+    };
+
+    let likeStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                if(!story) {
+                    return res.status(404).send();
+                }
+                const updatedStory = storyDao.likeStory(story, parseInt(req.params.userID,10));
+                storyDao.updateStory(story.story_id, updatedStory).then(response => {
+                    res.send(response);
+                });
+            });
+    };
+
+    let unlikeStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                const updatedStory = storyDao.unlikeStory(story, parseInt(req.params.userID,10));
+                if(updatedStory) {
+                    storyDao.updateStory(story.story_id, updatedStory).then(response => {
+                        res.send(response);
+                    });
+                } else {
+                    res.send(story);
+                }
+            });
     };
 
     // there is no check for userId being valid here. The expectation is that only validated users would be able to
@@ -163,9 +191,11 @@ module.exports = app => {
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
-
+    app.put('/stories/:storyID/like/:userID', likeStory);
+    app.put('/stories/:storyID/unlike/:userID', unlikeStory);
     //Comments
     app.post('/stories/story/comment',addComment);
     app.get('/stories/comment',findAllComments);
     app.delete('/stories/story/comment',deleteComment);
-};
+    
+};   
