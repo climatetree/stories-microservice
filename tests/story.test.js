@@ -288,6 +288,20 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(404, done);
         });
 
+        it('/stories/title - return story titles paginated', function (done) {
+            request(app).get('/stories/title/ISRO?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/title - return story titles paginated error', function (done) {
+            request(app).get('/stories/title/ISRO?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
     });
 
     describe('DELETE/', () => {
