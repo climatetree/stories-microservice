@@ -230,6 +230,16 @@ it('can find stories by placeID - findStoryByPlaceID API', async () => {
     expect(resultStories.toString()).toEqual(stories.toString());
 });
 
+
+it('can find stories by title - findStoryByTitle API', async () => {
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
+    title = "ISRO"
+    const resultStories = await storyDao.findStoryByTitle(title, 1, 1);
+    expect(resultStories.length == 1);
+    expect(resultStories.toString()).toEqual(story2.toString())
+});
+
 it('user can like a story - likeStory API', async () => {
     user_id = 1;
     const createdStory = await storyDao.createStory(story1);
@@ -276,6 +286,20 @@ it('can find top n recent stories - findTopStories API', async () => {
             request(app).get('/stories/1')
                 .set('Accept', 'application/json')
                 .expect(404, done);
+        });
+
+        it('/stories/title - return story titles paginated', function (done) {
+            request(app).get('/stories/title/ISRO?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/title - return story titles paginated error', function (done) {
+            request(app).get('/stories/title/ISRO?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
         });
 
     });
