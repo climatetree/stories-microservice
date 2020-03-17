@@ -35,14 +35,27 @@ module.exports = app => {
         });
     };
 
-    findStoryByPlaceID = (req,res)=>
-        storyDao.findStoryByPlaceID(req.params.placeID).exec(function (error,stories) {
+    findStoryByPlaceID = (req,res)=> {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(500).send({"Error": "Invalid Query Params"})
+        }
+        
+        storyDao.findStoryByPlaceID(req.params.placeID, limit, page).exec(function (error,stories) {
             if(error) {
                 res.status(500).send({error});
             }
             res.json(stories);
-
-    });
+        });
+    }
 
     findStoryByTitle = (req,res)=> {
         page = 1

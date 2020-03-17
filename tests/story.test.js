@@ -226,10 +226,20 @@ it('can return a story by storyId - findStoryByStoryID API', async () => {
 it('can find stories by placeID - findStoryByPlaceID API', async () => {
     place_id = 1;
     stories = [story1, story2];
-    const resultStories = await storyDao.findStoryByPlaceID(place_id);
+    const resultStories = await storyDao.findStoryByPlaceID(place_id, 20, 1);
     expect(resultStories.toString()).toEqual(stories.toString());
 });
 
+
+it('can find stories by placeID with page and limit- findStoryByPlaceID API', async () => {
+    place_id = 1;
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
+
+    const resultStories = await storyDao.findStoryByPlaceID(place_id, 1, 1);
+    expect(resultStories.toString()).toEqual(story1.toString());
+    expect(resultStories.length == 1)
+ });
 
 it('can find stories by title - findStoryByTitle API', async () => {
     await storyDao.createStory(story1);
@@ -253,6 +263,7 @@ it('user can unlike a story - unlikeStory API', async () => {
     const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
     const resultUnlikedStory = await storyDao.unlikeStory(resultLikedStory, user_id);
     expect(resultUnlikedStory.liked_by_users.includes(user_id)).toBeFalsy();
+
 });
 
 it('can find top n recent stories - findTopStories API', async () => {
@@ -297,6 +308,20 @@ it('can find top n recent stories - findTopStories API', async () => {
 
         it('/stories/title - return story titles paginated error', function (done) {
             request(app).get('/stories/title/ISRO?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return story by place paginated', function (done) {
+            request(app).get('/stories/place/0?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/place - return story by place paginated error', function (done) {
+            request(app).get('/stories/place/0?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(500, done);
