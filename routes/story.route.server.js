@@ -57,10 +57,23 @@ module.exports = app => {
         });
     }
 
-    findStoryByTitle = (req,res)=>
-        storyDao.findStoryByTitle(req.params.title).exec(function (err,stories) {
+    findStoryByTitle = (req,res)=> {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(500).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.findStoryByTitle(req.params.title, limit, page).exec(function (err,stories) {
             res.json(stories)
         });
+    }
 
     findTopStories = (req, res) =>
         storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));
