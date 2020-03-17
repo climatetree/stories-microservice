@@ -238,6 +238,7 @@ it('can find stories by title - findStoryByTitle API', async () => {
     const resultStories = await storyDao.findStoryByTitle(title, 1, 1);
     expect(resultStories.length == 1);
     expect(resultStories.toString()).toEqual(story2.toString())
+});
 
 it('user can like a story - likeStory API', async () => {
     user_id = 1;
