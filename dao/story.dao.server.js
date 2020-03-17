@@ -20,6 +20,25 @@ deleteStory = (storyId) => storyModel.deleteOne({story_id: storyId});
 
 updateStory = (storyID, story) => storyModel.update({story_id: storyID}, {$set: story});
 
+let likeStory = (story, userID) => {
+    if(!story.liked_by_users.includes(userID)){
+        story.liked_by_users.push(userID);
+        return story;
+    } else {
+        return story;
+    }
+}
+
+let unlikeStory = (story, userID) => {
+    for(var i=0; i<story.liked_by_users.length; i++){
+        if(story.liked_by_users[i] === userID){
+            story.liked_by_users.splice(i, 1);
+            return story;
+        }
+    }
+    return null;
+}
+
 module.exports = {
     findAllStories,
     findStoryByStoryID,
@@ -29,4 +48,6 @@ module.exports = {
     createStory,
     deleteStory,
     updateStory,
+    likeStory,
+    unlikeStory,
 };
