@@ -313,6 +313,20 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(500, done);
         });
 
+        it('/stories/place - return story by place paginated', function (done) {
+            request(app).get('/stories/place/0?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/place - return story by place paginated error', function (done) {
+            request(app).get('/stories/place/0?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
     });
 
     describe('DELETE/', () => {
