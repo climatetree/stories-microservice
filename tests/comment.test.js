@@ -139,7 +139,7 @@ describe('End Points for Stories', () => {
     });
 
     describe('POST/', () => {
-        it('/stories/story/comment - cannot a comment when story not found', function (done) {
+        it('/stories/story/comment - cannot a comment when story not found', (done) => {
 
             request(app).post('/stories/story/comment').send({
                 "storyId": "5e4e197ee1bc5896994d2cb1",
@@ -152,9 +152,7 @@ describe('End Points for Stories', () => {
         });
 
         it('/stories/story/comment - can add a comment when story is found', async (done) => {
-            const story = await storyDao.findAllStories(1,1).then((story) => {
-                return story[0];
-            });
+            const story = await storyDao.findAllStories(1,1).then((story) => story[0]);
             request(app).post('/stories/story/comment').send({
                 "storyId": story.story_id,
                 "userId": 123,
@@ -168,7 +166,7 @@ describe('End Points for Stories', () => {
 
     describe('GET/',  () => {
 
-        it('/stories/comment - return all comments', function (done) {
+        it('/stories/comment - return all comments', (done) => {
             request(app).get('/stories/comment')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -179,7 +177,7 @@ describe('End Points for Stories', () => {
 
     describe('DELETE/',  () => {
 
-        it('/stories/story/comment - cannot delete a comment if the userId does not match', function (done) {
+        it('/stories/story/comment - cannot delete a comment if the userId does not match', (done) => {
             request(app).delete('/stories/story/comment').send({
                 "storyId": "5e52f1b01b45c660789837de",
                 "userId": 456,

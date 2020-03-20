@@ -278,49 +278,49 @@ it('can find top n recent stories - findTopStories API', async () => {
 
     describe('GET/',  () => {
 
-        it('/stories - return all stories', function (done) {
+        it('/stories - return all stories', (done) => {
             request(app).get('/stories')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories - return all stories paginated', function (done) {
+        it('/stories - return all stories paginated', (done) => {
             request(app).get('/stories?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/:storyId - return 404 if story not found', function (done) {
+        it('/stories/:storyId - return 404 if story not found', (done) => {
         
             request(app).get('/stories/1')
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
 
-        it('/stories/title - return story titles paginated', function (done) {
+        it('/stories/title - return story titles paginated', (done) => {
             request(app).get('/stories/title/ISRO?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/title - return story titles paginated error', function (done) {
+        it('/stories/title - return story titles paginated error', (done) => {
             request(app).get('/stories/title/ISRO?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
-        it('/stories/place - return story by place paginated', function (done) {
+        it('/stories/place - return story by place paginated', (done) => {
             request(app).get('/stories/place/0?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/place - return story by place paginated error', function (done) {
+        it('/stories/place - return story by place paginated error', (done) => {
             request(app).get('/stories/place/0?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -330,7 +330,7 @@ it('can find top n recent stories - findTopStories API', async () => {
     });
 
     describe('DELETE/', () => {
-        it('/stories/delete/:storyId - return 404 if story not found', function (done) {
+        it('/stories/delete/:storyId - return 404 if story not found', (done) => {
         
             request(app).delete('/stories/delete/1')
                 .set('Accept', 'application/json')
@@ -339,7 +339,7 @@ it('can find top n recent stories - findTopStories API', async () => {
     });
 
     describe('PUT/', () => {
-        it('/stories/update/:storyId - return 404 if story not found', function (done) {
+        it('/stories/update/:storyId - return 404 if story not found', (done) => {
         
             request(app).delete('/stories/update/1')
                 .set('Accept', 'application/json')

@@ -1,8 +1,8 @@
 const { ObjectID } = require('mongodb');
 
 
-let storyDao = require('../dao/story.dao.server');
-let commentDao = require('../dao/comment.dao.server');
+const storyDao = require('../dao/story.dao.server');
+const commentDao = require('../dao/comment.dao.server');
 
 module.exports = app => {
 
@@ -49,7 +49,7 @@ module.exports = app => {
             return res.status(500).send({"Error": "Invalid Query Params"})
         }
         
-        storyDao.findStoryByPlaceID(req.params.placeID, limit, page).exec(function (error,stories) {
+        storyDao.findStoryByPlaceID(req.params.placeID, limit, page).exec((error,stories) => {
             if(error) {
                 res.status(500).send({error});
             }
@@ -70,7 +70,7 @@ module.exports = app => {
             console.log("Error")
             return res.status(500).send({"Error": "Invalid Query Params"})
         }
-        storyDao.findStoryByTitle(req.params.title, limit, page).exec(function (err,stories) {
+        storyDao.findStoryByTitle(req.params.title, limit, page).exec((err,stories) => {
             res.json(stories)
         });
     }
@@ -109,7 +109,7 @@ module.exports = app => {
                 .catch((error) => res.status(500).send({error}));
     };
 
-    let likeStory = (req, res) => {
+    const likeStory = (req, res) => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
                 if(!story) {
@@ -122,7 +122,7 @@ module.exports = app => {
             });
     };
 
-    let unlikeStory = (req, res) => {
+    const unlikeStory = (req, res) => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
                 const updatedStory = storyDao.unlikeStory(story, parseInt(req.params.userID,10));
@@ -138,7 +138,7 @@ module.exports = app => {
 
     // there is no check for userId being valid here. The expectation is that only validated users would be able to
     // navigate to comment page
-    let addComment = (req,res) => {
+    const addComment = (req,res) => {
 
         const storyId = req.body.storyId;
         const userId = req.body.userId;
@@ -165,7 +165,7 @@ module.exports = app => {
 
     // Only allows users to delete their own comment
     //Todo: Modify to allow moderators or admin to delete as well.
-    let deleteComment = (req,res) => {
+    const deleteComment = (req,res) => {
         const storyId = req.body.storyId;
         const userId = req.body.userId;
         const commentId = req.body.commentId;
@@ -205,7 +205,7 @@ module.exports = app => {
         });
     };
 
-    let findAllComments = (req, res) =>
+    const findAllComments = (req, res) =>
         commentDao.findAllComments().then(comments => res.json(comments));
 
 
