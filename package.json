@@ -7,6 +7,11 @@
     "test": "jest --forceExit",
     "start": "node ./bin/www"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "eslint ."
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/climatetree/backend-mongo.git"
