@@ -1,5 +1,5 @@
 const storyModel = require('../models/story.model.server')
-var ObjectID = require("bson-objectid");
+const ObjectID = require("bson-objectid");
 
 findAllStories = (limit, page) => storyModel.find().skip((page-1)*limit).limit(limit);
 
@@ -12,7 +12,7 @@ findStoryByPlaceID = (placeID, limit, page) => storyModel.find({place_ids:{$elem
 findStoryByTitle = (title, limit, page) => storyModel.find({story_title:{$regex: title,$options:'i'}}).skip((page-1)*limit).limit(limit);
 
 createStory = story => {
-    story['story_id']=ObjectID().str;
+    story.story_id=ObjectID().str;
     return storyModel.create(story);
 };
 
@@ -20,17 +20,17 @@ deleteStory = (storyId) => storyModel.deleteOne({story_id: storyId});
 
 updateStory = (storyID, story) => storyModel.update({story_id: storyID}, {$set: story});
 
-let likeStory = (story, userID) => {
+const likeStory = (story, userID) => {
     if(!story.liked_by_users.includes(userID)){
         story.liked_by_users.push(userID);
         return story;
-    } else {
+    } 
         return story;
-    }
+    
 }
 
-let unlikeStory = (story, userID) => {
-    for(var i=0; i<story.liked_by_users.length; i++){
+const unlikeStory = (story, userID) => {
+    for(let i=0; i<story.liked_by_users.length; i++){
         if(story.liked_by_users[i] === userID){
             story.liked_by_users.splice(i, 1);
             return story;

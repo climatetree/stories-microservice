@@ -2,9 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');// initialize our express app
 const app = express();
 
-app.use(function(req, res, next) {
-  var allowedOrigins = ['http://localhost:3000', ' https://climatetree.azurewebsites.net'];
-  var origin = req.headers.origin;
+app.use((req, res, next) => {
+  const allowedOrigins = ['http://localhost:3000', ' https://climatetree.azurewebsites.net'];
+  const origin = req.headers.origin;
   if(allowedOrigins.indexOf(origin) > -1){
       res.setHeader('Access-Control-Allow-Origin', origin);
   }
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 // });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
