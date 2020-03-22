@@ -37,7 +37,7 @@ describe('End Points for Stories', () => {
      * Mock data
      */
     const story1 = new storyModel({
-        story_id: '5e4e197ee1bc5896994d2cb1',
+        story_id: '5e4e197ee1bc5896994w3cb1',
         user_id: 101,
         hyperlink: 'https://epa.gov/evidence/',
         rating: 1,
@@ -72,7 +72,7 @@ describe('End Points for Stories', () => {
         liked_by_users: []
     });
 const story2 = new storyModel({
-    story_id: '5e4e197ee1bc5896994d2cb1',
+    story_id: '5e4e197ee8nc5896994d2cb1',
     user_id: 102,
     hyperlink: 'https://climate.isro.gov/climate/',
     rating: 1,
@@ -114,7 +114,7 @@ const story2 = new storyModel({
 });
 
 const story3 = new storyModel({
-    story_id: '5e4e197ee1bc5896994d2cb1',
+    story_id: '5e4e197ee1bk5896994d2cb1',
     user_id: 103,
     hyperlink: 'https://abc.isro.gov/climate/',
     rating: 1,
@@ -167,6 +167,34 @@ const story4 = new storyModel({
 		}
     ],
     liked_by_users: []
+});
+
+const story5 = new storyModel({
+    story_id: '5e4e197ee1bc5896994q2cb1',
+    user_id: 104,
+    hyperlink: 'https://abc.abc.gov/climate/',
+    rating: 1,
+    story_title: 'ISRO ABC',
+    place_ids: [
+        9,
+		5,
+		5
+    ],
+    media_type: 'text',
+    date: '03/14/2009 11:48 PM',
+    solution: [
+        'Glass'
+    ],
+    sector: 'Food',
+    comments: [
+        {
+			comment_id : 1,
+			user_id : 156,
+			content : 'update',
+			date : '11/08/2012 04:23 AM'
+		}
+    ],
+    liked_by_users: [2]
 });
 
 
@@ -354,6 +382,7 @@ it('can find top n recent stories - findTopStories API', async () => {
             request(app).put('/stories/'+story_id+'/like/'+user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
+
         });
 
         it('/stories/:storyID/like/:userID - like a story when story not found', async (done) => {
@@ -367,9 +396,13 @@ it('can find top n recent stories - findTopStories API', async () => {
 
         it('/stories/:storyID/unlike/:userID - unlike a story', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story2);
-            const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
-            const story_id = resultLikedStory.story_id;
+            await storyDao.createStory(story2);
+            await storyDao.findStoryByStoryID(story2.story_id).then((story) => {
+                if(story){
+                    story.liked_by_users.push(user_id);
+                    return story[0];
+                }
+            });
             
             request(app).put('/stories/'+story_id+'/unlike/'+user_id)
                 .set('Accept', 'application/json')
@@ -377,13 +410,14 @@ it('can find top n recent stories - findTopStories API', async () => {
         });
 
         it('/stories/:storyID/unlike/:userID - unlike a story when userID is not available', async (done) => {
-            const user_id = 1;
-            const createdStory = await storyDao.createStory(story2);
+            const user_id = 109;
+            const createdStory = await storyDao.createStory(story5);
             const story_id = createdStory.story_id;
             
             request(app).put('/stories/'+story_id+'/unlike/'+user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
+
         });
     });
 });
