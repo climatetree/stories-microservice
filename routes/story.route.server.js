@@ -3,6 +3,7 @@ const { ObjectID } = require('mongodb');
 
 let storyDao = require('../dao/story.dao.server');
 let commentDao = require('../dao/comment.dao.server');
+let grabity = require("grabity");
 
 module.exports = app => {
 
@@ -208,6 +209,18 @@ module.exports = app => {
     let findAllComments = (req, res) =>
         commentDao.findAllComments().then(comments => res.json(comments));
 
+    let getPreview = async (req,res) => {
+        const hyperlink = "" + req.query.hyperlink;
+        try{
+        let metadata = await grabity.grabIt(hyperlink);
+        res.send(metadata);
+        } catch(e) {
+            res.status(403).send({
+                success: false,
+                message: "Unable to get metadata due to error in url or timeout"
+            });
+        }
+    };
 
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
@@ -223,5 +236,7 @@ module.exports = app => {
     app.post('/stories/story/comment',addComment);
     app.get('/stories/comment',findAllComments);
     app.delete('/stories/story/comment',deleteComment);
+    // preview
+    app.get('/stories/getPreview',getPreview);
     
 };   
