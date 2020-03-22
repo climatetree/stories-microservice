@@ -388,5 +388,19 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
+        it('/stories/getPreview - get metadata for link preview', async (done) => {
+        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+            
+            request(app).get('/stories/getPreview?hyperlink='+url)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+        it('/stories/getPreview - get metadata for link preview', async (done) => {
+            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+                
+                request(app).get('/stories/getPreview?hyperlink='+incorrect_url)
+                    .set('Accept', 'application/json')
+                    .expect(403, done);
+            });
     });
 });
