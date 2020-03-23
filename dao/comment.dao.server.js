@@ -1,28 +1,25 @@
-const commentModel = require('../models/comments.model.server')
-const ObjectID = require("bson-objectid");
+const commentModel = require('../models/comments.model.server');
 
-const findAllComments = () => commentModel.find();
+findAllComments = () => commentModel.find();
 
-const findCommentById = (commentId) => commentModel.findOne({comment_id:commentId});
+findCommentByCommentID = (commentId) => commentModel.find({comment_id:commentId});
 
-const deleteComment = (commentId) => commentModel.deleteOne({comment_id:commentId},(err, obj) => {
-    if (err) throw err;
-    console.log("1 document deleted");
-});
+findCommentByUserID = (userId) => commentModel.find({user_id: userId});
 
-const addComment = (userId, comment, date) => {
-    const commentId = ObjectID().str;
-    return commentModel.create({
-        comment_id: commentId,
-        date,
-        user_id: userId,
-        content: comment
-    })
-};
+findCommentByStoryID=(storyId)=>commentModel.find({storyId:storyId});
+
+deleteComment = (commentId) => commentModel.deleteOne({comment_id:commentId});
+
+updateComment = (comment) => commentModel.updateOne({comment_id: comment.comment_id}, {$set:{content: comment.content}});
+
+insertComment = (comment) => commentModel.create(comment);
 
 module.exports = {
-    addComment,
+    insertComment,
+    updateComment,
     deleteComment,
-    findCommentById,
-    findAllComments
+    findCommentByCommentID,
+    findAllComments,
+    findCommentByUserID,
+    findCommentByStoryID
 };

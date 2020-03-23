@@ -1,5 +1,4 @@
-const storyModel = require('../models/story.model.server')
-const ObjectID = require("bson-objectid");
+const storyModel = require('../models/story.model.server');
 
 findAllStories = (limit, page) => storyModel.find().skip((page-1)*limit).limit(limit);
 
@@ -11,33 +10,15 @@ findStoryByPlaceID = (placeID, limit, page) => storyModel.find({place_ids:{$elem
 
 findStoryByTitle = (title, limit, page) => storyModel.find({story_title:{$regex: title,$options:'i'}}).skip((page-1)*limit).limit(limit);
 
-createStory = story => {
-    story.story_id=ObjectID().str;
-    return storyModel.create(story);
-};
+createStory = story => storyModel.create(story);
 
 deleteStory = (storyId) => storyModel.deleteOne({story_id: storyId});
 
-updateStory = (storyID, story) => storyModel.update({story_id: storyID}, {$set: story});
+updateStory = (storyID, story) => storyModel.updateOne({story_id: storyID}, story);
 
-const likeStory = (story, userID) => {
-    if(!story.liked_by_users.includes(userID)){
-        story.liked_by_users.push(userID);
-        return story;
-    } 
-        return story;
-    
-}
+updateLike = (storyID,liked_by_users) => storyModel.updateOne({story_id:storyID},{$set:{liked_by_users:liked_by_users}});
 
-const unlikeStory = (story, userID) => {
-    for(let i=0; i<story.liked_by_users.length; i++){
-        if(story.liked_by_users[i] === userID){
-            story.liked_by_users.splice(i, 1);
-            return story;
-        }
-    }
-    return null;
-}
+updateComments=(story_id,comments) => storyModel.updateOne({story_id:story_id},{$set:{comments:comments}});
 
 module.exports = {
     findAllStories,
@@ -48,6 +29,6 @@ module.exports = {
     createStory,
     deleteStory,
     updateStory,
-    likeStory,
-    unlikeStory,
+    updateLike,
+    updateComments
 };

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const commentSchema = require('./comment.schema.server')
+const mongoose = require('mongoose');
+const commentSchema = require('./comment.schema.server');
 
 const storySchema = mongoose.Schema({
     story_id:String,
@@ -11,18 +11,19 @@ const storySchema = mongoose.Schema({
     media_type:String,
     date:Date,
     solution:[String],
-    sector:String,
-    comments:[commentSchema],
-    liked_by_users: []
+    sector:[String],
+    strategy:[String],
+    comments:{type:Map,of:commentSchema,default: {}},
+    liked_by_users: {type:Map,of:Boolean,default:{}}
 },{
     toObject: {
-        transform (doc, ret) {
-            delete ret._id
+        transform: function (doc, ret) {
+            delete ret._id;
         }
     },
     toJson:{
-        transform (doc,ret) {
-            delete ret._id
+        transform: function (doc,ret) {
+            delete ret._id;
         }
     }
 });
