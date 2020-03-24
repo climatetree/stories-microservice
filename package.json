@@ -7,6 +7,11 @@
     "test": "jest --forceExit",
     "start": "node ./bin/www"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "eslint ."
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/climatetree/backend-mongo.git"
@@ -32,8 +37,11 @@
     "collectCoverage": true
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-node": "^4.0.0",
+    "husky": "^4.2.3",
     "jest": "^25.1.0",
-    "mongodb-memory-server": "^6.2.4",
+    "mongodb-memory-server": "^6.4.1",
     "supertest": "^4.0.2"
   }
 }

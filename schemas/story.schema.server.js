@@ -12,15 +12,16 @@ const storySchema = mongoose.Schema({
     date:Date,
     solution:[String],
     sector:String,
-    comments:[commentSchema]
+    comments:[commentSchema],
+    liked_by_users: []
 },{
     toObject: {
-        transform: function (doc, ret) {
+        transform (doc, ret) {
             delete ret._id
         }
     },
     toJson:{
-        transform:function (doc,ret) {
+        transform (doc,ret) {
             delete ret._id
         }
     }
