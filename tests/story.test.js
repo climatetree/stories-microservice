@@ -412,7 +412,7 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .set('Accept', 'application/json')
                 .send({
                     "storyID": resultStory.story_id,
-                    "role":"admin",
+                    "role": 1,
                     "rating": 5
                 })
                 .expect(200)
@@ -428,7 +428,7 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .set('Accept', 'application/json')
                 .send({
                     "storyID": "sdsadsadas2323",
-                    "role":"admin",
+                    "role": 1,
                     "rating": 5
                 })
                 .expect(404)
@@ -445,7 +445,7 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .set('Accept', 'application/json')
                 .send({
                     "storyID": resultStory.story_id,
-                    "role":"guest_user",
+                    "role": 3,
                     "rating": 5
                 })
                 .expect(401)
