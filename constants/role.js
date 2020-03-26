@@ -7,6 +7,5 @@ GUEST_USER = 4;
 module.exports = {
     ADMIN,
     MODERATOR,
-    REGISTERED_USER,
-    GUEST_USER
+    REGISTERED_USER
 };
