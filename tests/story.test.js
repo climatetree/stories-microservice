@@ -1,5 +1,6 @@
 const request = require('supertest');
 const http = require('http');
+const assert = require('assert');
 
 const dbHandler = require('./db.handler');
 const storyDao = require('../dao/story.dao.server');
@@ -388,6 +389,7 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
+
         it('/stories/getPreview - get metadata for link preview', async (done) => {
         const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
             
@@ -402,5 +404,55 @@ it('can find top n recent stories - findTopStories API', async () => {
                     .set('Accept', 'application/json')
                     .expect(403, done);
             });
+
+        it('/stories/rating/update/ - return 200 if updated successfully', async (done) => {
+            const resultStory = await storyDao.createStory(story1);
+
+            request(app).put('/stories/rating/update')
+                .set('Accept', 'application/json')
+                .send({
+                    "storyID": resultStory.story_id,
+                    "role":"admin",
+                    "rating": 5
+                })
+                .expect(200)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    done();
+                  });
+        });
+
+        it('/stories/rating/update/ - return 404 if story not found', async (done) => {
+
+            request(app).put('/stories/rating/update')
+                .set('Accept', 'application/json')
+                .send({
+                    "storyID": "sdsadsadas2323",
+                    "role":"admin",
+                    "rating": 5
+                })
+                .expect(404)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    done();
+                  });
+        });
+
+        it('/stories/rating/update/ - return 401 if role not authorized to add rating', async (done) => {
+            const resultStory = await storyDao.createStory(story1);
+
+            request(app).put('/stories/rating/update')
+                .set('Accept', 'application/json')
+                .send({
+                    "storyID": resultStory.story_id,
+                    "role":"guest_user",
+                    "rating": 5
+                })
+                .expect(401)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    done();
+                  });
+        });
     });
 });

@@ -140,6 +140,10 @@ module.exports = app => {
     };
 
     addRatingToStory = (req, res) => {
+        if (!ObjectID.isValid(req.body.storyID)) {
+            return res.status(404).send();
+          }
+
         if(req.body.role) {
             if(req.body.role === role.MODERATOR || req.body.role === role.ADMIN) {
                 storyDao.findStoryByStoryID(req.body.storyID)
