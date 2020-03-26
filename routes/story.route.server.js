@@ -145,7 +145,7 @@ module.exports = app => {
           }
 
         if(req.body.role) {
-            if(req.body.role === role.MODERATOR || req.body.role === role.ADMIN) {
+            if(req.body.role == role.MODERATOR || req.body.role == role.ADMIN) {
                 storyDao.findStoryByStoryID(req.body.storyID)
                 .then((story) => {
                     story.rating = req.body.rating;
