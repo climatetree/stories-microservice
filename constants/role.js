@@ -1,7 +1,7 @@
-ADMIN = "admin";
-MODERATOR = "mod";
-REGISTERED_USER ="reg_user";
-GUEST_USER = "guest_user";
+ADMIN = 1;
+MODERATOR = 2;
+REGISTERED_USER = 3;
+GUEST_USER = 4;
 
 
 module.exports = {
