@@ -3,6 +3,7 @@ const { ObjectID } = require('mongodb');
 
 const storyDao = require('../dao/story.dao.server');
 const commentDao = require('../dao/comment.dao.server');
+const role = require('../constants/role');
 
 module.exports = app => {
 
@@ -164,40 +165,39 @@ module.exports = app => {
     };
 
     // Only allows users to delete their own comment
-    //Todo: Modify to allow moderators or admin to delete as well.
-    const deleteComment = (req,res) => {
+//Todo: Modify to allow moderators or admin to delete as well.
+    const deleteComment = (req, res) => {
         const storyId = req.body.storyId;
         const userId = req.body.userId;
         const commentId = req.body.commentId;
+        const user_role = req.body.role;
 
         storyDao.findStoryByStoryID(storyId).then(story => {
-            if(story){
+            if (story) {
                 commentDao.findCommentById(commentId).then(comment => {
-                    if(comment){
-                        if(comment.user_id === userId){
+                    if (comment) {
+                        if ((comment.user_id === userId && user_role === role.REGISTERED_USER)
+                            || user_role === role.ADMIN || user_role === role.MODERATOR) {
                             story.comments = story.comments.filter(update => update.comment_id !== commentId);
                             commentDao.deleteComment(commentId);
-                            storyDao.updateStory(story.story_id,story).then(updatedStory => {
+                            storyDao.updateStory(story.story_id, story).then(updatedStory => {
                                 res.send(updatedStory)
                             });
-                        }
-                        else{
+                        } else {
                             res.status(403).send({
                                 success: false,
                                 message: "User can only delete their own comments."
                             });
                         }
-                    }
-                    else{
+                    } else {
                         res.status(403).send({
                             success: false,
                             message: "Comment does not exist or has been deleted."
                         });
                     }
                 })
-            }
-            else{
-                    res.status(403).send({
+            } else {
+                res.status(403).send({
                     success: false,
                     message: "Story does not exist or has been deleted."
                 });
