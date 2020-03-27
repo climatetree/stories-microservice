@@ -13,6 +13,8 @@
 
 module.exports = function () {
     if(process.env.DOCKER_ENABLE_CI){
+        console.log("I AM IN TRAVIS CI NOW");
+        console.log("process.env.DOCKER_ENABLE_CI");
         const mongoose = require('mongoose'),Admin=mongoose.mongo.Admin;
         const mongoPORT = process.env.MONGO_PORT|| '10255';
         const accountName=process.env.MONGO_ACCOUNT_NAME;
@@ -23,6 +25,7 @@ module.exports = function () {
         mongoose.set('debug', true);
         mongoose.connect(mongoDB,{useNewUrlParser: true});
     } else{
+        console.log("I AM LOCAL NOW");
         const mongoose = require('mongoose'),Admin=mongoose.mongo.Admin;
         const mongoURL =process.env.MONGO_URL || 'localhost';
         const mongoPORT = process.env.MONGO_PORT|| '27017';
