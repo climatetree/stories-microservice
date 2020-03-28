@@ -16,6 +16,7 @@ describe('End Points for Stories', () => {
  */
     beforeAll(async(done) => {
         await dbHandler.connect();
+        storyModel.createIndexes();
         server = app.listen(3000, (err) => {
             if (err) return done(err);
       
@@ -48,6 +49,7 @@ describe('End Points for Stories', () => {
             2,
             4
         ],
+        description:"",
         media_type: 'video',
         date: '2/01/2018 04:12 AM',
         solution: [
@@ -55,7 +57,8 @@ describe('End Points for Stories', () => {
             'Landfill Methane',
             'Building Automation'
         ],
-        sector: 'Buildings and Cities',
+        sector: ['Buildings and Cities'],
+        strategy:['Buildings and Cities'],
         comments: [
             {
                 comment_id : 1,
@@ -83,6 +86,7 @@ const story2 = {
 		3,
 		5
     ],
+    description:"",
     media_type: 'text',
     date: '08/11/2009 11:48 PM',
     solution: [
@@ -90,7 +94,8 @@ const story2 = {
 		'District Heating',
 		'LED Lighting (Household)'
     ],
-    sector: 'Food',
+    sector: ['Food'],
+    strategy: ['food'],
     comments: [
         {
 			comment_id : 1,
@@ -125,12 +130,14 @@ const story3 = {
 		8,
 		5
     ],
+    description:"",
     media_type: 'text',
     date: '03/14/2009 11:48 PM',
     solution: [
         'Glass'
     ],
-    sector: 'Food',
+    sector: ['Food'],
+    strategy:['food'],
     comments: [
         {
 			comment_id : 4,
@@ -153,12 +160,14 @@ const story4 = {
 		5,
 		5
     ],
+    description:"",
     media_type: 'text',
     date: '03/14/2009 11:48 PM',
     solution: [
         'Glass'
     ],
-    sector: 'Food',
+    sector: ['Food'],
+    strategy:['food'],
     comments: [
         {
 			comment_id : 1,
@@ -254,6 +263,28 @@ it('can find stories by title - findStoryByTitle API', async () => {
     //expect(resultStories.toString()).toEqual(story2.toString())
 });
 
+it('can find stories by description - findStoryByDescription API', async()=>{
+   story1.description="apple and banana";
+   story2.description="watermelon and yuzu";
+   await storyDao.createStory(story1);
+   await storyDao.createStory(story2);
+   const resultStories=await storyDao.findStoryByDescription("yuzu",1,1);
+   expect(resultStories.length===1);
+});
+
+it('can find stories by keywords - findStoryByKeyword API', async()=>{
+   story1.description="Coffee and cakes";story1.story_title="Java Hut";
+   story2.description="Gourmet hamburgers";story2.story_title="Burger Buns";
+   story3.description="Just coffee";story3.story_title="Coffee Shop";
+   story4.description="Indonesian goods";story4.story_title="Java Shopping";
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
+    await storyDao.createStory(story3);
+    await storyDao.createStory(story4);
+    const resultStories=await storyDao.findStoryByKeyword("java coffee shop",10,1);
+    expect(resultStories.length===3);
+});
+
 it('user can like a story - likeStory API', async () => {
     user_id = 1;
     const createdStory = await storyDao.createStory(story1);
@@ -278,7 +309,7 @@ it('can find top n recent stories - findTopStories API', async () => {
     stories = [story1, story2];
     //expect(resultStories.toString()).toEqual(stories.toString())
     expect(resultStories.length === 2)
-})
+});
 
     describe('GET/',  () => {
 
@@ -391,14 +422,14 @@ it('can find top n recent stories - findTopStories API', async () => {
         });
 
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
             
             request(app).get('/stories/getPreview?hyperlink='+url)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
                 
                 request(app).get('/stories/getPreview?hyperlink='+incorrect_url)
                     .set('Accept', 'application/json')
@@ -472,14 +503,14 @@ it('can find top n recent stories - findTopStories API', async () => {
         });
 
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
             
             request(app).get('/stories/getPreview?hyperlink='+url)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
                 
                 request(app).get('/stories/getPreview?hyperlink='+incorrect_url)
                     .set('Accept', 'application/json')
