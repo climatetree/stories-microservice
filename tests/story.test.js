@@ -295,6 +295,27 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(200, done);
         });
 
+        it('/stories - return all stories paginated  - page is not a number', (done) => {
+            request(app).get('/stories?page=aaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories - return all stories paginated negative number', (done) => {
+            request(app).get('/stories?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories - return all stories paginated limit 0', (done) => {
+            request(app).get('/stories?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
         it('/stories/:storyId - return 404 if story not found', (done) => {
         
             request(app).get('/stories/1')
@@ -316,6 +337,27 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(500, done);
         });
 
+        it('/stories/title - return story titles paginated negative page number', (done) => {
+            request(app).get('/stories/title/ISRO?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/title - return story titles paginated page number as 0', (done) => {
+            request(app).get('/stories/title/ISRO?page=0&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/title - return story titles paginated error limit is negative', (done) => {
+            request(app).get('/stories/title/ISRO?page=1&limit=-1')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
         it('/stories/place - return story by place paginated', (done) => {
             request(app).get('/stories/place/0?page=1&limit=10')
                 .set('Accept', 'application/json')
@@ -329,6 +371,29 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
+
+        it('/stories/place - return story by place negative page number', (done) => {
+            request(app).get('/stories/place/0?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return story by place negative limit', (done) => {
+            request(app).get('/stories/place/0?page=1&limit=-10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return story by place 0 limit', (done) => {
+            request(app).get('/stories/place/0?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+
 
     });
 

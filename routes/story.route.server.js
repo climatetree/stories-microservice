@@ -16,6 +16,10 @@ module.exports = app => {
         if (req.query.limit){
             limit = parseInt(req.query.limit)
         }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(500).send({"Error": "Invalid Query Params"})
+        }
         storyDao.findAllStories(limit, page).then(stories => res.json(stories));
     }
 
@@ -45,7 +49,7 @@ module.exports = app => {
         if (req.query.limit){
             limit = parseInt(req.query.limit)
         }
-        if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
             console.log("Error")
             return res.status(500).send({"Error": "Invalid Query Params"})
         }
@@ -67,7 +71,7 @@ module.exports = app => {
         if (req.query.limit){
             limit = parseInt(req.query.limit)
         }
-        if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
             console.log("Error")
             return res.status(500).send({"Error": "Invalid Query Params"})
         }
