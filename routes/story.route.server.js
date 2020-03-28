@@ -139,6 +139,30 @@ module.exports = app => {
             });
     };
 
+    addRatingToStory = (req, res) => {
+        if (!ObjectID.isValid(req.body.storyID)) {
+            return res.status(404).send();
+          }
+
+        if(req.body.role) {
+            if(req.body.role === role.MODERATOR || req.body.role === role.ADMIN) {
+                storyDao.findStoryByStoryID(req.body.storyID)
+                .then((story) => {
+                    story.rating = req.body.rating;
+                    storyDao.updateStory(story.story_id, story).then((response) => {
+                        res.status(200).send(response);
+                    });
+                })
+            }
+            else {
+                res.status(401).send();
+            }
+        }
+        else {
+            res.status(401).send();
+        }
+    }
+
     // there is no check for userId being valid here. The expectation is that only validated users would be able to
     // navigate to comment page
     const addComment = (req,res) => {
@@ -233,6 +257,7 @@ module.exports = app => {
     app.put('/stories/update/:storyId', updateStory);
     app.put('/stories/:storyID/like/:userID', likeStory);
     app.put('/stories/:storyID/unlike/:userID', unlikeStory);
+    app.put('/stories/rating/update', addRatingToStory);
     //Comments
     app.post('/stories/story/comment',addComment);
     app.get('/stories/comment',findAllComments);
