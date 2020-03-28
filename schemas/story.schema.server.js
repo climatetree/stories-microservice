@@ -29,4 +29,7 @@ const storySchema = mongoose.Schema({
     }
 });
 
+const index={story_title:'text',description:'text'};
+storySchema.index(index);
+
 module.exports = storySchema;
