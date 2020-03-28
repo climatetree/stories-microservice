@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const commentSchema = require('./comment.schema.server')
+const mongoose = require('mongoose');
+const commentSchema = require('./comment.schema.server');
 
 const storySchema = mongoose.Schema({
     story_id:String,
@@ -11,7 +11,9 @@ const storySchema = mongoose.Schema({
     media_type:String,
     date:Date,
     solution:[String],
-    sector:String,
+    sector:[String],
+    description:String,
+    strategy:[String],
     comments:[commentSchema],
     liked_by_users: []
 },{
