@@ -10,8 +10,8 @@ let grabity = require("grabity");
 module.exports = app => {
 
     findAllStories = (req, res) => {
-        page = 1
-        limit = 100
+        page = 1;
+        limit = 100;
         if (req.query.page){
             page = parseInt(req.query.page)
         }
@@ -19,7 +19,7 @@ module.exports = app => {
             limit = parseInt(req.query.limit)
         }
         storyDao.findAllStories(limit, page).then(stories => res.json(stories));
-    }
+    };
 
     findStoryByStoryID = (req, res) => {
         if(!ObjectID.isValid(req.params.storyID)) {
@@ -39,8 +39,8 @@ module.exports = app => {
     };
 
     findStoryByPlaceID = (req,res)=> {
-        page = 1
-        limit = 20
+        page = 1;
+        limit = 20;
         if (req.query.page){
             page = parseInt(req.query.page)
         }
@@ -48,7 +48,7 @@ module.exports = app => {
             limit = parseInt(req.query.limit)
         }
         if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
-            console.log("Error")
+            console.log("Error");
             return res.status(500).send({"Error": "Invalid Query Params"})
         }
         
@@ -58,11 +58,11 @@ module.exports = app => {
             }
             res.json(stories);
         });
-    }
+    };
 
     findStoryByTitle = (req,res)=> {
-        page = 1
-        limit = 20
+        page = 1;
+        limit = 20;
         if (req.query.page){
             page = parseInt(req.query.page)
         }
@@ -70,13 +70,49 @@ module.exports = app => {
             limit = parseInt(req.query.limit)
         }
         if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
-            console.log("Error")
+            console.log("Error");
             return res.status(500).send({"Error": "Invalid Query Params"})
         }
         storyDao.findStoryByTitle(req.params.title, limit, page).exec((err,stories) => {
             res.json(stories)
         });
-    }
+    };
+
+    findStoryByDescription = (req,res)=> {
+        page = 1;
+        limit = 20;
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
+            console.log("Error");
+            return res.status(500).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.findStoryByDescription(req.params.description, limit, page).exec((err,stories) => {
+            res.json(stories)
+        });
+    };
+
+    findStoryByKeyword = (req,res)=> {
+        page = 1;
+        limit = 20;
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit)) { //If non integer values provided for limit or page
+            console.log("Error");
+            return res.status(500).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.findStoryByKeyword(req.params.keyword, limit, page).exec((err,stories) => {
+            res.json(stories)
+        });
+    };
 
     findTopStories = (req, res) =>
         storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));
@@ -161,7 +197,7 @@ module.exports = app => {
         else {
             res.status(401).send();
         }
-    }
+    };
 
     // there is no check for userId being valid here. The expectation is that only validated users would be able to
     // navigate to comment page
@@ -251,7 +287,9 @@ module.exports = app => {
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle);
-    app.get('/stories/topStories/:numberOfStories', findTopStories)
+    app.get('/stories/description/:description',findStoryByDescription);
+    app.get('/stories/keyword/:keyword',findStoryByKeyword);
+    app.get('/stories/topStories/:numberOfStories', findTopStories);
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
