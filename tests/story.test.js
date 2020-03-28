@@ -348,8 +348,36 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(500, done);
         });
 
+        it('/stories/description - return stories paginated', (done) => {
+            request(app).get('/stories/description/coffee?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/description - return stories paginated error', (done) => {
+            request(app).get('/stories/description/coffee?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/keyword - return stories paginated', (done) => {
+            request(app).get('/stories/title/apple and banana?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/keyword - return stories paginated error', (done) => {
+            request(app).get('/stories/keyword/apple and banana?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
         it('/stories/place - return story by place paginated', (done) => {
-            request(app).get('/stories/place/0?page=1&limit=10')
+            request(app).get('/stories/keyword/0?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
