@@ -18,7 +18,7 @@ createStory = story => {
 
 deleteStory = (storyId) => storyModel.deleteOne({story_id: storyId});
 
-updateStory = (storyID, story) => storyModel.update({story_id: storyID}, {$set: story});
+updateStory = (storyID, story) => storyModel.findOneAndUpdate({story_id: storyID}, {$set: story}, {new: true});
 
 const likeStory = (story, userID) => {
     if(!story.liked_by_users.includes(userID)){

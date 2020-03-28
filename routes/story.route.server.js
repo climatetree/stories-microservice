@@ -4,6 +4,8 @@ const { ObjectID } = require('mongodb');
 const storyDao = require('../dao/story.dao.server');
 const commentDao = require('../dao/comment.dao.server');
 const role = require('../constants/role');
+let grabity = require("grabity");
+
 
 module.exports = app => {
 
@@ -141,6 +143,30 @@ module.exports = app => {
             });
     };
 
+    addRatingToStory = (req, res) => {
+        if (!ObjectID.isValid(req.body.storyID)) {
+            return res.status(404).send();
+          }
+
+        if(req.body.role) {
+            if(req.body.role === role.MODERATOR || req.body.role === role.ADMIN) {
+                storyDao.findStoryByStoryID(req.body.storyID)
+                .then((story) => {
+                    story.rating = req.body.rating;
+                    storyDao.updateStory(story.story_id, story).then((response) => {
+                        res.status(200).send(response);
+                    });
+                })
+            }
+            else {
+                res.status(401).send();
+            }
+        }
+        else {
+            res.status(401).send();
+        }
+    }
+
     // there is no check for userId being valid here. The expectation is that only validated users would be able to
     // navigate to comment page
     const addComment = (req,res) => {
@@ -212,6 +238,18 @@ module.exports = app => {
     const findAllComments = (req, res) =>
         commentDao.findAllComments().then(comments => res.json(comments));
 
+    let getPreview = async (req,res) => {
+        const hyperlink = "" + req.query.hyperlink;
+        try{
+        let metadata = await grabity.grabIt(hyperlink);
+        res.send(metadata);
+        } catch(e) {
+            res.status(403).send({
+                success: false,
+                message: "Unable to get metadata due to error in url or timeout"
+            });
+        }
+    };
 
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
@@ -223,9 +261,12 @@ module.exports = app => {
     app.put('/stories/update/:storyId', updateStory);
     app.put('/stories/:storyID/like/:userID', likeStory);
     app.put('/stories/:storyID/unlike/:userID', unlikeStory);
+    app.put('/stories/rating/update', addRatingToStory);
     //Comments
     app.post('/stories/story/comment',addComment);
     app.get('/stories/comment',findAllComments);
     app.delete('/stories/story/comment',deleteComment);
+    // preview
+    app.get('/stories/getPreview',getPreview);
     
 };   
