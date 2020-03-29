@@ -46,6 +46,7 @@ module.exports = {
     findStoryByStoryID,
     findStoryByPlaceID,
     findStoryByTitle,
+    findStoryByDescription,
     findTopStories,
     createStory,
     deleteStory,
