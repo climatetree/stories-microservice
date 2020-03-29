@@ -11,7 +11,7 @@ findStoryByPlaceID = (placeID, limit, page) => storyModel.find({place_ids:{$elem
 
 findStoryByTitle = (title, limit, page) => storyModel.find({story_title:{$regex: title,$options:'i'}}).skip((page-1)*limit).limit(limit);
 
-findUnratedStories = (limit, page) => storyModel.find({rating: 0}).skip((page-1)*limit).limit(limit);
+findUnratedStories = (limit, page) => storyModel.find({rating: 0}).sort({date: 'desc'}).skip((page-1)*limit).limit(limit);
 
 createStory = story => {
     story.story_id=ObjectID().str;
