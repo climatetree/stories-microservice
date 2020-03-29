@@ -429,13 +429,40 @@ it('can find unrated stories - findUnratedStories API', async () => {
                 .expect(500, done);
         });
 
-        it('/stories/place - return unrated stories', (done) => {
+        it('/stories/place - return unrated stories paginated', (done) => {
             request(app).get('/stories/unrated/10?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
+        it('/stories/place - return unrated stories paginated error', (done) => {
+            request(app).get('/stories/unrated/10?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return unrated stories negative page number', (done) => {
+            request(app).get('/stories/unrated/10?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return unrated stories negative limit', (done) => {
+            request(app).get('/stories/unrated/10?page=1&limit=-10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return unrated stories 0 limit', (done) => {
+            request(app).get('/stories/unrated/10?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
 
 
     });
