@@ -1,4 +1,4 @@
-const storyModel = require('../models/story.model.server')
+const storyModel = require('../models/story.model.server');
 const ObjectID = require("bson-objectid");
 
 findAllStories = (limit, page) => storyModel.find().skip((page-1)*limit).limit(limit);
@@ -10,6 +10,8 @@ findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 findStoryByPlaceID = (placeID, limit, page) => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}}).skip((page-1)*limit).limit(limit);
 
 findStoryByTitle = (title, limit, page) => storyModel.find({story_title:{$regex: title,$options:'i'}}).skip((page-1)*limit).limit(limit);
+
+findStoryByDescription=(desc,limit,page)=>storyModel.find( {description:{$regex:desc,$options:'i'}}).skip((page-1)*limit).limit(limit);
 
 createStory = story => {
     story.story_id=ObjectID().str;
@@ -27,7 +29,7 @@ const likeStory = (story, userID) => {
     } 
         return story;
     
-}
+};
 
 const unlikeStory = (story, userID) => {
     for(let i=0; i<story.liked_by_users.length; i++){
@@ -37,7 +39,7 @@ const unlikeStory = (story, userID) => {
         }
     }
     return null;
-}
+};
 
 module.exports = {
     findAllStories,
