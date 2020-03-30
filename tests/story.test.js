@@ -49,13 +49,15 @@ describe('End Points for Stories', () => {
             4
         ],
         media_type: 'video',
+        description:"",
         date: '2/01/2018 04:12 AM',
         solution: [
             'Smart Thermostats',
             'Landfill Methane',
             'Building Automation'
         ],
-        sector: 'Buildings and Cities',
+        sector: ['Buildings and Cities'],
+        strategy:['Buildings and Cities'],
         comments: [
             {
                 comment_id : 1,
@@ -84,13 +86,15 @@ const story2 = {
 		5
     ],
     media_type: 'text',
+    description:"",
     date: '08/11/2009 11:48 PM',
     solution: [
         'Smart Glass',
 		'District Heating',
 		'LED Lighting (Household)'
     ],
-    sector: 'Food',
+    sector: ['Food'],
+    strategy: ['food'],
     comments: [
         {
 			comment_id : 1,
@@ -126,11 +130,13 @@ const story3 = {
 		5
     ],
     media_type: 'text',
+    description:"",
     date: '03/14/2009 11:48 PM',
     solution: [
         'Glass'
     ],
-    sector: 'Food',
+    sector: ['Food'],
+    strategy:['food'],
     comments: [
         {
 			comment_id : 4,
@@ -148,6 +154,7 @@ const story4 = {
     hyperlink: 'https://abc.abc.gov/climate/',
     rating: 1,
     story_title: 'ISRO ABC',
+    description:"",
     place_ids: [
         9,
 		5,
@@ -158,7 +165,8 @@ const story4 = {
     solution: [
         'Glass'
     ],
-    sector: 'Food',
+    sector: ['Food'],
+    strategy:['food'],
     comments: [
         {
 			comment_id : 1,
@@ -280,6 +288,15 @@ it('can find stories by title - findStoryByTitle API', async () => {
     //expect(resultStories.toString()).toEqual(story2.toString())
 });
 
+it('can find stories by description - findStoryByDescription API', async()=>{
+    story1.description="apple and banana";
+    story2.description="watermelon and yuzu";
+    await storyDao.createStory(story1);
+    await storyDao.createStory(story2);
+    const resultStories=await storyDao.findStoryByDescription("yuzu",1,1);
+    expect(resultStories.length===1);
+});
+
 it('user can like a story - likeStory API', async () => {
     user_id = 1;
     const createdStory = await storyDao.createStory(story1);
@@ -304,7 +321,7 @@ it('can find top n recent stories - findTopStories API', async () => {
     stories = [story1, story2];
     //expect(resultStories.toString()).toEqual(stories.toString())
     expect(resultStories.length === 2)
-})
+});
 
 it('can find unrated stories - findUnratedStories API', async () => {
     await storyDao.createStory(story5);
@@ -373,6 +390,20 @@ it('can find unrated stories - findUnratedStories API', async () => {
                 .expect(500, done);
         });
 
+        it('/stories/description - return stories paginated', (done) => {
+            request(app).get('/stories/description/coffee?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/description - return stories paginated error', (done) => {
+            request(app).get('/stories/description/coffee?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
         it('/stories/title - return story titles paginated negative page number', (done) => {
             request(app).get('/stories/title/ISRO?page=-1&limit=10')
                 .set('Accept', 'application/json')
@@ -389,6 +420,27 @@ it('can find unrated stories - findUnratedStories API', async () => {
 
         it('/stories/title - return story titles paginated error limit is negative', (done) => {
             request(app).get('/stories/title/ISRO?page=1&limit=-1')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/description - return stories paginated negative page number', (done) => {
+            request(app).get('/stories/description/ISRO?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/description - return stories paginated page number as 0', (done) => {
+            request(app).get('/stories/description/ISRO?page=0&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/description - return stories paginated error limit is negative', (done) => {
+            request(app).get('/stories/description/ISRO?page=1&limit=-1')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(500, done);
@@ -525,14 +577,14 @@ it('can find unrated stories - findUnratedStories API', async () => {
         });
 
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
             
             request(app).get('/stories/getPreview?hyperlink='+url)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
                 
                 request(app).get('/stories/getPreview?hyperlink='+incorrect_url)
                     .set('Accept', 'application/json')
@@ -606,14 +658,14 @@ it('can find unrated stories - findUnratedStories API', async () => {
         });
 
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+        const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
             
             request(app).get('/stories/getPreview?hyperlink='+url)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
         it('/stories/getPreview - get metadata for link preview', async (done) => {
-            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops"
+            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
                 
                 request(app).get('/stories/getPreview?hyperlink='+incorrect_url)
                     .set('Accept', 'application/json')
