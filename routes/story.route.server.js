@@ -103,6 +103,26 @@ module.exports = app => {
     findTopStories = (req, res) =>
         storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));
 
+    findUnratedStories = (req, res) => {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(500).send({"Error": "Invalid Query Params"})
+        }
+
+        storyDao.findUnratedStories(limit, page).exec((err,stories) => {
+            res.json(stories)
+        });
+
+    }
+
     createStory = (req, res) =>
         storyDao.createStory(req.body)
                 .then((story) => res.json(story),
@@ -273,8 +293,9 @@ module.exports = app => {
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle);
+    app.get('/stories/topStories/:numberOfStories', findTopStories)
+    app.get('/stories/unrated', findUnratedStories)
     app.get('/stories/description/:description',findStoryByDescription);
-    app.get('/stories/topStories/:numberOfStories', findTopStories);
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);

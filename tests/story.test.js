@@ -178,6 +178,32 @@ const story4 = {
     liked_by_users: []
 };
 
+const story5 = {
+    story_id: '5e4e197ee1bc5896994d2cc3',
+    user_id: 104,
+    hyperlink: 'https://abc.gov/climate/',
+    rating: 0,
+    story_title: 'ISRO ABC test',
+    place_ids: [
+        9,
+    ],
+    media_type: 'text',
+    date: '03/14/2002 11:48 PM',
+    solution: [
+        'Vehicle'
+    ],
+    sector: 'Transport',
+    comments: [
+        {
+			comment_id : 1,
+			user_id : 156,
+			content : 'content',
+			date : '11/08/2012 04:23 AM'
+		}
+    ],
+    liked_by_users: []
+};
+
 
 /**
  * Test suite for stories APIs
@@ -296,6 +322,15 @@ it('can find top n recent stories - findTopStories API', async () => {
     //expect(resultStories.toString()).toEqual(stories.toString())
     expect(resultStories.length === 2)
 });
+
+it('can find unrated stories - findUnratedStories API', async () => {
+    await storyDao.createStory(story5);
+    await storyDao.createStory(story1);
+
+    const resultStories = await storyDao.findUnratedStories();
+    stories = [story5];
+    expect(resultStories.length === 1)
+})
 
     describe('GET/',  () => {
 
@@ -446,6 +481,40 @@ it('can find top n recent stories - findTopStories API', async () => {
                 .expect(500, done);
         });
 
+        it('/stories/place - return unrated stories paginated', (done) => {
+            request(app).get('/stories/unrated?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/place - return unrated stories paginated error', (done) => {
+            request(app).get('/stories/unrated?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return unrated stories negative page number', (done) => {
+            request(app).get('/stories/unrated?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return unrated stories negative limit', (done) => {
+            request(app).get('/stories/unrated?page=1&limit=-10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
+
+        it('/stories/place - return unrated stories 0 limit', (done) => {
+            request(app).get('/stories/unrated?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(500, done);
+        });
 
 
     });
