@@ -310,7 +310,7 @@ it('can find unrated stories - findUnratedStories API', async () => {
     await storyDao.createStory(story5);
     await storyDao.createStory(story1);
 
-    const resultStories = await storyDao.findUnratedStories(2);
+    const resultStories = await storyDao.findUnratedStories();
     stories = [story5];
     expect(resultStories.length === 1)
 })
@@ -430,35 +430,35 @@ it('can find unrated stories - findUnratedStories API', async () => {
         });
 
         it('/stories/place - return unrated stories paginated', (done) => {
-            request(app).get('/stories/unrated/10?page=1&limit=10')
+            request(app).get('/stories/unrated?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
         it('/stories/place - return unrated stories paginated error', (done) => {
-            request(app).get('/stories/unrated/10?page=aaaa&limit=10')
+            request(app).get('/stories/unrated?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
         it('/stories/place - return unrated stories negative page number', (done) => {
-            request(app).get('/stories/unrated/10?page=-1&limit=10')
+            request(app).get('/stories/unrated?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
         it('/stories/place - return unrated stories negative limit', (done) => {
-            request(app).get('/stories/unrated/10?page=1&limit=-10')
+            request(app).get('/stories/unrated?page=1&limit=-10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
         it('/stories/place - return unrated stories 0 limit', (done) => {
-            request(app).get('/stories/unrated/10?page=1&limit=0')
+            request(app).get('/stories/unrated?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(500, done);

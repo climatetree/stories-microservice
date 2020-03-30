@@ -276,7 +276,7 @@ module.exports = app => {
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle);
     app.get('/stories/topStories/:numberOfStories', findTopStories)
-    app.get('/stories/unrated/:numberOfStories', findUnratedStories)
+    app.get('/stories/unrated', findUnratedStories)
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
