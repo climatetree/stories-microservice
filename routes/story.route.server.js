@@ -219,8 +219,8 @@ module.exports = app => {
             if(story){
                 commentDao.addComment(userId,content,date,username).then(comment => {
                     story.comments.push(comment);
-                    storyDao.updateStory(story.story_id,story).then(updatedStory => {
-                        res.send(updatedStory)
+                    storyDao.updateStory(story.story_id,story).then(() => {
+                        res.send(comment);
                     })
                 });
             }
