@@ -213,10 +213,11 @@ module.exports = app => {
         const userId = req.body.userId;
         const content = req.body.content;
         const date = req.body.date;
+        const username = req.body.username;
 
         storyDao.findStoryByStoryID(storyId).then(story => {
             if(story){
-                commentDao.addComment(userId,content,date).then(comment => {
+                commentDao.addComment(userId,content,date,username).then(comment => {
                     story.comments.push(comment);
                     storyDao.updateStory(story.story_id,story).then(updatedStory => {
                         res.send(updatedStory)
