@@ -20,7 +20,7 @@ module.exports = app => {
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
             console.log("Error");
-            return res.status(500).send({"Error": "Invalid Query Params"})
+            return res.status(400).send({"Error": "Invalid Query Params"})
         }
         storyDao.findAllStories(limit, page).then(stories => res.json(stories));
     };
@@ -53,7 +53,7 @@ module.exports = app => {
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
             console.log("Error");
-            return res.status(500).send({"Error": "Invalid Query Params"})
+            return res.status(400).send({"Error": "Invalid Query Params"})
         }
         
         storyDao.findStoryByPlaceID(req.params.placeID, limit, page).exec((error,stories) => {
@@ -75,7 +75,7 @@ module.exports = app => {
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
             console.log("Error");
-            return res.status(500).send({"Error": "Invalid Query Params"})
+            return res.status(400).send({"Error": "Invalid Query Params"})
         }
         storyDao.findStoryByTitle(req.params.title, limit, page).exec((err,stories) => {
             res.json(stories)
@@ -93,7 +93,7 @@ module.exports = app => {
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
             console.log("Error");
-            return res.status(500).send({"Error": "Invalid Query Params"})
+            return res.status(400).send({"Error": "Invalid Query Params"})
         }
         storyDao.findStoryByDescription(req.params.description, limit, page).exec((err,stories) => {
             res.json(stories)
@@ -114,7 +114,7 @@ module.exports = app => {
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
             console.log("Error")
-            return res.status(500).send({"Error": "Invalid Query Params"})
+            return res.status(400).send({"Error": "Invalid Query Params"})
         }
 
         storyDao.findUnratedStories(limit, page).exec((err,stories) => {
@@ -233,8 +233,7 @@ module.exports = app => {
         })
     };
 
-    // Only allows users to delete their own comment
-//Todo: Modify to allow moderators or admin to delete as well.
+    // Only allows users to delete their own comment. Moderators and Admin can delete any comment.
     const deleteComment = (req, res) => {
         const storyId = req.body.storyId;
         const userId = req.body.userId;

@@ -352,21 +352,21 @@ it('can find unrated stories - findUnratedStories API', async () => {
             request(app).get('/stories?page=aaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories - return all stories paginated negative number', (done) => {
             request(app).get('/stories?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories - return all stories paginated limit 0', (done) => {
             request(app).get('/stories?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/:storyId - return 404 if story not found', (done) => {
@@ -387,7 +387,7 @@ it('can find unrated stories - findUnratedStories API', async () => {
             request(app).get('/stories/title/ISRO?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/description - return stories paginated', (done) => {
@@ -401,49 +401,49 @@ it('can find unrated stories - findUnratedStories API', async () => {
             request(app).get('/stories/description/coffee?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/title - return story titles paginated negative page number', (done) => {
             request(app).get('/stories/title/ISRO?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/title - return story titles paginated page number as 0', (done) => {
             request(app).get('/stories/title/ISRO?page=0&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/title - return story titles paginated error limit is negative', (done) => {
             request(app).get('/stories/title/ISRO?page=1&limit=-1')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/description - return stories paginated negative page number', (done) => {
             request(app).get('/stories/description/ISRO?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/description - return stories paginated page number as 0', (done) => {
             request(app).get('/stories/description/ISRO?page=0&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/description - return stories paginated error limit is negative', (done) => {
             request(app).get('/stories/description/ISRO?page=1&limit=-1')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return story by place paginated', (done) => {
@@ -457,28 +457,28 @@ it('can find unrated stories - findUnratedStories API', async () => {
             request(app).get('/stories/place/0?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return story by place negative page number', (done) => {
             request(app).get('/stories/place/0?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return story by place negative limit', (done) => {
             request(app).get('/stories/place/0?page=1&limit=-10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return story by place 0 limit', (done) => {
             request(app).get('/stories/place/0?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return unrated stories paginated', (done) => {
@@ -492,28 +492,28 @@ it('can find unrated stories - findUnratedStories API', async () => {
             request(app).get('/stories/unrated?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return unrated stories negative page number', (done) => {
             request(app).get('/stories/unrated?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return unrated stories negative limit', (done) => {
             request(app).get('/stories/unrated?page=1&limit=-10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
         it('/stories/place - return unrated stories 0 limit', (done) => {
             request(app).get('/stories/unrated?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
-                .expect(500, done);
+                .expect(400, done);
         });
 
 
