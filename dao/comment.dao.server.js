@@ -10,13 +10,14 @@ const deleteComment = (commentId) => commentModel.deleteOne({comment_id:commentI
     console.log("1 document deleted");
 });
 
-const addComment = (userId, comment, date) => {
+const addComment = (userId, comment, date, username) => {
     const commentId = ObjectID().str;
     return commentModel.create({
         comment_id: commentId,
         date,
         user_id: userId,
-        content: comment
+        content: comment,
+        user_name: username
     })
 };
 
