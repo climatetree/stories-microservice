@@ -55,7 +55,7 @@ module.exports = app => {
             console.log("Error");
             return res.status(400).send({"Error": "Invalid Query Params"})
         }
-        
+
         storyDao.findStoryByPlaceID(req.params.placeID, limit, page).exec((error,stories) => {
             if(error) {
                 res.status(500).send({error});
@@ -126,8 +126,8 @@ module.exports = app => {
     createStory = (req, res) =>
         storyDao.createStory(req.body)
                 .then((story) => res.json(story),
-                      (error) => res.status(500).send({error}));   
-                
+                      (error) => res.status(500).send({error}));
+
 
     deleteStory = (req, res) => {
         const {storyId} = req.params;
@@ -139,7 +139,7 @@ module.exports = app => {
             if(error) {
                 return res.status(500).send({error});
             }
-            
+
             res.json(removed);
         });
     };
@@ -248,8 +248,8 @@ module.exports = app => {
                             || user_role === role.ADMIN || user_role === role.MODERATOR) {
                             story.comments = story.comments.filter(update => update.comment_id !== commentId);
                             commentDao.deleteComment(commentId);
-                            storyDao.updateStory(story.story_id, story).then(updatedStory => {
-                                res.send(updatedStory)
+                            storyDao.updateStory(story.story_id, story).then(() => {
+                                res.status(200).send();
                             });
                         } else {
                             res.status(403).send({
@@ -308,5 +308,5 @@ module.exports = app => {
     app.delete('/stories/story/comment',deleteComment);
     // preview
     app.get('/stories/getPreview',getPreview);
-    
+
 };   
