@@ -1,0 +1,11 @@
+ADMIN = 1;
+MODERATOR = 2;
+REGISTERED_USER = 3;
+GUEST_USER = 4;
+
+
+module.exports = {
+    ADMIN,
+    MODERATOR,
+    REGISTERED_USER
+};

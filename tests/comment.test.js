@@ -4,6 +4,7 @@ const dbHandler = require('./db.handler');
 const storyDao = require('../dao/story.dao.server');
 const storyModel = require('../models/story.model.server');
 const commentDao = require('../dao/comment.dao.server');
+const role = require('../constants/role');
 
 const app = require('../app');
 let server, agent;
@@ -15,7 +16,7 @@ describe('End Points for Stories', () => {
      */
     beforeAll(async(done) => {
         await dbHandler.connect();
-        server = app.listen(3000, (err) => {
+        server = app.listen(3001, (err) => {
             if (err) return done(err);
             agent = request.agent(server); // since the application is already listening, it should use the allocated port
             done();
@@ -181,7 +182,8 @@ describe('End Points for Stories', () => {
             request(app).delete('/stories/story/comment').send({
                 "storyId": "5e52f1b01b45c660789837de",
                 "userId": 456,
-                "commentId": "5e6db1e7d105af099c922fca"
+                "commentId": "5e6db1e7d105af099c922fca",
+                "role": role.REGISTERED_USER
             })
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
@@ -199,7 +201,42 @@ describe('End Points for Stories', () => {
             request(app).delete('/stories/story/comment').send({
                 "storyId": story.story_id,
                 "userId": comment2.user_id,
-                "commentId": story.comments[0].comment_id
+                "commentId": story.comments[0].comment_id,
+                "role": role.REGISTERED_USER
+            })
+                .expect(200, done);
+        });
+
+        it('/stories/story/comment - can delete a comment if moderator', async (done)  => {
+            const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
+            const story = await storyDao.findAllStories(1,1).then((story) => {
+                if(story){
+                    story[0].comments.push(createdComment);
+                    return story[0];
+                }
+            });
+            request(app).delete('/stories/story/comment').send({
+                "storyId": story.story_id,
+                "userId": comment2.user_id,
+                "commentId": story.comments[0].comment_id,
+                "role": role.MODERATOR
+            })
+                .expect(200, done);
+        });
+
+        it('/stories/story/comment - can delete a comment if an admin', async (done)  => {
+            const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
+            const story = await storyDao.findAllStories(1,1).then((story) => {
+                if(story){
+                    story[0].comments.push(createdComment);
+                    return story[0];
+                }
+            });
+            request(app).delete('/stories/story/comment').send({
+                "storyId": story.story_id,
+                "userId": comment2.user_id,
+                "commentId": story.comments[0].comment_id,
+                "role": role.ADMIN
             })
                 .expect(200, done);
         });
