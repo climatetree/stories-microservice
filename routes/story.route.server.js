@@ -249,10 +249,7 @@ module.exports = app => {
                             story.comments = story.comments.filter(update => update.comment_id !== commentId);
                             commentDao.deleteComment(commentId);
                             storyDao.updateStory(story.story_id, story).then(() => {
-                                res.status(200).send({
-                                    success: true,
-                                    message: "Comment successfully deleted."
-                                });
+                                res.status(200).send();
                             });
                         } else {
                             res.status(403).send({
