@@ -187,7 +187,7 @@ module.exports = app => {
                 if(!story) {
                     return res.status(404).send();
                 }
-                user_id =  parseInt(req.params.userID,10);
+                let user_id =  parseInt(req.params.userID,10);
                 if(isNaN(user_id)){
                     console.log("User id not a number");
                     return res.status(400).send({"Error": "Invalid Query Params"})
@@ -205,7 +205,7 @@ module.exports = app => {
                 if(!story) {
                     return res.status(404).send();
                 }
-                user_id =  parseInt(req.params.userID,10);
+                let user_id =  parseInt(req.params.userID,10);
                 if(isNaN(user_id)){
                     console.log("User id not a number");
                     return res.status(400).send({"Error": "Invalid Query Params"})
