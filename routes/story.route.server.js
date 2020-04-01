@@ -181,6 +181,46 @@ module.exports = app => {
             });
     };
 
+    const flagStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                if(!story) {
+                    return res.status(404).send();
+                }
+                user_id =  parseInt(req.params.userID,10);
+                if(isNaN(user_id)){
+                    console.log("User id not a number");
+                    return res.status(400).send({"Error": "Invalid Query Params"})
+                }
+                const updatedStory = storyDao.flagStory(story, user_id);
+                storyDao.updateStory(story.story_id, updatedStory).then(response => {
+                    res.send(response);
+                });
+            });
+    };
+
+    const unflagStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                if(!story) {
+                    return res.status(404).send();
+                }
+                user_id =  parseInt(req.params.userID,10);
+                if(isNaN(user_id)){
+                    console.log("User id not a number");
+                    return res.status(400).send({"Error": "Invalid Query Params"})
+                }
+                const updatedStory = storyDao.unflagStory(story, user_id);
+                if(updatedStory) {
+                    storyDao.updateStory(story.story_id, updatedStory).then(response => {
+                        res.send(response);
+                    });
+                } else {
+                    res.send(story);
+                }
+            });
+    };
+
     addRatingToStory = (req, res) => {
         if (!ObjectID.isValid(req.body.storyID)) {
             return res.status(404).send();
@@ -301,6 +341,8 @@ module.exports = app => {
     app.put('/stories/update/:storyId', updateStory);
     app.put('/stories/:storyID/like/:userID', likeStory);
     app.put('/stories/:storyID/unlike/:userID', unlikeStory);
+    app.put('/stories/:storyID/flag/:userID', flagStory);
+    app.put('/stories/:storyID/unflag/:userID', unflagStory);
     app.put('/stories/rating/update', addRatingToStory);
     //Comments
     app.post('/stories/story/comment',addComment);

@@ -15,7 +15,8 @@ const storySchema = mongoose.Schema({
     description:String,
     strategy:[String],
     comments:[commentSchema],
-    liked_by_users: []
+    liked_by_users: [],
+    flagged_by_users: []
     },{
     toObject: {
         transform (doc, ret) {

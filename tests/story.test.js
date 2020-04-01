@@ -313,6 +313,22 @@ it('user can unlike a story - unlikeStory API', async () => {
 
 });
 
+    it('user can flag a story - flagStory API', async () => {
+        user_id = 1;
+        const createdStory = await storyDao.createStory(story1);
+        const resultStory = await storyDao.flagStory(createdStory, user_id);
+        expect(resultStory.flagged_by_users.includes(user_id)).toBeTruthy();
+    });
+
+    it('user can unflag a story - unflagStory API', async () => {
+        user_id = 1;
+        const createdStory = await storyDao.createStory(story1);
+        const resultLikedStory = await storyDao.flagStory(createdStory, user_id);
+        const resultUnlikedStory = await storyDao.unflagStory(resultLikedStory, user_id);
+        expect(resultUnlikedStory.liked_by_users.includes(user_id)).toBeFalsy();
+
+    });
+
 it('can find top n recent stories - findTopStories API', async () => {
     await storyDao.createStory(story2);
     await storyDao.createStory(story1);
@@ -576,6 +592,77 @@ it('can find unrated stories - findUnratedStories API', async () => {
                 .expect(200, done);
         });
 
+        it('/stories/:storyID/flag/:userID - flag a story', async (done) => {
+            const user_id = 1;
+            const createdStory = await storyDao.createStory(story1);
+            const story_id = createdStory.story_id;
+
+            request(app).put('/stories/'+story_id+'/flag/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('/stories/:storyID/flag/:userID - flag a story when story not found', async (done) => {
+            const user_id = 1;
+            const story_id = 90;
+
+            request(app).put('/stories/'+story_id+'/flag/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(404, done);
+        });
+
+        it('/stories/:storyID/unflag/:userID - flag a story when userID is malformed', async (done) => {
+            const user_id = "aaa";
+            const createdStory = await storyDao.createStory(story2);
+            const story_id = createdStory.story_id;
+
+            request(app).put('/stories/'+story_id+'/flag/'+user_id)
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);;
+        });
+
+        it('/stories/:storyID/unflag/:userID - unflag a story', async (done) => {
+            const user_id = 1;
+            const createdStory = await storyDao.createStory(story2);
+            const resultLikedStory = await storyDao.flagStory(createdStory, user_id);
+            const story_id = resultLikedStory.story_id;
+
+            request(app).put('/stories/'+story_id+'/unflag/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('/stories/:storyID/unflag/:userID - unflag a story when story not found', async (done) => {
+            const user_id = 1;
+            const story_id = 90;
+
+            request(app).put('/stories/'+story_id+'/unflag/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(404, done);
+        });
+
+        it('/stories/:storyID/unflag/:userID - unflag a story when userID is not available', async (done) => {
+            const user_id = 1;
+            const createdStory = await storyDao.createStory(story2);
+            const story_id = createdStory.story_id;
+
+            request(app).put('/stories/'+story_id+'/unflag/'+user_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('/stories/:storyID/unflag/:userID - unflag a story when userID is malformed', async (done) => {
+            const user_id = "aaa";
+            const createdStory = await storyDao.createStory(story2);
+            const story_id = createdStory.story_id;
+
+            request(app).put('/stories/'+story_id+'/unflag/'+user_id)
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);;
+        });
+
         it('/stories/getPreview - get metadata for link preview', async (done) => {
         const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
             
@@ -583,7 +670,7 @@ it('can find unrated stories - findUnratedStories API', async () => {
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
-        it('/stories/getPreview - get metadata for link preview', async (done) => {
+        it('/stories/getPreview - get metadata for link preview( incorrect url)', async (done) => {
             const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
                 
                 request(app).get('/stories/getPreview?hyperlink='+incorrect_url)
