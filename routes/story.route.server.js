@@ -123,6 +123,25 @@ module.exports = app => {
 
     }
 
+    findStoryBySolution = (req,res)=> {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+
+        storyDao.findStoryBySolution(req.params.solution, limit, page).exec((error,stories) => {
+            res.json(stories);
+        });
+    }
+
     createStory = (req, res) =>
         storyDao.createStory(req.body)
                 .then((story) => res.json(story),
@@ -336,6 +355,7 @@ module.exports = app => {
     app.get('/stories/topStories/:numberOfStories', findTopStories)
     app.get('/stories/unrated', findUnratedStories)
     app.get('/stories/description/:description',findStoryByDescription);
+    app.get('/stories/solution/:solution', findStoryBySolution);
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
