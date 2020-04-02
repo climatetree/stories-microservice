@@ -43,6 +43,25 @@ const unlikeStory = (story, userID) => {
     return null;
 };
 
+const flagStory = (story, userID) => {
+    if(!story.flagged_by_users.includes(userID)){
+        story.flagged_by_users.push(userID);
+        return story;
+    }
+    return story;
+
+};
+
+const unflagStory = (story, userID) => {
+    for(let i=0; i<story.flagged_by_users.length; i++){
+        if(story.flagged_by_users[i] === userID){
+            story.flagged_by_users.splice(i, 1);
+            return story;
+        }
+    }
+    return null;
+};
+
 module.exports = {
     findAllStories,
     findStoryByStoryID,
@@ -56,4 +75,6 @@ module.exports = {
     updateStory,
     likeStory,
     unlikeStory,
+    flagStory,
+    unflagStory
 };
