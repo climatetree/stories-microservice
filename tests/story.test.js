@@ -541,6 +541,84 @@ it('can find unrated stories - findUnratedStories API', async () => {
                 .expect(400, done);
         });
 
+    
+
+
+
+
+
+        it('/stories/strategy - return strategy paginated', (done) => {
+            request(app).get('/stories/strategy/test?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+
+        it('/stories/strategy - return strategy paginated error', (done) => {
+            request(app).get('/stories/strategy/test?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/strategy - return strategy negative page number', (done) => {
+            request(app).get('/stories/strategy/test?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/strategy - return strategy negative limit', (done) => {
+            request(app).get('/stories/strategy/test?page=1&limit=-10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/strategy - return strategy 0 limit', (done) => {
+            request(app).get('/stories/strategy/test?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/sector - return sector paginated', (done) => {
+            request(app).get('/stories/sector/test?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+
+        it('/stories/sector - return sector paginated error', (done) => {
+            request(app).get('/stories/sector/test?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/sector - return sector negative page number', (done) => {
+            request(app).get('/stories/sector/test?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/sector - return sector negative limit', (done) => {
+            request(app).get('/stories/sector/test?page=1&limit=-10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/sector - return sector 0 limit', (done) => {
+            request(app).get('/stories/sector/test?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
         it('/stories/unrated - return unrated stories paginated', (done) => {
             request(app).get('/stories/unrated?page=1&limit=10')
                 .set('Accept', 'application/json')

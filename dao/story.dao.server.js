@@ -11,6 +11,10 @@ findStoryByPlaceID = (placeID, limit, page) => storyModel.find({place_ids:{$elem
 
 findStoryBySolution = (solution_name, limit, page) => storyModel.find({solution:{$elemMatch:{$eq:solution_name}}}).skip((page-1)*limit).limit(limit);
 
+findStoryBySector = (sector_name, limit, page) => storyModel.find({sector: {$elemMatch:{$eq:sector_name}}}).skip((page-1)*limit).limit(limit);
+
+findStoryByStrategy = (strategy_name, limit, page) => storyModel.find({strategy:{$elemMatch:{$eq:strategy_name}}}).skip((page-1)*limit).limit(limit);
+
 findStoryByTitle = (title, limit, page) => storyModel.find({story_title:{$regex: title,$options:'i'}}).skip((page-1)*limit).limit(limit);
 
 findUnratedStories = (limit, page) => storyModel.find({rating: 0}).sort({date: 'desc'}).skip((page-1)*limit).limit(limit);
@@ -70,7 +74,9 @@ module.exports = {
     findStoryByPlaceID,
     findStoryByTitle,
     findStoryByDescription,
+    findStoryBySector,
     findStoryBySolution,
+    findStoryByStrategy,
     findTopStories,
     findUnratedStories,
     createStory,
