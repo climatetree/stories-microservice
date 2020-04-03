@@ -339,6 +339,14 @@ it('can find top n recent stories - findTopStories API', async () => {
     expect(resultStories.length === 2)
 });
 
+it('can find stories by solution - findStoryBySolution API', async () => {
+    await storyDao.createStory(story5);
+    await storyDao.createStory(story1);
+
+    const resultStories = await storyDao.findStoryBySolution('Building Automation');
+    expect(resultStories.length === 1)
+})
+
 it('can find unrated stories - findUnratedStories API', async () => {
     await storyDao.createStory(story5);
     await storyDao.createStory(story1);
@@ -492,6 +500,42 @@ it('can find unrated stories - findUnratedStories API', async () => {
 
         it('/stories/place - return story by place 0 limit', (done) => {
             request(app).get('/stories/place/0?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/solution - return solutions paginated', (done) => {
+            request(app).get('/stories/solution/test?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+
+        it('/stories/solution - return solutions paginated error', (done) => {
+            request(app).get('/stories/solution/test?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/solution - return solutions negative page number', (done) => {
+            request(app).get('/stories/solution/test?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/solution - return solutions negative limit', (done) => {
+            request(app).get('/stories/solution/test?page=1&limit=-10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/stories/solution - return solutions 0 limit', (done) => {
+            request(app).get('/stories/solution/test?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
