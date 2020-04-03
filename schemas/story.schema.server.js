@@ -4,6 +4,7 @@ const commentSchema = require('./comment.schema.server');
 const storySchema = mongoose.Schema({
     story_id:String,
     user_id:Number,
+    posted_by:String,
     hyperlink:String,
     rating:Number,
     story_title:String,
