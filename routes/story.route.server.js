@@ -180,8 +180,13 @@ module.exports = app => {
 
     createStory = (req, res) =>
         storyDao.createStory(req.body)
-                .then((story) => res.json(story),
-                      (error) => res.status(500).send({error}));
+                .then((error, story) => {
+                 if(error) {
+                   return res.status(500).send({error});
+                 }
+
+                 res.json(story);
+             });
 
 
     deleteStory = (req, res) => {
@@ -190,7 +195,7 @@ module.exports = app => {
             return res.status(404).send({error: "Story doesn't exist!"});
           }
 
-        storyDao.deleteStory(storyId).then((error, removed) => {
+        storyDao.deleteStory(storyId).exec((error, removed) => {
             if(error) {
                 return res.status(500).send({error});
             }
