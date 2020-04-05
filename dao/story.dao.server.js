@@ -67,6 +67,8 @@ const unflagStory = (story, userID) => {
     }
     return null;
 };
+const getSortedFlagged = (numberOfStories) =>
+    storyModel.find({ $where: "this.flagged_by_users.length > 0" }).sort({flagged_by_users: 'desc'}).limit(parseInt(numberOfStories));
 
 module.exports = {
     findAllStories,
@@ -85,5 +87,6 @@ module.exports = {
     likeStory,
     unlikeStory,
     flagStory,
-    unflagStory
+    unflagStory,
+    getSortedFlagged
 };

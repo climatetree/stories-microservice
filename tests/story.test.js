@@ -148,7 +148,8 @@ describe('End Points for Stories', () => {
                 date: '11/08/2012 04:23 AM'
             }
         ],
-        liked_by_users: []
+        liked_by_users: [],
+        flagged_by_users: [456]
     };
 
     const story4 = {
@@ -617,7 +618,7 @@ describe('End Points for Stories', () => {
 
         const resultStories = await storyDao.findStoryBySolution('Building Automation');
         expect(resultStories.length === 1)
-    })
+    });
 
     it('can find unrated stories - findUnratedStories API', async () => {
         await storyDao.createStory(story5);
@@ -626,7 +627,15 @@ describe('End Points for Stories', () => {
         const resultStories = await storyDao.findUnratedStories();
         stories = [story5];
         expect(resultStories.length === 1)
-    })
+    });
+
+    it('can return flagged stories in descending order', async () => {
+        await storyDao.createStory(story3);
+
+        const resultStories = await storyDao.getSortedFlagged(5);
+        expect(resultStories.length === 1);
+    });
+
     describe('POST/', () => {
         it('/stories/create - create a properly structured story', (done) => {
             request(app).post('/stories/create')
@@ -993,6 +1002,13 @@ describe('End Points for Stories', () => {
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
+
+        it('/stories/flagged/sorted/5 - return flagged stories in descending order with limit', (done) => {
+            request(app).get('/stories/flagged/sorted/5')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        })
 
 
     });

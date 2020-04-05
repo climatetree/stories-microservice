@@ -384,16 +384,20 @@ module.exports = app => {
         }
     };
 
+    let getSortedByFlagged = (req, res) => storyDao.getSortedFlagged(req.params.numberOfStories).then(stories => res.json(stories));
+
+
     app.get('/stories', findAllStories);
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle);
-    app.get('/stories/topStories/:numberOfStories', findTopStories)
-    app.get('/stories/unrated', findUnratedStories)
+    app.get('/stories/topStories/:numberOfStories', findTopStories);
+    app.get('/stories/unrated', findUnratedStories);
     app.get('/stories/description/:description',findStoryByDescription);
     app.get('/stories/sector/:sector', findStoryBySector);
     app.get('/stories/solution/:solution', findStoryBySolution);
     app.get('/stories/strategy/:strategy', findStoryByStrategy);
+    app.get('/stories/flagged/sorted/:numberOfStories', getSortedByFlagged);
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
