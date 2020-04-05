@@ -9,6 +9,12 @@ findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
 findStoryByPlaceID = (placeID, limit, page) => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}}).skip((page-1)*limit).limit(limit);
 
+findStoryBySolution = (solution_name, limit, page) => storyModel.find({solution:{$elemMatch:{$eq:solution_name}}}).skip((page-1)*limit).limit(limit);
+
+findStoryBySector = (sector_name, limit, page) => storyModel.find({sector: {$elemMatch:{$eq:sector_name}}}).skip((page-1)*limit).limit(limit);
+
+findStoryByStrategy = (strategy_name, limit, page) => storyModel.find({strategy:{$elemMatch:{$eq:strategy_name}}}).skip((page-1)*limit).limit(limit);
+
 findStoryByTitle = (title, limit, page) => storyModel.find({story_title:{$regex: title,$options:'i'}}).skip((page-1)*limit).limit(limit);
 
 findUnratedStories = (limit, page) => storyModel.find({rating: 0}).sort({date: 'desc'}).skip((page-1)*limit).limit(limit);
@@ -43,12 +49,34 @@ const unlikeStory = (story, userID) => {
     return null;
 };
 
+const flagStory = (story, userID) => {
+    if(!story.flagged_by_users.includes(userID)){
+        story.flagged_by_users.push(userID);
+        return story;
+    }
+    return story;
+
+};
+
+const unflagStory = (story, userID) => {
+    for(let i=0; i<story.flagged_by_users.length; i++){
+        if(story.flagged_by_users[i] === userID){
+            story.flagged_by_users.splice(i, 1);
+            return story;
+        }
+    }
+    return null;
+};
+
 module.exports = {
     findAllStories,
     findStoryByStoryID,
     findStoryByPlaceID,
     findStoryByTitle,
     findStoryByDescription,
+    findStoryBySector,
+    findStoryBySolution,
+    findStoryByStrategy,
     findTopStories,
     findUnratedStories,
     createStory,
@@ -56,4 +84,6 @@ module.exports = {
     updateStory,
     likeStory,
     unlikeStory,
+    flagStory,
+    unflagStory
 };

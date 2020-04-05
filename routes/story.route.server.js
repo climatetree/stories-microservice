@@ -123,6 +123,61 @@ module.exports = app => {
 
     }
 
+    findStoryBySolution = (req,res)=> {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+
+        storyDao.findStoryBySolution(req.params.solution, limit, page).exec((error,stories) => {
+            res.json(stories);
+        });
+    }
+
+    findStoryBySector = (req,res)=> {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.findStoryBySector(req.params.sector, limit, page).exec((error,stories) => {
+            res.json(stories);
+        });
+    }
+
+    findStoryByStrategy = (req,res)=> {
+        page = 1
+        limit = 20
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error")
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.findStoryByStrategy(req.params.strategy, limit, page).exec((error,stories) => {
+            res.json(stories);
+        });
+    }
+
     createStory = (req, res) =>
         storyDao.createStory(req.body)
                 .then((story) => res.json(story),
@@ -171,6 +226,46 @@ module.exports = app => {
         storyDao.findStoryByStoryID(req.params.storyID)
             .then(story => {
                 const updatedStory = storyDao.unlikeStory(story, parseInt(req.params.userID,10));
+                if(updatedStory) {
+                    storyDao.updateStory(story.story_id, updatedStory).then(response => {
+                        res.send(response);
+                    });
+                } else {
+                    res.send(story);
+                }
+            });
+    };
+
+    const flagStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                if(!story) {
+                    return res.status(404).send();
+                }
+                let user_id =  parseInt(req.params.userID,10);
+                if(isNaN(user_id)){
+                    console.log("User id not a number");
+                    return res.status(400).send({"Error": "Invalid Query Params"})
+                }
+                const updatedStory = storyDao.flagStory(story, user_id);
+                storyDao.updateStory(story.story_id, updatedStory).then(response => {
+                    res.send(response);
+                });
+            });
+    };
+
+    const unflagStory = (req, res) => {
+        storyDao.findStoryByStoryID(req.params.storyID)
+            .then(story => {
+                if(!story) {
+                    return res.status(404).send();
+                }
+                let user_id =  parseInt(req.params.userID,10);
+                if(isNaN(user_id)){
+                    console.log("User id not a number");
+                    return res.status(400).send({"Error": "Invalid Query Params"})
+                }
+                const updatedStory = storyDao.unflagStory(story, user_id);
                 if(updatedStory) {
                     storyDao.updateStory(story.story_id, updatedStory).then(response => {
                         res.send(response);
@@ -296,11 +391,16 @@ module.exports = app => {
     app.get('/stories/topStories/:numberOfStories', findTopStories)
     app.get('/stories/unrated', findUnratedStories)
     app.get('/stories/description/:description',findStoryByDescription);
+    app.get('/stories/sector/:sector', findStoryBySector);
+    app.get('/stories/solution/:solution', findStoryBySolution);
+    app.get('/stories/strategy/:strategy', findStoryByStrategy);
     app.post('/stories/create', createStory);
     app.delete('/stories/delete/:storyId', deleteStory);
     app.put('/stories/update/:storyId', updateStory);
     app.put('/stories/:storyID/like/:userID', likeStory);
     app.put('/stories/:storyID/unlike/:userID', unlikeStory);
+    app.put('/stories/:storyID/flag/:userID', flagStory);
+    app.put('/stories/:storyID/unflag/:userID', unflagStory);
     app.put('/stories/rating/update', addRatingToStory);
     //Comments
     app.post('/stories/story/comment',addComment);

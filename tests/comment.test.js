@@ -38,6 +38,7 @@ describe('End Points for Stories', () => {
     const story1 = new storyModel({
         story_id: '5e4e197ee1bc5896994d2cb1',
         user_id: 101,
+        posted_by: 'rameshRocks123',
         hyperlink: 'https://epa.gov/evidence/',
         rating: 1,
         story_title: 'NASA climatte change report',
@@ -58,6 +59,7 @@ describe('End Points for Stories', () => {
     });
     const story2 = new storyModel({
         story_id: '5e4e197ee1bc5896994d2cb1',
+        posted_by: 'rameshRocks123',
         user_id: 102,
         hyperlink: 'https://climate.isro.gov/climate/',
         rating: 1,
