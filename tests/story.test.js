@@ -994,6 +994,27 @@ describe('End Points for Stories', () => {
                 .expect(400, done);
         });
 
+        it('/stories/all/solution - return all solutions', (done) => {
+            request(app).get('/stories/all/solution')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/all/sector - return all sectors', (done) => {
+            request(app).get('/stories/all/sector')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/stories/all/strategy - return all strategies', (done) => {
+            request(app).get('/stories/all/strategy')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
 
     });
 
