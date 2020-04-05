@@ -7,36 +7,13 @@ const role = require('../constants/role');
 let grabity = require("grabity");
 
 
-module.exports = app => {
-
-    findAllStories = (req, res) => {
-        page = 1;
-        limit = 100;
-        if (req.query.page){
-            page = parseInt(req.query.page)
-        }
-        if (req.query.limit){
-            limit = parseInt(req.query.limit)
-        }
-        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
-            console.log("Error");
-            return res.status(400).send({"Error": "Invalid Query Params"})
-        }
-        storyDao.findAllStories(limit, page).then(stories => res.json(stories));
-    };
-
-    findAllStrategy = (req, res) => {
-        //Hardcoded for now as the new collection design is not finalized
-        // *********MUST UPDATE*********
-        strategies = ["Mitigation", "Adaptation"];
-
-        res.json(strategies);
-    }
-
-    findAllSolution = (req, res) => {
-        //Hardcoded for now as the new collection design is not finalized
-        // *********MUST UPDATE*********
-        solutions = ["District Heating", "Insulation", "LED Lighting (Household)", "Heat Pumps", "LED Lighting (Commercial)", 
+//Hardcoded for now as the new collection design is not finalized
+        // *********MUST DELETE*********
+const strategies = ["Mitigation", "Adaptation"];
+const sectors = ["Buildings and Cities", "Electricity Generation", "Food", "Land Use", "Materials", "Transport", 
+        "Women and Girls", "Ecosystem-based", "Engineered and Built Envionment", "Technological", "Services", 
+        "Educational", "Informational", "Behavioral", "Economic", "Laws and regulations", "Government policies and programs"];
+const solutions = ["District Heating", "Insulation", "LED Lighting (Household)", "Heat Pumps", "LED Lighting (Commercial)", 
         "Building Automation", "Walkable Cities", "Smart Thermostats", "Landfill Methane", "Bike Infrastructure", "Smart Glass", 
         "Water Distribution", "Green Roofs", "Net Zero Buildings", "Retrofitting", "Wind Turbines (Onshore)", "Solar Farms", "Rooftop Solar", 
         "Geothermal", "Nuclear", "Wind Turbines (Offshore)", "Concentrated Solar", "Wave and Tidal", "Methane Digesters (Large)", "Biomass", 
@@ -75,17 +52,65 @@ module.exports = app => {
         "integrated water resource management", "landscape and watershed managemen", "integrated coastal zone management", "adaptive management", "ecosystem-based management", 
         "sustainable forest management", "fisheries management", "community-based adaptation"];
 
+
+module.exports = app => {
+
+    findAllStories = (req, res) => {
+        page = 1;
+        limit = 100;
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error");
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.findAllStories(limit, page).then(stories => res.json(stories));
+    };
+
+    findAllStrategy = (req, res) => {
+        //Hardcoded for now as the new collection design is not finalized
+        // *********MUST UPDATE*********
+
+        res.json(strategies);
+    }
+
+    findAllSolution = (req, res) => {
+        //Hardcoded for now as the new collection design is not finalized
+        // *********MUST UPDATE*********
+
         res.json(solutions);
     }
 
     findAllSector = (req, res) => {
         //Hardcoded for now as the new collection design is not finalized
         // *********MUST UPDATE*********
-        sectors = ["Buildings and Cities", "Electricity Generation", "Food", "Land Use", "Materials", "Transport", 
-        "Women and Girls", "Ecosystem-based", "Engineered and Built Envionment", "Technological", "Services", 
-        "Educational", "Informational", "Behavioral", "Economic", "Laws and regulations", "Government policies and programs"];
         
         res.json(sectors);
+    }
+
+    findStrategyByName = (req, res) => {
+        //Hardcoded for now as the new collection design is not finalized
+        // *********MUST UPDATE*********
+
+        res.json(strategies.filter(word => word.toLowerCase().includes(req.params.strategy.toLowerCase())));
+    }
+
+    findSolutionByName = (req, res) => {
+        //Hardcoded for now as the new collection design is not finalized
+        // *********MUST UPDATE*********
+
+        res.json(solutions.filter(word => word.toLowerCase().includes(req.params.solution.toLowerCase())));
+    }
+
+    findSectorByName = (req, res) => {
+        //Hardcoded for now as the new collection design is not finalized
+        // *********MUST UPDATE*********
+
+        res.json(sectors.filter(word => word.toLowerCase().includes(req.params.sector.toLowerCase())));
     }
 
     findStoryByStoryID = (req, res) => {
@@ -450,7 +475,10 @@ module.exports = app => {
     app.get('/stories', findAllStories);
     app.get('/stories/all/strategy', findAllStrategy);
     app.get('/stories/all/solution', findAllSolution);
-    app.get('/stories/all/sector', findAllSector)
+    app.get('/stories/all/sector', findAllSector);
+    app.get('/stories/all/strategy/:strategy', findStrategyByName);
+    app.get('/stories/all/solution/:solution', findSolutionByName);
+    app.get('/stories/all/sector/:sector', findSectorByName);
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle);
