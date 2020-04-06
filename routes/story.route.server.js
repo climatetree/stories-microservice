@@ -3,6 +3,7 @@ const { ObjectID } = require('mongodb');
 
 const storyDao = require('../dao/story.dao.server');
 const commentDao = require('../dao/comment.dao.server');
+const taxonomyDao=require('../dao/taxonomy.dao.server');
 const role = require('../constants/role');
 let grabity = require("grabity");
 
@@ -76,42 +77,55 @@ module.exports = app => {
         // *********MUST UPDATE*********
 
         res.json(strategies);
-    }
+    };
 
     findAllSolution = (req, res) => {
         //Hardcoded for now as the new collection design is not finalized
         // *********MUST UPDATE*********
 
         res.json(solutions);
-    }
+    };
 
     findAllSector = (req, res) => {
         //Hardcoded for now as the new collection design is not finalized
         // *********MUST UPDATE*********
         
         res.json(sectors);
-    }
+    };
 
     findStrategyByName = (req, res) => {
         //Hardcoded for now as the new collection design is not finalized
         // *********MUST UPDATE*********
 
         res.json(strategies.filter(word => word.toLowerCase().includes(req.params.strategy.toLowerCase())));
-    }
+    };
 
     findSolutionByName = (req, res) => {
         //Hardcoded for now as the new collection design is not finalized
         // *********MUST UPDATE*********
 
         res.json(solutions.filter(word => word.toLowerCase().includes(req.params.solution.toLowerCase())));
-    }
+    };
 
     findSectorByName = (req, res) => {
         //Hardcoded for now as the new collection design is not finalized
         // *********MUST UPDATE*********
 
         res.json(sectors.filter(word => word.toLowerCase().includes(req.params.sector.toLowerCase())));
-    }
+    };
+
+    const findAllTaxonomy=(req,res)=>{
+        taxonomyDao.findAllTaxonomy().then(story=>res.json(story))};
+
+    const findTaxonomyBySolution=(req,res)=>{
+        taxonomyDao.findTaxonomyBySolution(req.params.solution).then(result=>res.json(result));
+    };
+    const findTaxonomyBySector=(req,res)=>{
+        taxonomyDao.findTaxonomyBySector(req.params.sector).then(result=>res.json(result));
+    };
+    const findTaxonomyByStrategy=(req,res)=>{
+        taxonomyDao.findTaxonomyByStrategy(req.params.strategy).then(result=>res.json(result));
+    };
 
     findStoryByStoryID = (req, res) => {
         if(!ObjectID.isValid(req.params.storyID)) {
@@ -192,8 +206,8 @@ module.exports = app => {
         storyDao.findTopStories(req.params.numberOfStories).then(stories => res.json(stories));
 
     findUnratedStories = (req, res) => {
-        page = 1
-        limit = 20
+        page = 1;
+        limit = 20;
         if (req.query.page){
             page = parseInt(req.query.page)
         }
@@ -201,7 +215,7 @@ module.exports = app => {
             limit = parseInt(req.query.limit)
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
-            console.log("Error")
+            console.log("Error");
             return res.status(400).send({"Error": "Invalid Query Params"})
         }
 
@@ -209,11 +223,11 @@ module.exports = app => {
             res.json(stories)
         });
 
-    }
+    };
 
     findStoryBySolution = (req,res)=> {
-        page = 1
-        limit = 20
+        page = 1;
+        limit = 20;
         if (req.query.page){
             page = parseInt(req.query.page)
         }
@@ -221,18 +235,18 @@ module.exports = app => {
             limit = parseInt(req.query.limit)
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
-            console.log("Error")
+            console.log("Error");
             return res.status(400).send({"Error": "Invalid Query Params"})
         }
 
         storyDao.findStoryBySolution(req.params.solution, limit, page).exec((error,stories) => {
             res.json(stories);
         });
-    }
+    };
 
     findStoryBySector = (req,res)=> {
-        page = 1
-        limit = 20
+        page = 1;
+        limit = 20;
         if (req.query.page){
             page = parseInt(req.query.page)
         }
@@ -240,17 +254,17 @@ module.exports = app => {
             limit = parseInt(req.query.limit)
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
-            console.log("Error")
+            console.log("Error");
             return res.status(400).send({"Error": "Invalid Query Params"})
         }
         storyDao.findStoryBySector(req.params.sector, limit, page).exec((error,stories) => {
             res.json(stories);
         });
-    }
+    };
 
     findStoryByStrategy = (req,res)=> {
-        page = 1
-        limit = 20
+        page = 1;
+        limit = 20;
         if (req.query.page){
             page = parseInt(req.query.page)
         }
@@ -258,13 +272,13 @@ module.exports = app => {
             limit = parseInt(req.query.limit)
         }
         if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
-            console.log("Error")
+            console.log("Error");
             return res.status(400).send({"Error": "Invalid Query Params"})
         }
         storyDao.findStoryByStrategy(req.params.strategy, limit, page).exec((error,stories) => {
             res.json(stories);
         });
-    }
+    };
 
     createStory = (req, res) =>
         storyDao.createStory(req.body)
@@ -482,8 +496,8 @@ module.exports = app => {
     app.get('/stories/story/:storyID', findStoryByStoryID);
     app.get('/stories/place/:placeID',findStoryByPlaceID);
     app.get('/stories/title/:title',findStoryByTitle);
-    app.get('/stories/topStories/:numberOfStories', findTopStories)
-    app.get('/stories/unrated', findUnratedStories)
+    app.get('/stories/topStories/:numberOfStories', findTopStories);
+    app.get('/stories/unrated', findUnratedStories);
     app.get('/stories/description/:description',findStoryByDescription);
     app.get('/stories/sector/:sector', findStoryBySector);
     app.get('/stories/solution/:solution', findStoryBySolution);
@@ -503,4 +517,9 @@ module.exports = app => {
     // preview
     app.get('/stories/getPreview',getPreview);
 
+    //taxonomy
+    app.get('/stories/taxonomy',findAllTaxonomy);
+    app.get('/stories/taxonomy/solution/:solution',findTaxonomyBySolution);
+    app.get('/stories/taxonomy/strategy/:strategy',findTaxonomyByStrategy);
+    app.get('/stories/taxonomy/sector/:sector',findTaxonomyBySector);
 };   
