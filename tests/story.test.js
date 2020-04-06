@@ -1010,6 +1010,20 @@ describe('End Points for Stories', () => {
                 .expect(200, done);
         })
 
+        it('/stories/flagged/sorted/aaa - wrong parametrs', (done) => {
+            request(app).get('/stories/flagged/sorted/aaa')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        })
+
+        it('/stories/flagged/sorted/-1 - return flagged stories negative paramter', (done) => {
+            request(app).get('/stories/flagged/sorted/-1')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        })
+
 
     });
 

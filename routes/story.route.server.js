@@ -384,7 +384,14 @@ module.exports = app => {
         }
     };
 
-    let getSortedByFlagged = (req, res) => storyDao.getSortedFlagged(req.params.numberOfStories).then(stories => res.json(stories));
+    let getSortedByFlagged = (req, res) => {
+        const numberOfStoriesToSend = parseInt(req.params.numberOfStories);
+        if (isNaN(numberOfStoriesToSend) || numberOfStoriesToSend <= 0) { //If non integer values provided for limit or page
+            console.log("Error");
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.getSortedFlagged(numberOfStoriesToSend).then(stories => res.json(stories));
+    };
 
 
     app.get('/stories', findAllStories);

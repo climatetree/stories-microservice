@@ -67,8 +67,14 @@ const unflagStory = (story, userID) => {
     }
     return null;
 };
+// const getSortedFlagged = (numberOfStories) =>
+//     storyModel.find({ $where: "this.flagged_by_users.length > 0" }).sort({flagged_by_users: 'desc'}).limit(parseInt(numberOfStories));
 const getSortedFlagged = (numberOfStories) =>
-    storyModel.find({ $where: "this.flagged_by_users.length > 0" }).sort({flagged_by_users: 'desc'}).limit(parseInt(numberOfStories));
+    storyModel.aggregate([
+        {$unwind: "$flagged_by_users"},
+        {$group: {"_id": "$_id","story_id":  { "$first": "$story_id" }, answers: {$push:"$flagged_by_users"}, size: {$sum:1}}},
+        {$sort:{size:-1}}]).limit(parseInt(numberOfStories));
+
 
 module.exports = {
     findAllStories,
