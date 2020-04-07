@@ -18,7 +18,7 @@ describe('End Points for Stories', () => {
 
     beforeAll(async (done) => {
         await dbHandler.connect();
-        server = app.listen(3001, (err) => {
+        server = app.listen(3002, (err) => {
             if (err) return done(err);
             agent = request.agent(server); // since the application is already listening, it should use the allocated port
             t1.save();t2.save();t3.save();
