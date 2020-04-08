@@ -142,9 +142,9 @@ describe('End Points for Stories', () => {
     });
 
     describe('POST/', () => {
-        it('/stories/story/comment - cannot a comment when story not found', (done) => {
+        it('/v1/stories/story/comment - cannot a comment when story not found', (done) => {
 
-            request(app).post('/stories/story/comment').send({
+            request(app).post('/v1/stories/story/comment').send({
                 "storyId": "5e4e197ee1bc5896994d2cb1",
                 "userId": 123,
                 "content": "This is test comment",
@@ -154,9 +154,9 @@ describe('End Points for Stories', () => {
                 .expect(403, done);
         });
 
-        it('/stories/story/comment - can add a comment when story is found', async (done) => {
+        it('/v1/stories/story/comment - can add a comment when story is found', async (done) => {
             const story = await storyDao.findAllStories(1,1).then((story) => story[0]);
-            request(app).post('/stories/story/comment').send({
+            request(app).post('/v1/stories/story/comment').send({
                 "storyId": story.story_id,
                 "userId": 123,
                 "content": "This is test comment",
@@ -169,8 +169,8 @@ describe('End Points for Stories', () => {
 
     describe('GET/',  () => {
 
-        it('/stories/comment - return all comments', (done) => {
-            request(app).get('/stories/comment')
+        it('/v1/stories/comment - return all comments', (done) => {
+            request(app).get('/v1/stories/comment')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
@@ -180,8 +180,8 @@ describe('End Points for Stories', () => {
 
     describe('DELETE/',  () => {
 
-        it('/stories/story/comment - cannot delete a comment if the userId does not match', (done) => {
-            request(app).delete('/stories/story/comment').send({
+        it('/v1/stories/story/comment - cannot delete a comment if the userId does not match', (done) => {
+            request(app).delete('/v1/stories/story/comment').send({
                 "storyId": "5e52f1b01b45c660789837de",
                 "userId": 456,
                 "commentId": "5e6db1e7d105af099c922fca",
@@ -192,7 +192,7 @@ describe('End Points for Stories', () => {
                 .expect(403, done);
         });
 
-        it('/stories/story/comment - can delete a comment if the comment exists', async (done)  => {
+        it('/v1/stories/story/comment - can delete a comment if the comment exists', async (done)  => {
             const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
             const story = await storyDao.findAllStories(1,1).then((story) => {
                 if(story){
@@ -200,7 +200,7 @@ describe('End Points for Stories', () => {
                     return story[0];
                 }
             });
-            request(app).delete('/stories/story/comment').send({
+            request(app).delete('/v1/stories/story/comment').send({
                 "storyId": story.story_id,
                 "userId": comment2.user_id,
                 "commentId": story.comments[0].comment_id,
@@ -209,7 +209,7 @@ describe('End Points for Stories', () => {
                 .expect(200, done);
         });
 
-        it('/stories/story/comment - can delete a comment if moderator', async (done)  => {
+        it('/v1/stories/story/comment - can delete a comment if moderator', async (done)  => {
             const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
             const story = await storyDao.findAllStories(1,1).then((story) => {
                 if(story){
@@ -217,7 +217,7 @@ describe('End Points for Stories', () => {
                     return story[0];
                 }
             });
-            request(app).delete('/stories/story/comment').send({
+            request(app).delete('/v1/stories/story/comment').send({
                 "storyId": story.story_id,
                 "userId": comment2.user_id,
                 "commentId": story.comments[0].comment_id,
@@ -226,7 +226,7 @@ describe('End Points for Stories', () => {
                 .expect(200, done);
         });
 
-        it('/stories/story/comment - can delete a comment if an admin', async (done)  => {
+        it('/v1/stories/story/comment - can delete a comment if an admin', async (done)  => {
             const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
             const story = await storyDao.findAllStories(1,1).then((story) => {
                 if(story){
@@ -234,7 +234,7 @@ describe('End Points for Stories', () => {
                     return story[0];
                 }
             });
-            request(app).delete('/stories/story/comment').send({
+            request(app).delete('/v1/stories/story/comment').send({
                 "storyId": story.story_id,
                 "userId": comment2.user_id,
                 "commentId": story.comments[0].comment_id,
