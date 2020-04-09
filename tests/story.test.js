@@ -993,50 +993,6 @@ describe('End Points for Stories', () => {
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
-
-        it('/v1/stories/all/solution - return all solutions', (done) => {
-            request(app).get('/v1/stories/all/solution')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/sector - return all sectors', (done) => {
-            request(app).get('/v1/stories/all/sector')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/strategy - return all strategies', (done) => {
-            request(app).get('/v1/stories/all/strategy')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/solution/:solution - return solutions containing string test', (done) => {
-            request(app).get('/v1/stories/all/solution/test')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/sector/:sector - return sectors containing string test', (done) => {
-            request(app).get('/v1/stories/all/sector/test')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/strategy/:strategy - return strategies containing string test', (done) => {
-            request(app).get('/v1/stories/all/strategy/test')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-
     });
 
     describe('DELETE/', () => {
