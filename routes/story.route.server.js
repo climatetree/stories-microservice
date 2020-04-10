@@ -398,6 +398,16 @@ module.exports = app => {
         }
     };
 
+    let getSortedByFlagged = (req, res) => {
+        const numberOfStoriesToSend = parseInt(req.params.numberOfStories);
+        if (isNaN(numberOfStoriesToSend) || numberOfStoriesToSend <= 0) { //If non integer values provided for limit or page
+            console.log("Error");
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.getSortedFlagged(numberOfStoriesToSend).then(stories => res.json(stories));
+    };
+
+
     app.get('/v1/stories', findAllStories);
     app.get('/v1/stories/story/:storyID', findStoryByStoryID);
     app.get('/v1/stories/place/:placeID',findStoryByPlaceID);
@@ -408,6 +418,7 @@ module.exports = app => {
     app.get('/v1/stories/sector/:sector', findStoryBySector);
     app.get('/v1/stories/solution/:solution', findStoryBySolution);
     app.get('/v1/stories/strategy/:strategy', findStoryByStrategy);
+    app.get('/v1/stories/flagged/sorted/:numberOfStories', getSortedByFlagged);
     app.post('/v1/stories/create', createStory);
     app.delete('/v1/stories/delete/:storyId', deleteStory);
     app.put('/v1/stories/update/:storyId', updateStory);
@@ -416,6 +427,7 @@ module.exports = app => {
     app.put('/v1/stories/:storyID/flag/:userID', flagStory);
     app.put('/v1/stories/:storyID/unflag/:userID', unflagStory);
     app.put('/v1/stories/rating/update', addRatingToStory);
+
     //Comments
     app.post('/v1/stories/story/comment',addComment);
     app.get('/v1/stories/comment',findAllComments);
