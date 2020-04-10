@@ -398,34 +398,34 @@ module.exports = app => {
         }
     };
 
-    app.get('/stories', findAllStories);
-    app.get('/stories/story/:storyID', findStoryByStoryID);
-    app.get('/stories/place/:placeID',findStoryByPlaceID);
-    app.get('/stories/title/:title',findStoryByTitle);
-    app.get('/stories/topStories/:numberOfStories', findTopStories);
-    app.get('/stories/unrated', findUnratedStories);
-    app.get('/stories/description/:description',findStoryByDescription);
-    app.get('/stories/sector/:sector', findStoryBySector);
-    app.get('/stories/solution/:solution', findStoryBySolution);
-    app.get('/stories/strategy/:strategy', findStoryByStrategy);
-    app.post('/stories/create', createStory);
-    app.delete('/stories/delete/:storyId', deleteStory);
-    app.put('/stories/update/:storyId', updateStory);
-    app.put('/stories/:storyID/like/:userID', likeStory);
-    app.put('/stories/:storyID/unlike/:userID', unlikeStory);
-    app.put('/stories/:storyID/flag/:userID', flagStory);
-    app.put('/stories/:storyID/unflag/:userID', unflagStory);
-    app.put('/stories/rating/update', addRatingToStory);
+    app.get('/v1/stories', findAllStories);
+    app.get('/v1/stories/story/:storyID', findStoryByStoryID);
+    app.get('/v1/stories/place/:placeID',findStoryByPlaceID);
+    app.get('/v1/stories/title/:title',findStoryByTitle);
+    app.get('/v1/stories/topStories/:numberOfStories', findTopStories);
+    app.get('/v1/stories/unrated', findUnratedStories);
+    app.get('/v1/stories/description/:description',findStoryByDescription);
+    app.get('/v1/stories/sector/:sector', findStoryBySector);
+    app.get('/v1/stories/solution/:solution', findStoryBySolution);
+    app.get('/v1/stories/strategy/:strategy', findStoryByStrategy);
+    app.post('/v1/stories/create', createStory);
+    app.delete('/v1/stories/delete/:storyId', deleteStory);
+    app.put('/v1/stories/update/:storyId', updateStory);
+    app.put('/v1/stories/:storyID/like/:userID', likeStory);
+    app.put('/v1/stories/:storyID/unlike/:userID', unlikeStory);
+    app.put('/v1/stories/:storyID/flag/:userID', flagStory);
+    app.put('/v1/stories/:storyID/unflag/:userID', unflagStory);
+    app.put('/v1/stories/rating/update', addRatingToStory);
     //Comments
-    app.post('/stories/story/comment',addComment);
-    app.get('/stories/comment',findAllComments);
-    app.delete('/stories/story/comment',deleteComment);
+    app.post('/v1/stories/story/comment',addComment);
+    app.get('/v1/stories/comment',findAllComments);
+    app.delete('/v1/stories/story/comment',deleteComment);
     // preview
-    app.get('/stories/getPreview',getPreview);
+    app.get('/v1/stories/getPreview',getPreview);
 
     //taxonomy
-    app.get('/stories/taxonomy',findAllTaxonomy);
-    app.get('/stories/taxonomy/solution/:solution',findTaxonomyBySolution);
-    app.get('/stories/taxonomy/strategy/:strategy',findTaxonomyByStrategy);
-    app.get('/stories/taxonomy/sector/:sector',findTaxonomyBySector);
+    app.get('/v1/stories/taxonomy',findAllTaxonomy);
+    app.get('/v1/stories/taxonomy/solution/:solution',findTaxonomyBySolution);
+    app.get('/v1/stories/taxonomy/strategy/:strategy',findTaxonomyByStrategy);
+    app.get('/v1/stories/taxonomy/sector/:sector',findTaxonomyBySector);
 };   

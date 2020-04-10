@@ -56,23 +56,23 @@ describe('End Points for Stories', () => {
     });
 
     describe('GET/',()=>{
-        it('/stories/taxonomy can return the taxonomy by solution in the database',  (done) => {
-            request(app).get('/stories/taxonomy').set('Accept', 'application/json')
+        it('/v1/stories/taxonomy can return the taxonomy by solution in the database',  (done) => {
+            request(app).get('/v1/stories/taxonomy').set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/taxonomy/solution/:solution can return the taxonomy by solution in the database',  (done) => {
-            request(app).get('/stories/taxonomy/solution/tmp1').set('Accept', 'application/json')
+        it('/v1/stories/taxonomy/solution/:solution can return the taxonomy by solution in the database',  (done) => {
+            request(app).get('/v1/stories/taxonomy/solution/tmp1').set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/taxonomy/strategy/:strategy can return the taxonomy by strategy in the database',  (done) => {
-            request(app).get('/stories/taxonomy/strategy/tmp1').set('Accept', 'application/json')
+        it('/v1/stories/taxonomy/strategy/:strategy can return the taxonomy by strategy in the database',  (done) => {
+            request(app).get('/v1/stories/taxonomy/strategy/tmp1').set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/taxonomy/sector/:sector can return the taxonomy by sector in the database',  (done) => {
-            request(app).get('/stories/taxonomy/sector/tmp1').set('Accept', 'application/json')
+        it('/v1/stories/taxonomy/sector/:sector can return the taxonomy by sector in the database',  (done) => {
+            request(app).get('/v1/stories/taxonomy/sector/tmp1').set('Accept', 'application/json')
                 .expect(200, done);
         });
     })

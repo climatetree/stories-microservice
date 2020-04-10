@@ -628,72 +628,72 @@ describe('End Points for Stories', () => {
         expect(resultStories.length === 1)
     })
     describe('POST/', () => {
-        it('/stories/create - create a properly structured story', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create a properly structured story', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story1)
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/create - create story without posted_by', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without posted_by', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_posted_by)
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
-        it('/stories/create - create story without place_id', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without place_id', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_place_id)
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
-        it('/stories/create - create story without hyperlink', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without hyperlink', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_hyper_link)
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
-        it('/stories/create - create story without story_title', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without story_title', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_story_title)
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
-        it('/stories/create - create story without user_id', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without user_id', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_user_id)
                 .expect('Content-Type', /json/)
                 .expect(500, done);
         });
 
-        it('/stories/create - create story without sector', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without sector', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_sector)
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/create - create story without strategy', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without strategy', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_strategy)
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/create - create story without solution', (done) => {
-            request(app).post('/stories/create')
+        it('/v1/stories/create - create story without solution', (done) => {
+            request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
                 .send(story_without_solution)
                 .expect('Content-Type', /json/)
@@ -703,292 +703,292 @@ describe('End Points for Stories', () => {
 
     describe('GET/', () => {
 
-        it('/stories - return all stories', (done) => {
-            request(app).get('/stories')
+        it('/v1/stories - return all stories', (done) => {
+            request(app).get('/v1/stories')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories - return all stories paginated', (done) => {
-            request(app).get('/stories?page=1&limit=10')
+        it('/v1/stories - return all stories paginated', (done) => {
+            request(app).get('/v1/stories?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories - return all stories paginated  - page is not a number', (done) => {
-            request(app).get('/stories?page=aaa&limit=10')
+        it('/v1/stories - return all stories paginated  - page is not a number', (done) => {
+            request(app).get('/v1/stories?page=aaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories - return all stories paginated negative number', (done) => {
-            request(app).get('/stories?page=-1&limit=10')
+        it('/v1/stories - return all stories paginated negative number', (done) => {
+            request(app).get('/v1/stories?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories - return all stories paginated limit 0', (done) => {
-            request(app).get('/stories?page=1&limit=0')
+        it('/v1/stories - return all stories paginated limit 0', (done) => {
+            request(app).get('/v1/stories?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/:storyId - return 404 if story not found', (done) => {
+        it('/v1/stories/:storyId - return 404 if story not found', (done) => {
 
-            request(app).get('/stories/1')
+            request(app).get('/v1/stories/1')
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
 
-        it('/stories/title - return story titles paginated', (done) => {
-            request(app).get('/stories/title/ISRO?page=1&limit=10')
+        it('/v1/stories/title - return story titles paginated', (done) => {
+            request(app).get('/v1/stories/title/ISRO?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/title - return story titles paginated error', (done) => {
-            request(app).get('/stories/title/ISRO?page=aaaa&limit=10')
+        it('/v1/stories/title - return story titles paginated error', (done) => {
+            request(app).get('/v1/stories/title/ISRO?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/description - return stories paginated', (done) => {
-            request(app).get('/stories/description/coffee?page=1&limit=10')
+        it('/v1/stories/description - return stories paginated', (done) => {
+            request(app).get('/v1/stories/description/coffee?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/description - return stories paginated error', (done) => {
-            request(app).get('/stories/description/coffee?page=aaaa&limit=10')
+        it('/v1/stories/description - return stories paginated error', (done) => {
+            request(app).get('/v1/stories/description/coffee?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/title - return story titles paginated negative page number', (done) => {
-            request(app).get('/stories/title/ISRO?page=-1&limit=10')
+        it('/v1/stories/title - return story titles paginated negative page number', (done) => {
+            request(app).get('/v1/stories/title/ISRO?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/title - return story titles paginated page number as 0', (done) => {
-            request(app).get('/stories/title/ISRO?page=0&limit=10')
+        it('/v1/stories/title - return story titles paginated page number as 0', (done) => {
+            request(app).get('/v1/stories/title/ISRO?page=0&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/title - return story titles paginated error limit is negative', (done) => {
-            request(app).get('/stories/title/ISRO?page=1&limit=-1')
+        it('/v1/stories/title - return story titles paginated error limit is negative', (done) => {
+            request(app).get('/v1/stories/title/ISRO?page=1&limit=-1')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/description - return stories paginated negative page number', (done) => {
-            request(app).get('/stories/description/ISRO?page=-1&limit=10')
+        it('/v1/stories/description - return stories paginated negative page number', (done) => {
+            request(app).get('/v1/stories/description/ISRO?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/description - return stories paginated page number as 0', (done) => {
-            request(app).get('/stories/description/ISRO?page=0&limit=10')
+        it('/v1/stories/description - return stories paginated page number as 0', (done) => {
+            request(app).get('/v1/stories/description/ISRO?page=0&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/description - return stories paginated error limit is negative', (done) => {
-            request(app).get('/stories/description/ISRO?page=1&limit=-1')
+        it('/v1/stories/description - return stories paginated error limit is negative', (done) => {
+            request(app).get('/v1/stories/description/ISRO?page=1&limit=-1')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/place - return story by place paginated', (done) => {
-            request(app).get('/stories/place/0?page=1&limit=10')
+        it('/v1/stories/place - return story by place paginated', (done) => {
+            request(app).get('/v1/stories/place/0?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/place - return story by place paginated error', (done) => {
-            request(app).get('/stories/place/0?page=aaaa&limit=10')
+        it('/v1/stories/place - return story by place paginated error', (done) => {
+            request(app).get('/v1/stories/place/0?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/place - return story by place negative page number', (done) => {
-            request(app).get('/stories/place/0?page=-1&limit=10')
+        it('/v1/stories/place - return story by place negative page number', (done) => {
+            request(app).get('/v1/stories/place/0?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/place - return story by place negative limit', (done) => {
-            request(app).get('/stories/place/0?page=1&limit=-10')
+        it('/v1/stories/place - return story by place negative limit', (done) => {
+            request(app).get('/v1/stories/place/0?page=1&limit=-10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/place - return story by place 0 limit', (done) => {
-            request(app).get('/stories/place/0?page=1&limit=0')
+        it('/v1/stories/place - return story by place 0 limit', (done) => {
+            request(app).get('/v1/stories/place/0?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/solution - return solutions paginated', (done) => {
-            request(app).get('/stories/solution/test?page=1&limit=10')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-
-        it('/stories/solution - return solutions paginated error', (done) => {
-            request(app).get('/stories/solution/test?page=aaaa&limit=10')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(400, done);
-        });
-
-        it('/stories/solution - return solutions negative page number', (done) => {
-            request(app).get('/stories/solution/test?page=-1&limit=10')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(400, done);
-        });
-
-        it('/stories/solution - return solutions negative limit', (done) => {
-            request(app).get('/stories/solution/test?page=1&limit=-10')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(400, done);
-        });
-
-        it('/stories/solution - return solutions 0 limit', (done) => {
-            request(app).get('/stories/solution/test?page=1&limit=0')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(400, done);
-        });
-
-
-        it('/stories/strategy - return strategy paginated', (done) => {
-            request(app).get('/stories/strategy/test?page=1&limit=10')
+        it('/v1/stories/solution - return solutions paginated', (done) => {
+            request(app).get('/v1/stories/solution/test?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
 
-        it('/stories/strategy - return strategy paginated error', (done) => {
-            request(app).get('/stories/strategy/test?page=aaaa&limit=10')
+        it('/v1/stories/solution - return solutions paginated error', (done) => {
+            request(app).get('/v1/stories/solution/test?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/strategy - return strategy negative page number', (done) => {
-            request(app).get('/stories/strategy/test?page=-1&limit=10')
+        it('/v1/stories/solution - return solutions negative page number', (done) => {
+            request(app).get('/v1/stories/solution/test?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/strategy - return strategy negative limit', (done) => {
-            request(app).get('/stories/strategy/test?page=1&limit=-10')
+        it('/v1/stories/solution - return solutions negative limit', (done) => {
+            request(app).get('/v1/stories/solution/test?page=1&limit=-10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/strategy - return strategy 0 limit', (done) => {
-            request(app).get('/stories/strategy/test?page=1&limit=0')
+        it('/v1/stories/solution - return solutions 0 limit', (done) => {
+            request(app).get('/v1/stories/solution/test?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/sector - return sector paginated', (done) => {
-            request(app).get('/stories/sector/test?page=1&limit=10')
+
+        it('/v1/stories/strategy - return strategy paginated', (done) => {
+            request(app).get('/v1/stories/strategy/test?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
 
-        it('/stories/sector - return sector paginated error', (done) => {
-            request(app).get('/stories/sector/test?page=aaaa&limit=10')
+        it('/v1/stories/strategy - return strategy paginated error', (done) => {
+            request(app).get('/v1/stories/strategy/test?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/sector - return sector negative page number', (done) => {
-            request(app).get('/stories/sector/test?page=-1&limit=10')
+        it('/v1/stories/strategy - return strategy negative page number', (done) => {
+            request(app).get('/v1/stories/strategy/test?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/sector - return sector negative limit', (done) => {
-            request(app).get('/stories/sector/test?page=1&limit=-10')
+        it('/v1/stories/strategy - return strategy negative limit', (done) => {
+            request(app).get('/v1/stories/strategy/test?page=1&limit=-10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/sector - return sector 0 limit', (done) => {
-            request(app).get('/stories/sector/test?page=1&limit=0')
+        it('/v1/stories/strategy - return strategy 0 limit', (done) => {
+            request(app).get('/v1/stories/strategy/test?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/unrated - return unrated stories paginated', (done) => {
-            request(app).get('/stories/unrated?page=1&limit=10')
+        it('/v1/stories/sector - return sector paginated', (done) => {
+            request(app).get('/v1/stories/sector/test?page=1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
 
-        it('/stories/unrated - return unrated stories paginated error', (done) => {
-            request(app).get('/stories/unrated?page=aaaa&limit=10')
+
+        it('/v1/stories/sector - return sector paginated error', (done) => {
+            request(app).get('/v1/stories/sector/test?page=aaaa&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/unrated - return unrated stories negative page number', (done) => {
-            request(app).get('/stories/unrated?page=-1&limit=10')
+        it('/v1/stories/sector - return sector negative page number', (done) => {
+            request(app).get('/v1/stories/sector/test?page=-1&limit=10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/unrated - return unrated stories negative limit', (done) => {
-            request(app).get('/stories/unrated?page=1&limit=-10')
+        it('/v1/stories/sector - return sector negative limit', (done) => {
+            request(app).get('/v1/stories/sector/test?page=1&limit=-10')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
-        it('/stories/unrated - return unrated stories 0 limit', (done) => {
-            request(app).get('/stories/unrated?page=1&limit=0')
+        it('/v1/stories/sector - return sector 0 limit', (done) => {
+            request(app).get('/v1/stories/sector/test?page=1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/v1/stories/unrated - return unrated stories paginated', (done) => {
+            request(app).get('/v1/stories/unrated?page=1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+        it('/v1/stories/unrated - return unrated stories paginated error', (done) => {
+            request(app).get('/v1/stories/unrated?page=aaaa&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/v1/stories/unrated - return unrated stories negative page number', (done) => {
+            request(app).get('/v1/stories/unrated?page=-1&limit=10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/v1/stories/unrated - return unrated stories negative limit', (done) => {
+            request(app).get('/v1/stories/unrated?page=1&limit=-10')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/v1/stories/unrated - return unrated stories 0 limit', (done) => {
+            request(app).get('/v1/stories/unrated?page=1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
@@ -996,154 +996,154 @@ describe('End Points for Stories', () => {
     });
 
     describe('DELETE/', () => {
-        it('/stories/delete/:storyId - return 404 if story not found', (done) => {
+        it('/v1/stories/delete/:storyId - return 404 if story not found', (done) => {
 
-            request(app).delete('/stories/delete/1')
+            request(app).delete('/v1/stories/delete/1')
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
     });
 
     describe('PUT/', () => {
-        it('/stories/update/:storyId - return 404 if story not found', (done) => {
+        it('/v1/stories/update/:storyId - return 404 if story not found', (done) => {
 
-            request(app).delete('/stories/update/1')
+            request(app).delete('/v1/stories/update/1')
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
 
-        it('/stories/:storyID/like/:userID - like a story', async (done) => {
+        it('/v1/stories/:storyID/like/:userID - like a story', async (done) => {
             const user_id = 1;
             const createdStory = await storyDao.createStory(story1);
             const story_id = createdStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/like/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/like/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/:storyID/like/:userID - like a story when story not found', async (done) => {
+        it('/v1/stories/:storyID/like/:userID - like a story when story not found', async (done) => {
             const user_id = 1;
             const story_id = 90;
 
-            request(app).put('/stories/' + story_id + '/like/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/like/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
 
-        it('/stories/:storyID/unlike/:userID - unlike a story', async (done) => {
+        it('/v1/stories/:storyID/unlike/:userID - unlike a story', async (done) => {
             const user_id = 1;
             const createdStory = await storyDao.createStory(story2);
             const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
             const story_id = resultLikedStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/unlike/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/:storyID/unlike/:userID - unlike a story when userID is not available', async (done) => {
+        it('/v1/stories/:storyID/unlike/:userID - unlike a story when userID is not available', async (done) => {
             const user_id = 1;
             const createdStory = await storyDao.createStory(story2);
             const story_id = createdStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/unlike/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/:storyID/flag/:userID - flag a story', async (done) => {
+        it('/v1/stories/:storyID/flag/:userID - flag a story', async (done) => {
             const user_id = 1;
             const createdStory = await storyDao.createStory(story1);
             const story_id = createdStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/flag/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/:storyID/flag/:userID - flag a story when story not found', async (done) => {
+        it('/v1/stories/:storyID/flag/:userID - flag a story when story not found', async (done) => {
             const user_id = 1;
             const story_id = 90;
 
-            request(app).put('/stories/' + story_id + '/flag/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
 
-        it('/stories/:storyID/unflag/:userID - flag a story when userID is malformed', async (done) => {
+        it('/v1/stories/:storyID/unflag/:userID - flag a story when userID is malformed', async (done) => {
             const user_id = "aaa";
             const createdStory = await storyDao.createStory(story2);
             const story_id = createdStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/flag/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
             ;
         });
 
-        it('/stories/:storyID/unflag/:userID - unflag a story', async (done) => {
+        it('/v1/stories/:storyID/unflag/:userID - unflag a story', async (done) => {
             const user_id = 1;
             const createdStory = await storyDao.createStory(story2);
             const resultLikedStory = await storyDao.flagStory(createdStory, user_id);
             const story_id = resultLikedStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/unflag/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/:storyID/unflag/:userID - unflag a story when story not found', async (done) => {
+        it('/v1/stories/:storyID/unflag/:userID - unflag a story when story not found', async (done) => {
             const user_id = 1;
             const story_id = 90;
 
-            request(app).put('/stories/' + story_id + '/unflag/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
 
-        it('/stories/:storyID/unflag/:userID - unflag a story when userID is not available', async (done) => {
+        it('/v1/stories/:storyID/unflag/:userID - unflag a story when userID is not available', async (done) => {
             const user_id = 1;
             const createdStory = await storyDao.createStory(story2);
             const story_id = createdStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/unflag/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
 
-        it('/stories/:storyID/unflag/:userID - unflag a story when userID is malformed', async (done) => {
+        it('/v1/stories/:storyID/unflag/:userID - unflag a story when userID is malformed', async (done) => {
             const user_id = "aaa";
             const createdStory = await storyDao.createStory(story2);
             const story_id = createdStory.story_id;
 
-            request(app).put('/stories/' + story_id + '/unflag/' + user_id)
+            request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
             ;
         });
 
-        it('/stories/getPreview - get metadata for link preview', async (done) => {
+        it('/v1/stories/getPreview - get metadata for link preview', async (done) => {
             const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
 
-            request(app).get('/stories/getPreview?hyperlink=' + url)
+            request(app).get('/v1/stories/getPreview?hyperlink=' + url)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
-        it('/stories/getPreview - get metadata for link preview( incorrect url)', async (done) => {
+        it('/v1/stories/getPreview - get metadata for link preview( incorrect url)', async (done) => {
             const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
 
-            request(app).get('/stories/getPreview?hyperlink=' + incorrect_url)
+            request(app).get('/v1/stories/getPreview?hyperlink=' + incorrect_url)
                 .set('Accept', 'application/json')
                 .expect(403, done);
         });
 
-        it('/stories/rating/update/ - return 200 if updated successfully', async (done) => {
+        it('/v1/stories/rating/update/ - return 200 if updated successfully', async (done) => {
             const resultStory = await storyDao.createStory(story1);
 
-            request(app).put('/stories/rating/update')
+            request(app).put('/v1/stories/rating/update')
                 .set('Accept', 'application/json')
                 .send({
                     "storyID": resultStory.story_id,
@@ -1157,9 +1157,9 @@ describe('End Points for Stories', () => {
                 });
         });
 
-        it('/stories/rating/update/ - return 404 if story not found', async (done) => {
+        it('/v1/stories/rating/update/ - return 404 if story not found', async (done) => {
 
-            request(app).put('/stories/rating/update')
+            request(app).put('/v1/stories/rating/update')
                 .set('Accept', 'application/json')
                 .send({
                     "storyID": "sdsadsadas2323",
@@ -1173,10 +1173,10 @@ describe('End Points for Stories', () => {
                 });
         });
 
-        it('/stories/rating/update/ - return 401 if role not authorized to add rating', async (done) => {
+        it('/v1/stories/rating/update/ - return 401 if role not authorized to add rating', async (done) => {
             const resultStory = await storyDao.createStory(story1);
 
-            request(app).put('/stories/rating/update')
+            request(app).put('/v1/stories/rating/update')
                 .set('Accept', 'application/json')
                 .send({
                     "storyID": resultStory.story_id,
@@ -1190,10 +1190,10 @@ describe('End Points for Stories', () => {
                 });
         });
 
-        it('/stories/rating/update/ - return 401 if role not specified', async (done) => {
+        it('/v1/stories/rating/update/ - return 401 if role not specified', async (done) => {
             const resultStory = await storyDao.createStory(story1);
 
-            request(app).put('/stories/rating/update')
+            request(app).put('/v1/stories/rating/update')
                 .set('Accept', 'application/json')
                 .send({
                     "storyID": resultStory.story_id,
@@ -1206,17 +1206,17 @@ describe('End Points for Stories', () => {
                 });
         });
 
-        it('/stories/getPreview - get metadata for link preview', async (done) => {
+        it('/v1/stories/getPreview - get metadata for link preview', async (done) => {
             const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
 
-            request(app).get('/stories/getPreview?hyperlink=' + url)
+            request(app).get('/v1/stories/getPreview?hyperlink=' + url)
                 .set('Accept', 'application/json')
                 .expect(200, done);
         });
-        it('/stories/getPreview - get metadata for link preview', async (done) => {
+        it('/v1/stories/getPreview - get metadata for link preview', async (done) => {
             const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
 
-            request(app).get('/stories/getPreview?hyperlink=' + incorrect_url)
+            request(app).get('/v1/stories/getPreview?hyperlink=' + incorrect_url)
                 .set('Accept', 'application/json')
                 .expect(403, done);
         });
