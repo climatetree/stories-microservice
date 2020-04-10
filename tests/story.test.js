@@ -1004,67 +1004,26 @@ describe('End Points for Stories', () => {
         });
 
         it('/v1/stories/flagged/sorted/5 - return flagged stories in descending order with limit', (done) => {
-            request(app).get('/stories/flagged/sorted/5')
+            request(app).get('/v1/stories/flagged/sorted/5')
                 .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
+                .expect(200, done)
+                .expect('Content-Type', /json/);
         });
 
         it('/v1/stories/flagged/sorted/aaa - wrong parameters', (done) => {
-            request(app).get('/stories/flagged/sorted/aaa')
+            request(app).get('/v1/stories/flagged/sorted/aaa')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
 
         it('/v1/stories/flagged/sorted/-1 - return flagged stories negative paramter', (done) => {
-            request(app).get('/stories/flagged/sorted/-1')
+            request(app).get('/v1/stories/flagged/sorted/-1')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
-      
-        it('/v1/stories/all/solution - return all solutions', (done) => {
-            request(app).get('/stories/all/solution')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/sector - return all sectors', (done) => {
-            request(app).get('/stories/all/sector')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/strategy - return all strategies', (done) => {
-            request(app).get('/stories/all/strategy')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/solution/:solution - return solutions containing string test', (done) => {
-            request(app).get('/stories/all/solution/test')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/sector/:sector - return sectors containing string test', (done) => {
-            request(app).get('/stories/all/sector/test')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
-
-        it('/v1/stories/all/strategy/:strategy - return strategies containing string test', (done) => {
-            request(app).get('/stories/all/strategy/test')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
-        });
+        
     });
 
     describe('DELETE/', () => {
