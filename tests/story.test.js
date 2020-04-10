@@ -1034,7 +1034,7 @@ describe('End Points for Stories', () => {
                 .expect(404, done);
         });
 
-        it('/v1/stories/delete/:storyId - return 404 if story not found', async (done) => {
+        it('/v1/stories/delete/:storyId - return 200 if story deleted, async (done) => {
             const createdStory = await storyDao.createStory(story1);
             const story_id = createdStory.story_id;
             request(app).delete('/v1/stories/delete/' + story_id)
