@@ -1033,6 +1033,14 @@ describe('End Points for Stories', () => {
                 .set('Accept', 'application/json')
                 .expect(404, done);
         });
+
+        it('/v1/stories/delete/:storyId - return 200 if story deleted', async (done) => {
+            const createdStory = await storyDao.createStory(story1);
+            const story_id = createdStory.story_id;
+            request(app).delete('/v1/stories/delete/' + story_id)
+                .set('Accept', 'application/json')
+                .expect(200, done);
+        });
     });
 
     describe('PUT/', () => {

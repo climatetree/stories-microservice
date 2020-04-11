@@ -204,7 +204,7 @@ module.exports = app => {
             return res.status(404).send({error: "Story doesn't exist!"});
           }
 
-        storyDao.deleteStory(storyId).then((error, removed) => {
+        storyDao.deleteStory(storyId).then((removed, error) => {
             if(error) {
                 return res.status(500).send({error});
             }
