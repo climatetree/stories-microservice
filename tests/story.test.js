@@ -712,6 +712,11 @@ describe('End Points for Stories', () => {
 
     describe('GET/', () => {
 
+        it('/v1/stories/mediaTypes - return all media types', (done) => {
+            request(app).get('/v1/stories/mediaTypes')
+                        .expect(200, done);
+        })
+
         it('/v1/stories - return all stories', (done) => {
             request(app).get('/v1/stories')
                 .set('Accept', 'application/json')
