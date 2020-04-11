@@ -31,7 +31,10 @@ var storySchema = mongoose.Schema({
         required: true,
         validate: [(value) => value.length > 0, 'No place_id']
     },
-    media_type: {type: String, 'default': "Other"},
+    media_type: {
+        type: String,
+        required: true, 
+        'default': "Other"},
     date: {type: Date},
     solution: {
         type: [String],
