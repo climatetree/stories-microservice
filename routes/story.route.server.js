@@ -80,6 +80,28 @@ module.exports = app => {
         });
     };
 
+    findStoryByUserID = (req,res)=> {
+        page = 1;
+        limit = 20;
+        if (req.query.page){
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit){
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error");
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+
+        storyDao.findStoryByUserID(req.params.userID, limit, page).exec((error,stories) => {
+            if(error) {
+                res.status(500).send({error});
+            }
+            res.json(stories);
+        });
+    };
+
     findStoryByTitle = (req,res)=> {
         page = 1;
         limit = 20;
@@ -420,6 +442,7 @@ module.exports = app => {
     app.get('/v1/stories', findAllStories);
     app.get('/v1/stories/story/:storyID', findStoryByStoryID);
     app.get('/v1/stories/place/:placeID',findStoryByPlaceID);
+    app.get('/v1/stories/user/:userID',findStoryByUserID);
     app.get('/v1/stories/title/:title',findStoryByTitle);
     app.get('/v1/stories/topStories/:numberOfStories', findTopStories);
     app.get('/v1/stories/unrated', findUnratedStories);

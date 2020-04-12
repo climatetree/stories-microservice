@@ -7,6 +7,8 @@ findTopStories = (numberOfStories) => storyModel.find().sort({date: 'desc'}).lim
 
 findStoryByStoryID = storyID => storyModel.findOne({story_id: storyID});
 
+findStoryByUserID = (userID, limit, page) => storyModel.find({user_id:{$eq:userID}}).skip((page-1)*limit).limit(limit);
+
 findStoryByPlaceID = (placeID, limit, page) => storyModel.find({place_ids:{$elemMatch:{$eq:placeID}}}).skip((page-1)*limit).limit(limit);
 
 findStoryBySolution = (solution_name, limit, page) => storyModel.find({solution:{$elemMatch:{$eq:solution_name}}}).skip((page-1)*limit).limit(limit);
@@ -80,6 +82,7 @@ module.exports = {
     findAllStories,
     findStoryByStoryID,
     findStoryByPlaceID,
+    findStoryByUserID,
     findStoryByTitle,
     findStoryByDescription,
     findStoryBySector,
@@ -94,5 +97,6 @@ module.exports = {
     unlikeStory,
     flagStory,
     unflagStory,
-    getSortedFlagged
+    getSortedFlagged,
+
 };
