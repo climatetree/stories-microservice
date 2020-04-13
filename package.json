@@ -28,7 +28,9 @@
     "express": "^4.17.1",
     "grabity": "^1.0.5",
     "http-errors": "^1.7.3",
-    "mongoose": "^5.8.10"
+    "mongoose": "^5.8.10",
+    "mongoosastic": "^4.6.0",
+    "elasticsearch": "^16.7.1"
   },
   "jest": {
     "testEnvironment": "node",

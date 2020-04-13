@@ -1,0 +1,39 @@
+var elasticsearch=require('elasticsearch');
+var storyModel=require('../models/story.model.server');
+var esClient=null;
+
+const storyIndexInit=()=>{
+    var stream = storyModel.synchronize(), count = 0;
+    stream.on('data', function(err, doc){
+        count++;
+    });
+    stream.on('close', function(){
+        console.log('indexed ' + count + ' documents!');
+    });
+    stream.on('error', function(err){
+        console.log(err);
+    });
+};
+
+var connectES=async ()=>{
+    const remoteAddress="https://climatetree-elasticsearch.azurewebsites.net/";
+    const connObj={};
+    if(process.env.DOCKER_ENABLE_CI){
+        connObj.host=remoteAddress;
+    }
+    esClient= await new elasticsearch.Client(connObj);
+    await esClient.ping({
+                    // ping usually has a 3000ms timeout
+                    requestTimeout: 3000
+                }, function (error) {
+        if (error) {
+            console.trace('elasticsearch cluster is down!');
+            esClient=null;
+        } else {
+            console.log('ES connected successfully');
+            storyIndexInit();
+        }
+    });
+};
+
+module.exports={esClient,connectES};
