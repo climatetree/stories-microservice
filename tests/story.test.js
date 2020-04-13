@@ -552,6 +552,22 @@ describe('End Points for Stories', () => {
         expect(resultStories.length === 1)
     });
 
+    it('can find stories by userID - findStoryByUserID API', async () => {
+        user_id = 101;
+        await storyDao.createStory(story1);
+        const resultStories = await storyDao.findStoryByUserID(user_id, 20, 1);
+        expect(resultStories.length === 1)
+    });
+
+
+    it('can find stories by placeID with page and limit- findStoryByPlaceID API', async () => {
+        user_id = 101;
+        await storyDao.createStory(story1);
+        await storyDao.createStory(story1);
+        const resultStories = await storyDao.findStoryByUserID(user_id, 20, 1);
+        expect(resultStories.length === 2)
+    });
+
     it('can find stories by title - findStoryByTitle API', async () => {
         await storyDao.createStory(story1);
         await storyDao.createStory(story2);
@@ -1024,6 +1040,25 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/flagged/sorted/-1 - return flagged stories negative paramter', (done) => {
             request(app).get('/v1/stories/flagged/sorted/-1')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+        it('/v1/stories/user/:USER_ID- return stories by a user', async (done) => {
+            await storyDao.createStory(story1);
+            var user_id = 101;
+            request(app).get('/v1/stories/user/' + user_id)
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+
+
+        it('/v1/stories/user/:USER_ID- return stories by a user negative param', async (done) => {
+            await storyDao.createStory(story1);
+            var user_id = 101;
+            request(app).get('/v1/stories/user/' + user_id + '?page=-1&limit=0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
