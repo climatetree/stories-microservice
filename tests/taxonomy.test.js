@@ -55,6 +55,16 @@ describe('End Points for Stories', () => {
         expect(result.length).toEqual(1);
     });
 
+    it('can return all solutions in the database', async () => {
+        const result = await taxonomyDao.findAllTaxonomy();
+        expect(result.length).toEqual(3);
+    });
+
+    it('can return the sectors in the database', async () => {
+        const result = await taxonomyDao.findAllSector();
+        expect(result.length).toEqual(3);
+    });
+
     describe('GET/',()=>{
         it('/v1/stories/taxonomy can return the taxonomy by solution in the database',  (done) => {
             request(app).get('/v1/stories/taxonomy').set('Accept', 'application/json')
@@ -73,6 +83,16 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/taxonomy/sector/:sector can return the taxonomy by sector in the database',  (done) => {
             request(app).get('/v1/stories/taxonomy/sector/tmp1').set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('v1/stories/taxonomy/all/solution can return all solution by sector in the database',  (done) => {
+            request(app).get('/v1/stories/taxonomy/all/solution').set('Accept', 'application/json')
+                .expect(200, done);
+        });
+
+        it('v1/stories/taxonomy/all/sector can return all sector by sector in the database',  (done) => {
+            request(app).get('/v1/stories/taxonomy/all/sector').set('Accept', 'application/json')
                 .expect(200, done);
         });
     })
