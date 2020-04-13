@@ -44,8 +44,8 @@ module.exports = app => {
     findStoryByStoryID = (req, res) => {
         if(!ObjectID.isValid(req.params.storyID)) {
             return res.status(404).send({
-                message: "Story doesn't exist!"
-            });
+                                            message: "Story doesn't exist!"
+                                        });
         }
 
         storyDao.findStoryByStoryID(req.params.storyID).then(story => {
@@ -218,15 +218,15 @@ module.exports = app => {
 
     createStory = (req, res) =>
         storyDao.createStory(req.body)
-                .then((story) => res.json(story),
-                      (error) => res.status(500).send({error}));
+            .then((story) => res.json(story),
+                  (error) => res.status(500).send({error}));
 
 
     deleteStory = (req, res) => {
         const {storyId} = req.params;
         if (!ObjectID.isValid(storyId)) {
             return res.status(404).send({error: "Story doesn't exist!"});
-          }
+        }
 
         storyDao.deleteStory(storyId).then((removed, error) => {
             if(error) {
@@ -241,10 +241,10 @@ module.exports = app => {
         const {storyId} = req.params;
         if (!ObjectID.isValid(storyId)) {
             return res.status(404).send();
-          }
+        }
         storyDao.updateStory(storyId, req.body)
-                .then(story => res.json(story))
-                .catch((error) => res.status(500).send({error}));
+            .then(story => res.json(story))
+            .catch((error) => res.status(500).send({error}));
     };
 
     const likeStory = (req, res) => {
@@ -317,17 +317,17 @@ module.exports = app => {
     addRatingToStory = (req, res) => {
         if (!ObjectID.isValid(req.body.storyID)) {
             return res.status(404).send();
-          }
+        }
 
         if(req.body.role) {
             if(req.body.role === role.MODERATOR || req.body.role === role.ADMIN) {
                 storyDao.findStoryByStoryID(req.body.storyID)
-                .then((story) => {
-                    story.rating = req.body.rating;
-                    storyDao.updateStory(story.story_id, story).then((response) => {
-                        res.status(200).send(response);
-                    });
-                })
+                    .then((story) => {
+                        story.rating = req.body.rating;
+                        storyDao.updateStory(story.story_id, story).then((response) => {
+                            res.status(200).send(response);
+                        });
+                    })
             }
             else {
                 res.status(401).send();
@@ -359,9 +359,9 @@ module.exports = app => {
             }
             else{
                 res.status(403).send({
-                    success: false,
-                    message: "Story does not exist or has been deleted."
-                })
+                                         success: false,
+                                         message: "Story does not exist or has been deleted."
+                                     })
             }
         })
     };
@@ -386,22 +386,22 @@ module.exports = app => {
                             });
                         } else {
                             res.status(403).send({
-                                success: false,
-                                message: "User can only delete their own comments."
-                            });
+                                                     success: false,
+                                                     message: "User can only delete their own comments."
+                                                 });
                         }
                     } else {
                         res.status(403).send({
-                            success: false,
-                            message: "Comment does not exist or has been deleted."
-                        });
+                                                 success: false,
+                                                 message: "Comment does not exist or has been deleted."
+                                             });
                     }
                 })
             } else {
                 res.status(403).send({
-                    success: false,
-                    message: "Story does not exist or has been deleted."
-                });
+                                         success: false,
+                                         message: "Story does not exist or has been deleted."
+                                     });
             }
         });
     };
@@ -412,13 +412,13 @@ module.exports = app => {
     let getPreview = async (req,res) => {
         const hyperlink = "" + req.query.hyperlink;
         try{
-        let metadata = await grabity.grabIt(hyperlink);
-        res.send(metadata);
+            let metadata = await grabity.grabIt(hyperlink);
+            res.send(metadata);
         } catch(e) {
             res.status(403).send({
-                success: false,
-                message: "Unable to get metadata due to error in url or timeout"
-            });
+                                     success: false,
+                                     message: "Unable to get metadata due to error in url or timeout"
+                                 });
         }
     };
 
@@ -436,7 +436,15 @@ module.exports = app => {
         mediaTypeDao.getAllMediaTypes().then(types => {
             return res.status(200).send(types);
         });
-    }
+    };
+
+    const findAllSolution=(req,res)=>{
+        taxonomyDao.findAllSolution().then(result=>res.json(result));
+    };
+
+    const findAllSector=(req,res)=>{
+        taxonomyDao.findAllSector().then(result=>res.json(result));
+    };
 
 
     app.get('/v1/stories', findAllStories);
@@ -472,6 +480,8 @@ module.exports = app => {
     app.get('/v1/stories/taxonomy/solution/:solution',findTaxonomyBySolution);
     app.get('/v1/stories/taxonomy/strategy/:strategy',findTaxonomyByStrategy);
     app.get('/v1/stories/taxonomy/sector/:sector',findTaxonomyBySector);
+    app.get('/v1/stories/taxonomy/all/solution',findAllSolution);
+    app.get('/v1/stories/taxonomy/all/sector',findAllSector);
 
     //Media types
     app.get('/v1/stories/mediaTypes', getAllMediaTypes);
