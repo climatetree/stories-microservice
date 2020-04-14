@@ -1,6 +1,7 @@
 language: node_js
 services:
   - mongodb
+  - elasticsearch
 before_script:
   - sleep 15
 node_js:
