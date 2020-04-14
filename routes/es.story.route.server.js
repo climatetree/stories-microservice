@@ -375,7 +375,7 @@ module.exports = app => {
             return res.status(400).send({"Error": "Invalid UserID"})
         }
 
-        storyDao.advancedSearch(userID,limit,page,stories=>res.json(stories),
+        storyDao.findStoryByUserID(userID,limit,page,stories=>res.json(stories),
                                 err=>res.status(500).send({err}))
     };
 
