@@ -225,7 +225,7 @@ module.exports = app => {
         },err=>res.status(500).send({err}));
     };
 
-    addRatingToStory = (req, res) => {
+    const addRatingToStory = (req, res) => {
         if (!ObjectID.isValid(req.body.storyID)) {
             return res.status(404).send();
         }
@@ -366,7 +366,7 @@ module.exports = app => {
             return res.status(400).send({"Error": "Invalid Query Params"})
         }
 
-        userID=req.params.userID;
+        let userID=req.params.userID;
         if (isNaN(userID)|| userID < 0 ) {
             console.log("Error");
             return res.status(400).send({"Error": "Invalid UserID"})

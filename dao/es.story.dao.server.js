@@ -1,28 +1,28 @@
 const storyModel = require('../models/story.model.server');
 
-createStory = (story, successCallback, failCallback) => {
+const createStory = (story, successCallback, failCallback) => {
     let model = new storyModel(story);
     model.save(function (err) {
         if (err) {
             failCallback(err);
         }
-        model.on('es-indexed', function (err, res) {
-            if (err) {
-                failCallback(err);
+        model.on('es-indexed', function (error, res) {
+            if (error) {
+                failCallback(error);
             }
             successCallback(story);
         })
     })
 };
 
-deleteStory=(storyID,successfulCallback,failCallback)=>{
+const deleteStory=(storyID,successfulCallback,failCallback)=>{
     storyModel.findOneAndRemove({story_id:storyID},function(err,res){
         if(err)failCallback(err);
         successfulCallback(res);
     })
 };
 
-updateStory=(storyId,newStory,successfulCallback,failCallback)=>{
+const updateStory=(storyId,newStory,successfulCallback,failCallback)=>{
     storyModel.findOneAndUpdate({story_id:storyId},newStory,{new:true,upsert:true},
                             function(err,res){
                                 if(err)failCallback(err);
@@ -30,7 +30,7 @@ updateStory=(storyId,newStory,successfulCallback,failCallback)=>{
                             })
 };
 
-findAllStories = (limit, page, successCallback, failCallback) =>
+const findAllStories = (limit, page, successCallback, failCallback) =>
     storyModel.search({match_all: {}}, {
                           "from": (page - 1) * limit,
                           "size": limit
@@ -42,7 +42,7 @@ findAllStories = (limit, page, successCallback, failCallback) =>
             successCallback(res.hits.hits);
         });
 
-findStoryByStoryID =
+const findStoryByStoryID =
     (storyID, successfulCallback, failCallback) =>
         storyModel.search({match: {story_id: storyID}},
                           function (err, res) {
@@ -52,7 +52,7 @@ findStoryByStoryID =
                               successfulCallback(res.hits.hits);
                           });
 
-findStoryByPlaceID = (placeID, limit, page, successfulCallback, failCallback) => {
+const findStoryByPlaceID = (placeID, limit, page, successfulCallback, failCallback) => {
     storyModel.search({
                           "bool": {
                               "must": {
@@ -73,7 +73,7 @@ findStoryByPlaceID = (placeID, limit, page, successfulCallback, failCallback) =>
                       });
 };
 
-findTopStories=(numberOfStories,successfulCallback,failCallback)=>{
+const findTopStories=(numberOfStories,successfulCallback,failCallback)=>{
     storyModel.search({match_all: {}}, {
         "size": numberOfStories,
         "sort" : [
@@ -84,7 +84,7 @@ findTopStories=(numberOfStories,successfulCallback,failCallback)=>{
     })
 };
 
-findStoryByTitle=(title,limit,page,successfulCallback,failCallback)=>{
+const findStoryByTitle=(title,limit,page,successfulCallback,failCallback)=>{
     storyModel.search({"match": {
             "story_title": {
                 "query": title,
@@ -96,7 +96,7 @@ findStoryByTitle=(title,limit,page,successfulCallback,failCallback)=>{
     })
 };
 
-findStoryByDescription=(desc,limit,page,successfulCallback,failCallback)=>{
+const findStoryByDescription=(desc,limit,page,successfulCallback,failCallback)=>{
     storyModel.search({"match": {
             "description": {
                 "query": desc,
@@ -108,7 +108,7 @@ findStoryByDescription=(desc,limit,page,successfulCallback,failCallback)=>{
     })
 };
 
-findUnratedStories=(limit,page,successfulCallback,failCallback)=>{
+const findUnratedStories=(limit,page,successfulCallback,failCallback)=>{
     storyModel.search({match:{rating:0}},{from: (page - 1) * limit, size: limit},(err,res)=>{
         if(err)failCallback(err);
         successfulCallback(res.hits.hits);
@@ -223,7 +223,7 @@ const findStoryByUserID=(userID,limit,page,successCallback,failCallback)=>{
 };
 
 
-findStoryBySolution = (solution, limit, page, successfulCallback, failCallback) => {
+const findStoryBySolution = (solution, limit, page, successfulCallback, failCallback) => {
     storyModel.search({
                           "bool": {
                               "must": {
@@ -243,7 +243,7 @@ findStoryBySolution = (solution, limit, page, successfulCallback, failCallback) 
                           successfulCallback(res.hits.hits);
                       });
 };
-findStoryBySector = (sector, limit, page, successfulCallback, failCallback) => {
+const findStoryBySector = (sector, limit, page, successfulCallback, failCallback) => {
     storyModel.search({
                           "bool": {
                               "must": {
@@ -263,7 +263,7 @@ findStoryBySector = (sector, limit, page, successfulCallback, failCallback) => {
                           successfulCallback(res.hits.hits);
                       });
 };
-findStoryByStrategy = (strategy, limit, page, successfulCallback, failCallback) => {
+const findStoryByStrategy = (strategy, limit, page, successfulCallback, failCallback) => {
     storyModel.search({
                           "bool": {
                               "must": {
