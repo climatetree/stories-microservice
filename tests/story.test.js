@@ -813,6 +813,18 @@ describe('End Points for Stories', () => {
         });
     });
 
+    it('/v1/stories/search - can return stories by search terms',async(done)=>{
+        await storyDao.createStory(story1,res1=>{
+            storyDao.createStory(story2,res2=>setTimeout(()=>{
+                request(app).post('/v1/stories/search').set('Accept','application/json')
+                    .send({place_ids:[1],sector:['Food'],
+                              strategy:['food'],solution:['Smart Glass'],story_title:"ISRO"})
+                    .expect('Content-Type',/json/)
+                    .expect(200,done)
+            },500),failCallback)
+        },failCallback);
+    });
+
     describe('GET/', () => {
         it('/v1/stories/taxonomy/all/solution - return all solution',(done)=>{
            request(app).get('/v1/stories/taxonomy/all/solution').expect(200,done);
