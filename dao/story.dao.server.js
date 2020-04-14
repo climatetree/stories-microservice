@@ -97,6 +97,5 @@ module.exports = {
     unlikeStory,
     flagStory,
     unflagStory,
-    getSortedFlagged,
-
+    getSortedFlagged
 };
