@@ -5,6 +5,7 @@ before_install:
   - sudo apt-get update && sudo apt-get install elasticsearch
   - sudo /bin/systemctl enable elasticsearch.service
   - sudo systemctl start elasticsearch.service
+  - curl -XGET 'localhost:9300'
 before_script:
   - sleep 15
 node_js:
