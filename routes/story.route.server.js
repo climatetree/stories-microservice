@@ -449,7 +449,22 @@ module.exports = app => {
         taxonomyDao.findAllSector().then(result=>res.json(result));
     };
 
+    const advancedSearch=(req,res)=> {
+        page = 1;
+        limit = 20;
+        if (req.query.page) {
+            page = parseInt(req.query.page)
+        }
+        if (req.query.limit) {
+            limit = parseInt(req.query.limit)
+        }
+        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) { //If non integer values provided for limit or page
+            console.log("Error");
+            return res.status(400).send({"Error": "Invalid Query Params"})
+        }
+        storyDao.advancedSearch(req.body,limit,page).then(result=>res.json(result));
 
+    };
 
     app.get('/v1/stories', findAllStories);
     app.get('/v1/stories/story/:storyID', findStoryByStoryID);
@@ -473,6 +488,7 @@ module.exports = app => {
     app.put('/v1/stories/:storyID/flag/:userID', flagStory);
     app.put('/v1/stories/:storyID/unflag/:userID', unflagStory);
     app.put('/v1/stories/rating/update', addRatingToStory);
+    app.post('/v1/stories/search',advancedSearch);
 
     //Comments
     app.post('/v1/stories/story/comment',addComment);
