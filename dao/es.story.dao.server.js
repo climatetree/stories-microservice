@@ -2,15 +2,15 @@ const storyModel = require('../models/story.model.server');
 
 const createStory = (story, successCallback, failCallback) => {
     let model = new storyModel(story);
-    model.save(function (err) {
+    model.save(function (err,res) {
         if (err) {
             failCallback(err);
         }
-        model.on('es-indexed', function (error, res) {
+        model.on('es-indexed', function (error, result) {
             if (error) {
                 failCallback(error);
             }
-            successCallback(story);
+            successCallback(res);
         })
     })
 };
@@ -190,13 +190,13 @@ const constructQuery=(condition)=>{
         result.bool.filter.bool.must.push({terms:{place_ids:condition.placeID}});
     }
     if(condition.solution!==undefined){
-        result.bool.filter.terms.solution=condition.solution;
+        result.bool.filter.bool.must.push({terms:{solution:condition.solution}});
     }
     if(condition.strategy!==undefined){
         result.bool.filter.bool.must.push({terms:{strategy:condition.strategy}});
     }
     if(condition.sector!==undefined){
-        result.bool.filter.terms.sector=condition.sector;
+        result.bool.filter.bool.must.push({terms:{sector:condition.sector}});
     }
     if(result.bool.filter.bool.must.length===0){
         delete result.bool.filter;
