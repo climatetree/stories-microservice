@@ -37,7 +37,7 @@ var connectES=async ()=>{
                     requestTimeout: 3000
                 }, function (error) {
         if (error) {
-            console.trace('elasticsearch cluster is down!');
+            console.trace('elasticsearch ping failed!');
             esClient=null;
         } else {
             console.log('ES connected successfully');
