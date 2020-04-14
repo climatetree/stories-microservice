@@ -2,7 +2,17 @@ var elasticsearch=require('elasticsearch');
 var storyModel=require('../models/story.model.server');
 var esClient=null;
 
-const storyIndexInit=()=>{
+const storyIndexInit=async ()=>{
+    await esClient.indices.delete({
+                              index: '_all'
+                          }, function(err, res) {
+
+        if (err) {
+            console.error(err.message);
+        } else {
+            console.log('Indexes have been deleted!');
+        }
+    });
     var stream = storyModel.synchronize(), count = 0;
     stream.on('data', function(err, doc){
         count++;
