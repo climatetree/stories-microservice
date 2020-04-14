@@ -653,6 +653,31 @@ describe('End Points for Stories', () => {
     });
 
     describe('POST/', () => {
+        it('/v1/stories/search - can return stories by single search term',async(done)=>{
+            await storyDao.createStory(story1);
+            await storyDao.createStory(story2);
+            request(app).post('/v1/stories/search').set('Accept','application/json')
+                .send({place_ids:[1]}).expect('Content-Type',/json/)
+                .expect(200).end(function(err,res) {
+                if (err) return done(err);
+                expect(res.body.length === 2);
+                done();
+            })
+
+        });
+
+        it('/v1/stories/search - can return stories by search terms',async(done)=>{
+            await storyDao.createStory(story3);
+            await storyDao.createStory(story2);
+            request(app).post('/v1/stories/search').set('Accept','application/json')
+                .send({place_ids:[5],sector:['Food']}).expect('Content-Type',/json/)
+                .expect(200).end(function(err,res) {
+                if (err) return done(err);
+                expect(res.body.length === 2);
+                done();
+            })
+        });
+
         it('/v1/stories/create - create a properly structured story', (done) => {
             request(app).post('/v1/stories/create')
                 .set('Accept', 'application/json')
@@ -1172,7 +1197,7 @@ describe('End Points for Stories', () => {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
-            ;
+
         });
 
         it('/v1/stories/:storyID/unflag/:userID - unflag a story', async (done) => {
@@ -1214,7 +1239,7 @@ describe('End Points for Stories', () => {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
-            ;
+
         });
 
         it('/v1/stories/getPreview - get metadata for link preview', async (done) => {
