@@ -1,7 +1,8 @@
 language: node_js
 services:
   - mongodb
-  - elasticsearch
+before_install:
+  - sudo apt-get update && sudo apt-get install elasticsearch
 before_script:
   - sleep 15
 node_js:
