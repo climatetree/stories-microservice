@@ -728,10 +728,12 @@ describe('End Points for Stories', () => {
 
     describe('GET/', () => {
 
+
         it('/v1/stories/mediaTypes - return all media types', (done) => {
             request(app).get('/v1/stories/mediaTypes')
                         .expect(200, done);
         })
+
 
         it('/v1/stories - return all stories', (done) => {
             request(app).get('/v1/stories')
@@ -1029,6 +1031,7 @@ describe('End Points for Stories', () => {
                 .set('Accept', 'application/json')
                 .expect(200, done)
                 .expect('Content-Type', /json/);
+
         });
 
         it('/v1/stories/flagged/sorted/aaa - wrong parameters', (done) => {
@@ -1038,12 +1041,14 @@ describe('End Points for Stories', () => {
                 .expect(400, done);
         });
 
-        it('/v1/stories/flagged/sorted/-1 - return flagged stories negative paramter', (done) => {
-            request(app).get('/v1/stories/flagged/sorted/-1')
+
+        it('/v1/stories/flagged/sorted/aaa - wrong parameters', (done) => {
+            request(app).get('/v1/stories/flagged/sorted/aaa')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
+
 
         it('/v1/stories/user/:USER_ID- return stories by a user', async (done) => {
             await storyDao.createStory(story1);
@@ -1059,6 +1064,14 @@ describe('End Points for Stories', () => {
             await storyDao.createStory(story1);
             var user_id = 101;
             request(app).get('/v1/stories/user/' + user_id + '?page=-1&limit=0')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(400, done);
+        });
+
+
+        it('/v1/stories/flagged/sorted/-1 - return flagged stories negative paramter', (done) => {
+            request(app).get('/v1/stories/flagged/sorted/-1')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(400, done);
