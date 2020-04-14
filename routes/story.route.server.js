@@ -448,16 +448,7 @@ module.exports = app => {
     const findAllSector=(req,res)=>{
         taxonomyDao.findAllSector().then(result=>res.json(result));
     };
-  
-    let getSortedByFlagged = (req, res) => {
-        const numberOfStoriesToSend = parseInt(req.params.numberOfStories);
-        if (isNaN(numberOfStoriesToSend) || numberOfStoriesToSend <= 0) { //If non integer values provided for limit or page
-            console.log("Error");
-            return res.status(400).send({"Error": "Invalid Query Params"})
-        }
-        storyDao.getSortedFlagged(numberOfStoriesToSend).then(stories => res.json(stories));
 
-    };
 
 
     app.get('/v1/stories', findAllStories);
