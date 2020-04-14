@@ -2,6 +2,9 @@ const ObjectID = require("bson-objectid");
 const storyDao = require('../dao/es.story.dao.server');
 const role=require('../constants/role');
 const commentDao=require('../dao/comment.dao.server');
+const taxonomyDao=require('../dao/taxonomy.dao.server');
+const mediaTypeDao=require('../dao/media.dao.server');
+let grabity = require("grabity");
 
 module.exports = app => {
     const findAllStories = (req, res) => {
@@ -434,6 +437,16 @@ module.exports = app => {
                                     error=>res.status(500).send({error}))};
 
 
+    const findAllSolution=(req,res)=>{
+        taxonomyDao.findAllSolution().then(result=>res.json(result));
+    };
+
+
+    const findAllSector=(req,res)=>{
+        taxonomyDao.findAllSector().then(result=>res.json(result));
+    };
+
+
     app.get('/v1/stories', findAllStories);
     app.get('/v1/stories/story/:storyID', findStoryByStoryID);
     app.get('/v1/stories/place/:placeID',findStoryByPlaceID);
@@ -468,6 +481,10 @@ module.exports = app => {
     app.get('/v1/stories/taxonomy/solution/:solution',findTaxonomyBySolution);
     app.get('/v1/stories/taxonomy/strategy/:strategy',findTaxonomyByStrategy);
     app.get('/v1/stories/taxonomy/sector/:sector',findTaxonomyBySector);
+
+
+    app.get('/v1/stories/taxonomy/all/solution',findAllSolution);
+    app.get('/v1/stories/taxonomy/all/sector',findAllSector);
 
     //Media types
     app.get('/v1/stories/mediaTypes', getAllMediaTypes);
