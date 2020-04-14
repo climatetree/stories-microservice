@@ -3,7 +3,7 @@ const http = require('http');
 const assert = require('assert');
 
 const dbHandler = require('./db.handler');
-const storyDao = require('../dao/story.dao.server');
+const storyDao = require('../dao/es.story.dao.server');
 const storyModel = require('../models/story.model.server');
 
 const app = require('../app');
@@ -20,7 +20,7 @@ describe('End Points for Stories', () => {
             if (err) return done(err);
 
             agent = request.agent(server); // since the application is already listening, it should use the allocated port
-            done();
+            setTimeout(done,500);
         });
     });
 
@@ -117,7 +117,7 @@ describe('End Points for Stories', () => {
                 date: '07/20/2012 07:24 PM'
             }
         ],
-        liked_by_users: []
+        liked_by_users: [],flagged_by_users: []
     };
 
     const story3 = {
@@ -180,7 +180,7 @@ describe('End Points for Stories', () => {
                 date: '11/08/2012 04:23 AM'
             }
         ],
-        liked_by_users: []
+        liked_by_users: [],flagged_by_users:[]
     };
 
     const story5 = {
@@ -457,199 +457,258 @@ describe('End Points for Stories', () => {
     /**
      * Test suite for stories APIs
      */
-
-    it('can return all the stories in the database - findAllStories API', async () => {
+    const failCallback= err=>{console.log(err);expect(false).toBeTruthy();};
+    it('can return all the stories in the database - findAllStories API', async (done) => {
         const stories = [story1, story2];
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
-
-        const resultStories = await storyDao.findAllStories();
-        //expect(resultStories.toString()).toEqual(stories.toString());
-        expect(resultStories.length === 2)
+        await storyDao.createStory(story1,res=>{
+            storyDao.createStory(story2,res1=>{
+                storyDao.findAllStories(2,1,resultStories=>{
+                    expect(resultStories.length === 2);
+                    done();
+                },failCallback);
+                //expect(resultStories.toString()).toEqual(stories.toString());
+            },failCallback);
+        },failCallback);
     });
 
-    it('can create a new story in the database - createStory API', async () => {
-        const resultStory = await storyDao.createStory(story1);
+    it('can create a new story in the database - createStory API', async (done) => {
+        await storyDao.createStory(story1,resultStory=>{
+            expect(resultStory.length === 1);
+            done();
+        },failCallback);
         //expect(resultStory).toEqual(story1);
-        expect(resultStory.length === 1)
     });
 
-    it('can create a new story in the database without solution - createStory API', async () => {
-        const resultStory = await storyDao.createStory(story_without_solution);
+    it('can create a new story in the database without solution - createStory API', async (done) => {
+        await storyDao.createStory(story_without_solution,resultStory=>{
+            expect(resultStory.solution.includes("Other")).toBeTruthy();
+            done()
+        },failCallback);
         //expect(resultStory).toEqual(story1);
-        expect(resultStory.solution.includes("Other")).toBeTruthy();
     });
 
-    it('can create a new story in the database without sector - createStory API', async () => {
-        const resultStory = await storyDao.createStory(story_without_sector);
+    it('can create a new story in the database without sector - createStory API', async (done) => {
+        await storyDao.createStory(story_without_sector,resultStory=>{
+            expect(resultStory.sector.includes("Other")).toBeTruthy();
+            done()
+        },failCallback);
         //expect(resultStory).toEqual(story1);
-        expect(resultStory.sector.includes("Other")).toBeTruthy();
     });
 
-    it('can create a new story in the database without strategy - createStory API', async () => {
-        const resultStory = await storyDao.createStory(story_without_strategy);
+    it('can create a new story in the database without strategy - createStory API', async (done) => {
+        const resultStory = await storyDao.createStory(story_without_strategy,resultStory=>{
+            expect(resultStory.strategy.includes("Other")).toBeTruthy();
+            done();
+        },failCallback);
         //expect(resultStory).toEqual(story1);
-        expect(resultStory.strategy.includes("Other")).toBeTruthy();
+
     });
 
-    it('can create a new story in the database without rating - createStory API', async () => {
-        const resultStory = await storyDao.createStory(story_without_rating);
+    it('can create a new story in the database without rating - createStory API', async (done) => {
+        const resultStory = await storyDao.createStory(story_without_rating,resultStory=>{
+            expect(resultStory.rating === 0);
+            done();
+        },failCallback);
         //expect(resultStory).toEqual(story1);
-        expect(resultStory.rating === 0);
     });
 
-    it('can delete a story from the database - deleteStory API', async () => {
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
-        const createdStory = await storyDao.createStory(story3);
-
-        await storyDao.deleteStory(createdStory.story_id);
-
-        const stories = [story1, story2];
-        const resultStories = await storyDao.findAllStories();
-        //expect(resultStories.toString()).toEqual(stories.toString());
-        expect(resultStories.length === stories.length)
+    it('can delete a story from the database - deleteStory API', async (done) => {
+        await storyDao.createStory(story1,res=>{
+            storyDao.createStory(story2,res2=>{
+                storyDao.createStory(story3,createdStory=>{
+                    storyDao.deleteStory(createdStory.story_id,res3=>{
+                        const stories = [story1, story2];
+                        storyDao.findAllStories(2,1,resultStories=>{
+                            expect(resultStories.length === stories.length);
+                            done();
+                        },failCallback);
+                        //expect(resultStories.toString()).toEqual(stories.toString());
+                    },failCallback);
+                },failCallback);
+            },failCallback);
+        },failCallback);
     });
 
-    it('can update a story in the database - updateStory API', async () => {
-        const createdStory = await storyDao.createStory(story4);
-
-        await storyDao.updateStory(createdStory.story_id, {story_title: 'updated'});
-        story4.story_title = 'updated';
-
-        const resultStory = await storyDao.findStoryByStoryID(createdStory.story_id);
-        //expect(resultStory.toString()).toEqual(story4.toString());
-        expect(resultStory.length === 1);
-        await storyDao.deleteStory(createdStory.story_id);
+    it('can update a story in the database - updateStory API', async (done) => {
+        await storyDao.createStory(story4,createdStory=>{
+            story4.story_title = 'updated';
+            storyDao.updateStory(createdStory.story_id, story4,res=>{
+                storyDao.findStoryByStoryID(createdStory.story_id,resultStory=>{
+                    expect(resultStory.length === 1);
+                    done();
+                },failCallback);
+                //expect(resultStory.toString()).toEqual(story4.toString());
+            },failCallback);
+        },failCallback);
     });
 
-    it('can return a story by storyId - findStoryByStoryID API', async () => {
-        const createdStory = await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
-
-        const resultStory = await storyDao.findStoryByStoryID(createdStory.story_id);
-        //expect(resultStory.toString()).toEqual(story1.toString());
-        expect(resultStory.length === 1)
+    it('can return a story by storyId - findStoryByStoryID API', async (done) => {
+        await storyDao.createStory(story1,createdStory=>{
+            storyDao.createStory(story2,res=>{
+                storyDao.findStoryByStoryID(createdStory.story_id,resultStory=>{
+                    expect(resultStory.length === 1);
+                    done();
+                },failCallback);
+                //expect(resultStory.toString()).toEqual(story1.toString());
+            },failCallback);
+        },failCallback);
     });
 
 
-    it('can find stories by placeID - findStoryByPlaceID API', async () => {
+    it('can find stories by placeID - findStoryByPlaceID API', async (done) => {
         place_id = 1;
         stories = [story1, story2];
-        const resultStories = await storyDao.findStoryByPlaceID(place_id, 20, 1);
+        await storyDao.findStoryByPlaceID(place_id, 20, 1,resultStories=>{
+            expect(resultStories.length === 1);
+            done();
+        },failCallback);
         ///expect(resultStories.toString()).toEqual(stories.toString());
-        expect(resultStories.length === 1)
     });
 
 
-    it('can find stories by placeID with page and limit- findStoryByPlaceID API', async () => {
+    it('can find stories by placeID with page and limit- findStoryByPlaceID API', async (done) => {
         place_id = 1;
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
-
-        const resultStories = await storyDao.findStoryByPlaceID(place_id, 1, 1);
-        //expect(resultStories.toString()).toEqual(story1.toString());
-        expect(resultStories.length === 1)
+        await storyDao.createStory(story1,res=>{
+            storyDao.createStory(story2,res1=>{
+                storyDao.findStoryByPlaceID(place_id, 1, 1,resultStories=>{
+                    expect(resultStories.length === 1);
+                    done();
+                },failCallback);
+                //expect(resultStories.toString()).toEqual(story1.toString());
+            },failCallback);
+        },failCallback);
     });
 
-    it('can find stories by userID - findStoryByUserID API', async () => {
+    it('can find stories by userID - findStoryByUserID API', async (done) => {
         user_id = 101;
-        await storyDao.createStory(story1);
-        const resultStories = await storyDao.findStoryByUserID(user_id, 20, 1);
-        expect(resultStories.length === 1)
+        await storyDao.createStory(story1,resultStories=>{
+            storyDao.findStoryByUserID(user_id, 20, 1,resultStories1=>{
+                expect(resultStories1.length === 1);
+                done();
+            },failCallback);
+        },failCallback);
     });
 
 
-    it('can find stories by placeID with page and limit- findStoryByPlaceID API', async () => {
+    it('can find stories by placeID with page and limit- findStoryByPlaceID API', async (done) => {
         user_id = 101;
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story1);
-        const resultStories = await storyDao.findStoryByUserID(user_id, 20, 1);
-        expect(resultStories.length === 2)
+        await storyDao.createStory(story1,res=>{
+            storyDao.createStory(story1,res2=>{
+                storyDao.findStoryByUserID(user_id, 20, 1,resultStories=>{
+                    expect(resultStories.length === 2);
+                    done();
+                },failCallback);
+            },failCallback);
+        },failCallback);
     });
 
-    it('can find stories by title - findStoryByTitle API', async () => {
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
-        title = "ISRO";
-        const resultStories = await storyDao.findStoryByTitle(title, 1, 1);
-        expect(resultStories.length === 1);
+    it('can find stories by title - findStoryByTitle API', async (done) => {
+        await storyDao.createStory(story1,res=>{
+            storyDao.createStory(story2,res2=>{
+                title = "ISRO";
+                storyDao.findStoryByTitle(title, 1, 1,resultStories=>{
+                    expect(resultStories.length === 1);
+                    done();
+                },failCallback);
+            },failCallback);
+        },failCallback);
         //expect(resultStories.toString()).toEqual(story2.toString())
     });
 
-    it('can find stories by description - findStoryByDescription API', async () => {
+    it('can find stories by description - findStoryByDescription API', async (done) => {
         story1.description = "apple and banana";
         story2.description = "watermelon and yuzu";
-        await storyDao.createStory(story1);
-        await storyDao.createStory(story2);
-        const resultStories = await storyDao.findStoryByDescription("yuzu", 1, 1);
-        expect(resultStories.length === 1);
+        await storyDao.createStory(story1,res1=>{
+            storyDao.createStory(story2,res2=>{
+                storyDao.findStoryByDescription("yuzu", 1, 1,resultStories=>{
+                    expect(resultStories.length === 1);
+                    done();
+                },failCallback);
+            },failCallback);
+        },failCallback);
     });
 
-    it('user can like a story - likeStory API', async () => {
+    it('user can like a story - likeStory API', async (done) => {
         user_id = 1;
-        const createdStory = await storyDao.createStory(story1);
-        const resultStory = await storyDao.likeStory(createdStory, user_id);
-        expect(resultStory.liked_by_users.includes(user_id)).toBeTruthy();
+        storyDao.createStory(story1,createdStory=>{
+            const resultStory = storyDao.likeStory(createdStory, user_id);
+            expect(resultStory.liked_by_users.includes(user_id)).toBeTruthy();
+            done();
+        },failCallback);
     });
 
-    it('user can unlike a story - unlikeStory API', async () => {
+    it('user can unlike a story - unlikeStory API', async (done) => {
         user_id = 1;
-        const createdStory = await storyDao.createStory(story1);
-        const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
-        const resultUnlikedStory = await storyDao.unlikeStory(resultLikedStory, user_id);
-        expect(resultUnlikedStory.liked_by_users.includes(user_id)).toBeFalsy();
-
+        await storyDao.createStory(story1,createdStory=>{
+            const resultLikedStory = storyDao.likeStory(createdStory, user_id);
+            const resultUnlikedStory =  storyDao.unlikeStory(resultLikedStory, user_id);
+            expect(resultUnlikedStory.liked_by_users.includes(user_id)).toBeFalsy();
+            done();
+        },failCallback);
     });
 
-    it('user can flag a story - flagStory API', async () => {
+    it('user can flag a story - flagStory API', async (done) => {
         user_id = 1;
-        const createdStory = await storyDao.createStory(story1);
-        const resultStory = await storyDao.flagStory(createdStory, user_id);
-        expect(resultStory.flagged_by_users.includes(user_id)).toBeTruthy();
+        await storyDao.createStory(story1,createdStory=>{
+            const resultStory = storyDao.flagStory(createdStory, user_id);
+            expect(resultStory.flagged_by_users.includes(user_id)).toBeTruthy();
+            done();
+        });
     });
 
-    it('user can unflag a story - unflagStory API', async () => {
+    it('user can unflag a story - unflagStory API', async (done) => {
         user_id = 1;
-        const createdStory = await storyDao.createStory(story1);
-        const resultLikedStory = await storyDao.flagStory(createdStory, user_id);
-        const resultUnlikedStory = await storyDao.unflagStory(resultLikedStory, user_id);
-        expect(resultUnlikedStory.liked_by_users.includes(user_id)).toBeFalsy();
-
+        await storyDao.createStory(story1,createdStory=>{
+            const resultLikedStory = storyDao.flagStory(createdStory, user_id);
+            const resultUnlikedStory =  storyDao.unflagStory(resultLikedStory, user_id);
+            expect(resultUnlikedStory.liked_by_users.includes(user_id)).toBeFalsy();
+            done();
+        });
     });
 
-    it('can find top n recent stories - findTopStories API', async () => {
-        await storyDao.createStory(story2);
-        await storyDao.createStory(story1);
-
-        const resultStories = await storyDao.findTopStories(3);
-        stories = [story1, story2];
-        //expect(resultStories.toString()).toEqual(stories.toString())
-        expect(resultStories.length === 2)
+    it('can find top n recent stories - findTopStories API', async (done) => {
+        await storyDao.createStory(story2,res1=>{
+            storyDao.createStory(story1,res2=>{
+                storyDao.findTopStories(3,resultStories=>{
+                    stories = [story1, story2];
+                    //expect(resultStories.toString()).toEqual(stories.toString())
+                    expect(resultStories.length === 2);
+                    done();
+                },failCallback);
+            },failCallback);
+        },failCallback);
     });
 
-    it('can find stories by solution - findStoryBySolution API', async () => {
-        await storyDao.createStory(story5);
-        await storyDao.createStory(story1);
-
-        const resultStories = await storyDao.findStoryBySolution('Building Automation');
-        expect(resultStories.length === 1)
+    it('can find stories by solution - findStoryBySolution API', async (done) => {
+        await storyDao.createStory(story5,res1=>{
+            storyDao.createStory(story1,res2=>{
+                storyDao.findStoryBySolution('Building Automation',10,1,resultStories=>{
+                    expect(resultStories.length === 1);
+                    done();
+                },failCallback)
+            },failCallback);
+        },failCallback);
     });
 
-    it('can find unrated stories - findUnratedStories API', async () => {
-        await storyDao.createStory(story5);
-        await storyDao.createStory(story1);
-
-        const resultStories = await storyDao.findUnratedStories();
-        stories = [story5];
-        expect(resultStories.length === 1)
+    it('can find unrated stories - findUnratedStories API', async (done) => {
+        await storyDao.createStory(story5,res1=>{
+            storyDao.createStory(story1,res2=>{
+                storyDao.findUnratedStories(10,1,resultStories=>{
+                    stories = [story5];
+                    expect(resultStories.length === 1);
+                    done();
+                },failCallback);
+            },failCallback);
+        },failCallback);
     });
 
-    it('can return flagged stories in descending order', async () => {
-        await storyDao.createStory(story3);
-
-        const resultStories = await storyDao.getSortedFlagged(5);
-        expect(resultStories.length === 1);
+    it('can return flagged stories in descending order', async (done) => {
+        await storyDao.createStory(story3,res=>{
+            storyDao.getSortedFlagged(5,resultStories=>{
+                expect(resultStories.length === 1);
+                done();
+            },failCallback);
+        },failCallback);
     });
 
     describe('POST/', () => {
@@ -724,15 +783,61 @@ describe('End Points for Stories', () => {
                 .expect('Content-Type', /json/)
                 .expect(200, done);
         });
+
+        it('/v1/stories/search - can return stories by single search term',async(done)=>{
+            await storyDao.createStory(story1,res1=>{
+                storyDao.createStory(story2,res2=>setTimeout(()=>{
+                    request(app).post('/v1/stories/search').set('Accept','application/json')
+                        .send({place_ids:[1]}).expect('Content-Type',/json/)
+                        .expect(200).end(function(err,res){
+                            if(err)return done(err);
+                            expect(res.body.length===2);
+                            done();
+                    });
+                },500),failCallback)
+            },failCallback);
+        });
+
+        it('/v1/stories/search - can return stories by search terms',async(done)=>{
+            await storyDao.createStory(story3,res1=>{
+                storyDao.createStory(story2,res2=>setTimeout(()=>{
+                    request(app).post('/v1/stories/search').set('Accept','application/json')
+                        .send({place_ids:[5],sector:['Food']}).expect('Content-Type',/json/)
+                        .expect(200).end(function(err,res){
+                        if(err)return done(err);
+                        expect(res.body.length===2);
+                        done();
+                    })
+                },500),failCallback)
+            },failCallback)
+        });
+    });
+
+    it('/v1/stories/search - can return stories by search terms',async(done)=>{
+        await storyDao.createStory(story1,res1=>{
+            storyDao.createStory(story2,res2=>setTimeout(()=>{
+                request(app).post('/v1/stories/search').set('Accept','application/json')
+                    .send({place_ids:[1],sector:['Food'],
+                              strategy:['food'],solution:['Smart Glass'],story_title:"ISRO"})
+                    .expect('Content-Type',/json/)
+                    .expect(200,done)
+            },500),failCallback)
+        },failCallback);
     });
 
     describe('GET/', () => {
+        it('/v1/stories/taxonomy/all/solution - return all solution',(done)=>{
+           request(app).get('/v1/stories/taxonomy/all/solution').expect(200,done);
+        });
 
+        it('/v1/stories/taxonomy/all/sector - return all sectors',(done)=>{
+           request(app).get('/v1/stories/taxonomy/all/sector').expect(200,done);
+        });
 
         it('/v1/stories/mediaTypes - return all media types', (done) => {
             request(app).get('/v1/stories/mediaTypes')
                         .expect(200, done);
-        })
+        });
 
 
         it('/v1/stories - return all stories', (done) => {
@@ -1051,22 +1156,25 @@ describe('End Points for Stories', () => {
 
 
         it('/v1/stories/user/:USER_ID- return stories by a user', async (done) => {
-            await storyDao.createStory(story1);
-            var user_id = 101;
-            request(app).get('/v1/stories/user/' + user_id)
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(200, done);
+            await storyDao.createStory(story1,res=>setTimeout(()=>{
+                var user_id = 101;
+                request(app).get('/v1/stories/user/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(200, done);
+            },500),failCallback);
+
         });
 
 
         it('/v1/stories/user/:USER_ID- return stories by a user negative param', async (done) => {
-            await storyDao.createStory(story1);
-            var user_id = 101;
-            request(app).get('/v1/stories/user/' + user_id + '?page=-1&limit=0')
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(400, done);
+            await storyDao.createStory(story1, res => setTimeout(() => {
+                var user_id = 101;
+                request(app).get('/v1/stories/user/' + user_id + '?page=-1&limit=0')
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(400, done);
+            }, 500), failCallback);
         });
 
 
@@ -1088,11 +1196,12 @@ describe('End Points for Stories', () => {
         });
 
         it('/v1/stories/delete/:storyId - return 200 if story deleted', async (done) => {
-            const createdStory = await storyDao.createStory(story1);
-            const story_id = createdStory.story_id;
-            request(app).delete('/v1/stories/delete/' + story_id)
-                .set('Accept', 'application/json')
-                .expect(200, done);
+            await storyDao.createStory(story1,createdStory=>{
+                const story_id = createdStory.story_id;
+                request(app).delete('/v1/stories/delete/' + story_id)
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },failCallback);
         });
     });
 
@@ -1106,12 +1215,12 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/:storyID/like/:userID - like a story', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story1);
-            const story_id = createdStory.story_id;
-
-            request(app).put('/v1/stories/' + story_id + '/like/' + user_id)
-                .set('Accept', 'application/json')
-                .expect(200, done);
+            await storyDao.createStory(story1,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
+                request(app).put('/v1/stories/' + story_id + '/like/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },500),failCallback);
         });
 
         it('/v1/stories/:storyID/like/:userID - like a story when story not found', async (done) => {
@@ -1125,39 +1234,40 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/:storyID/unlike/:userID - unlike a story', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story2);
-            const resultLikedStory = await storyDao.likeStory(createdStory, user_id);
-            const story_id = resultLikedStory.story_id;
+            await storyDao.createStory(story2,createdStory=>setTimeout(()=>{
+                const resultLikedStory = storyDao.likeStory(createdStory, user_id);
+                const story_id = resultLikedStory.story_id;
+                request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },500),failCallback);
 
-            request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
-                .set('Accept', 'application/json')
-                .expect(200, done);
         });
 
         it('/v1/stories/:storyID/unlike/:userID - unlike a story when userID is not available', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story2);
-            const story_id = createdStory.story_id;
+            await storyDao.createStory(story2,createdStory=>{
+                const story_id = createdStory.story_id;
 
-            request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
-                .set('Accept', 'application/json')
-                .expect(200, done);
+                request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },failCallback);
         });
 
         it('/v1/stories/:storyID/flag/:userID - flag a story', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story1);
-            const story_id = createdStory.story_id;
-
-            request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
-                .set('Accept', 'application/json')
-                .expect(200, done);
+            const createdStory = await storyDao.createStory(story1, createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
+                request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },500),failCallback);
         });
 
         it('/v1/stories/:storyID/flag/:userID - flag a story when story not found', async (done) => {
             const user_id = 1;
             const story_id = 90;
-
             request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
                 .set('Accept', 'application/json')
                 .expect(404, done);
@@ -1165,25 +1275,24 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/:storyID/unflag/:userID - flag a story when userID is malformed', async (done) => {
             const user_id = "aaa";
-            const createdStory = await storyDao.createStory(story2);
-            const story_id = createdStory.story_id;
-
-            request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(400, done);
-            ;
+            await storyDao.createStory(story2,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
+                request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(400, done);
+            },500),failCallback);
         });
 
         it('/v1/stories/:storyID/unflag/:userID - unflag a story', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story2);
-            const resultLikedStory = await storyDao.flagStory(createdStory, user_id);
-            const story_id = resultLikedStory.story_id;
-
-            request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
-                .set('Accept', 'application/json')
-                .expect(200, done);
+            await storyDao.createStory(story2,createdStory=>setTimeout(()=>{
+                const resultLikedStory = storyDao.flagStory(createdStory, user_id);
+                const story_id = resultLikedStory.story_id;
+                request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },500),failCallback);
         });
 
         it('/v1/stories/:storyID/unflag/:userID - unflag a story when story not found', async (done) => {
@@ -1197,24 +1306,25 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/:storyID/unflag/:userID - unflag a story when userID is not available', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story2);
-            const story_id = createdStory.story_id;
+            await storyDao.createStory(story2,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
 
-            request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
-                .set('Accept', 'application/json')
-                .expect(200, done);
+                request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },500),failCallback);
         });
 
         it('/v1/stories/:storyID/unflag/:userID - unflag a story when userID is malformed', async (done) => {
             const user_id = "aaa";
-            const createdStory = await storyDao.createStory(story2);
-            const story_id = createdStory.story_id;
+            await storyDao.createStory(story2,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
 
-            request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
-                .set('Accept', 'application/json')
-                .expect('Content-Type', /json/)
-                .expect(400, done);
-            ;
+                request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(400, done);
+            },500),failCallback);
         });
 
         it('/v1/stories/getPreview - get metadata for link preview', async (done) => {
@@ -1233,20 +1343,20 @@ describe('End Points for Stories', () => {
         });
 
         it('/v1/stories/rating/update/ - return 200 if updated successfully', async (done) => {
-            const resultStory = await storyDao.createStory(story1);
-
-            request(app).put('/v1/stories/rating/update')
-                .set('Accept', 'application/json')
-                .send({
-                    "storyID": resultStory.story_id,
-                    "role": 1,
-                    "rating": 5
-                })
-                .expect(200)
-                .end(function (err, res) {
-                    if (err) return done(err);
-                    done();
-                });
+            await storyDao.createStory(story1,resultStory=>setTimeout(()=>{
+                request(app).put('/v1/stories/rating/update')
+                    .set('Accept', 'application/json')
+                    .send({
+                              "storyID": resultStory.story_id,
+                              "role": 1,
+                              "rating": 5
+                          })
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        done();
+                    });
+            },500),failCallback);
         });
 
         it('/v1/stories/rating/update/ - return 404 if story not found', async (done) => {
@@ -1266,51 +1376,37 @@ describe('End Points for Stories', () => {
         });
 
         it('/v1/stories/rating/update/ - return 401 if role not authorized to add rating', async (done) => {
-            const resultStory = await storyDao.createStory(story1);
-
-            request(app).put('/v1/stories/rating/update')
-                .set('Accept', 'application/json')
-                .send({
-                    "storyID": resultStory.story_id,
-                    "role": 3,
-                    "rating": 5
-                })
-                .expect(401)
-                .end(function (err, res) {
-                    if (err) return done(err);
-                    done();
-                });
+            await storyDao.createStory(story1,resultStory=>{
+                request(app).put('/v1/stories/rating/update')
+                    .set('Accept', 'application/json')
+                    .send({
+                              "storyID": resultStory.story_id,
+                              "role": 3,
+                              "rating": 5
+                          })
+                    .expect(401)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        done();
+                    });
+            },failCallback);
         });
 
         it('/v1/stories/rating/update/ - return 401 if role not specified', async (done) => {
-            const resultStory = await storyDao.createStory(story1);
-
-            request(app).put('/v1/stories/rating/update')
-                .set('Accept', 'application/json')
-                .send({
-                    "storyID": resultStory.story_id,
-                    "rating": 5
-                })
-                .expect(401)
-                .end(function (err, res) {
-                    if (err) return done(err);
-                    done();
-                });
+            await storyDao.createStory(story1,resultStory=>{
+                request(app).put('/v1/stories/rating/update')
+                    .set('Accept', 'application/json')
+                    .send({
+                              "storyID": resultStory.story_id,
+                              "rating": 5
+                          })
+                    .expect(401)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        done();
+                    });
+            },failCallback);
         });
 
-        it('/v1/stories/getPreview - get metadata for link preview', async (done) => {
-            const url = "https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
-
-            request(app).get('/v1/stories/getPreview?hyperlink=' + url)
-                .set('Accept', 'application/json')
-                .expect(200, done);
-        });
-        it('/v1/stories/getPreview - get metadata for link preview', async (done) => {
-            const incorrect_url = "htps%3A%2F%2Fen.wikipedia.org%2Fwiki%2FHops";
-
-            request(app).get('/v1/stories/getPreview?hyperlink=' + incorrect_url)
-                .set('Accept', 'application/json')
-                .expect(403, done);
-        });
     });
 });

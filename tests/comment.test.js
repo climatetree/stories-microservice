@@ -1,7 +1,7 @@
 const request = require('supertest');
 
 const dbHandler = require('./db.handler');
-const storyDao = require('../dao/story.dao.server');
+const storyDao = require('../dao/es.story.dao.server');
 const storyModel = require('../models/story.model.server');
 const commentDao = require('../dao/comment.dao.server');
 const role = require('../constants/role');
@@ -16,10 +16,12 @@ describe('End Points for Stories', () => {
      */
     beforeAll(async(done) => {
         await dbHandler.connect();
-        server = app.listen(3001, (err) => {
+        server = app.listen(3001,async  (err) => {
             if (err) return done(err);
             agent = request.agent(server); // since the application is already listening, it should use the allocated port
-            done();
+            storyDao.createStory(story1,()=>{console.log("story 1 created")});
+            storyDao.createStory(story2,()=>{console.log("story 2 created")});
+            setTimeout(done,4000);
         });
     });
 
@@ -36,7 +38,7 @@ describe('End Points for Stories', () => {
      * Mock data
      */
     const story1 = new storyModel({
-        story_id: '5e4e197ee1bc5896994d2cb1',
+        story_id: '5e4e197ee1bc5896994d2cb3',
         user_id: 101,
         posted_by: 'rameshRocks123',
         hyperlink: 'https://epa.gov/evidence/',
@@ -54,11 +56,13 @@ describe('End Points for Stories', () => {
             'Landfill Methane',
             'Building Automation'
         ],
-        sector: 'Buildings and Cities',
-        comments: [ ]
+        sector: ['Buildings and Cities'],
+        strategy:['Buildings and Cities'],
+        description:'NASA climatte change report',
+        comments: [ ],liked_by_users:[],flagged_by_users:[]
     });
     const story2 = new storyModel({
-        story_id: '5e4e197ee1bc5896994d2cb1',
+        story_id: '5e4e197ee1bc5896994d2cb7',
         posted_by: 'rameshRocks123',
         user_id: 102,
         hyperlink: 'https://climate.isro.gov/climate/',
@@ -76,7 +80,7 @@ describe('End Points for Stories', () => {
             'District Heating',
             'LED Lighting (Household)'
         ],
-        sector: 'Food',
+        sector: ['Food'],
         comments: [
             {
                 user_id : 156,
@@ -93,7 +97,9 @@ describe('End Points for Stories', () => {
                 content : 'good post',
                 date : '07/20/2012 07:24 PM'
             }
-        ]
+        ] ,
+          strategy:['Buildings and Cities'],
+          description:'NASA climatte change report', liked_by_users:[],flagged_by_users:[]
     });
 
     const comment1 = {
@@ -122,13 +128,11 @@ describe('End Points for Stories', () => {
     });
 
     it('can create a comment', async () => {
-        await storyDao.createStory(story1);
         const resultComment = await commentDao.addComment(comment1.user_id, comment1.content, comment1.date);
         expect(resultComment.content.toString()).toEqual(comment1.content.toString());
     });
 
    it('can delete a comment',async () => {
-       await storyDao.createStory(story2);
        const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
        await commentDao.deleteComment(createdComment.comment_id);
        const comments = await commentDao.findAllComments();
@@ -143,9 +147,8 @@ describe('End Points for Stories', () => {
 
     describe('POST/', () => {
         it('/v1/stories/story/comment - cannot a comment when story not found', (done) => {
-
             request(app).post('/v1/stories/story/comment').send({
-                "storyId": "5e4e197ee1bc5896994d2cb1",
+                "storyId": "5e4e197ee1bc5896994d2cb9",
                 "userId": 123,
                 "content": "This is test comment",
                 "date": "2011-05-26T07:56:00.123Z"
@@ -155,15 +158,15 @@ describe('End Points for Stories', () => {
         });
 
         it('/v1/stories/story/comment - can add a comment when story is found', async (done) => {
-            const story = await storyDao.findAllStories(1,1).then((story) => story[0]);
+            await storyDao.findAllStories(1,1,story=>{
             request(app).post('/v1/stories/story/comment').send({
-                "storyId": story.story_id,
+                "storyId": story[0].story_id,
                 "userId": 123,
                 "content": "This is test comment",
                 "date": "2011-05-26T07:56:00.123Z"
             })
                 .set('Accept', 'application/json')
-                .expect(200, done);
+                .expect(200, done)},err=>{console.log(err);expect(false).toBeTruthy();});
         });
     });
 
@@ -194,53 +197,47 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/story/comment - can delete a comment if the comment exists', async (done)  => {
             const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
-            const story = await storyDao.findAllStories(1,1).then((story) => {
+            await storyDao.findAllStories(1,1,story=>{
                 if(story){
                     story[0].comments.push(createdComment);
-                    return story[0];
                 }
-            });
-            request(app).delete('/v1/stories/story/comment').send({
-                "storyId": story.story_id,
-                "userId": comment2.user_id,
-                "commentId": story.comments[0].comment_id,
-                "role": role.REGISTERED_USER
-            })
-                .expect(200, done);
+                request(app).delete('/v1/stories/story/comment').send({
+                              "storyId": story[0].story_id,
+                              "userId": comment2.user_id,
+                              "commentId": story[0].comments[0].comment_id,
+                              "role": role.REGISTERED_USER})
+                    .expect(200, done);
+            },err=>{console.log(err);expect(false).toBeTruthy();});
         });
 
         it('/v1/stories/story/comment - can delete a comment if moderator', async (done)  => {
             const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
-            const story = await storyDao.findAllStories(1,1).then((story) => {
+            await storyDao.findAllStories(1,1,story=>{
                 if(story){
                     story[0].comments.push(createdComment);
-                    return story[0];
                 }
-            });
-            request(app).delete('/v1/stories/story/comment').send({
-                "storyId": story.story_id,
-                "userId": comment2.user_id,
-                "commentId": story.comments[0].comment_id,
-                "role": role.MODERATOR
-            })
-                .expect(200, done);
+                request(app).delete('/v1/stories/story/comment').send({
+                              "storyId": story[0].story_id,
+                              "userId": comment2.user_id,
+                              "commentId": story[0].comments[0].comment_id,
+                              "role": role.MODERATOR})
+                    .expect(200, done);
+            },err=>{console.log(err);expect(false).toBeTruthy();});
         });
 
         it('/v1/stories/story/comment - can delete a comment if an admin', async (done)  => {
             const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
-            const story = await storyDao.findAllStories(1,1).then((story) => {
+            await storyDao.findAllStories(1,1,story=>{
                 if(story){
                     story[0].comments.push(createdComment);
-                    return story[0];
                 }
-            });
-            request(app).delete('/v1/stories/story/comment').send({
-                "storyId": story.story_id,
-                "userId": comment2.user_id,
-                "commentId": story.comments[0].comment_id,
-                "role": role.ADMIN
-            })
-                .expect(200, done);
+                request(app).delete('/v1/stories/story/comment').send({
+                              "storyId": story[0].story_id,
+                              "userId": comment2.user_id,
+                              "commentId": story[0].comments[0].comment_id,
+                              "role": role.ADMIN})
+                    .expect(200, done);
+            },err=>{console.log(err);expect(false).toBeTruthy();});
         });
 
     });
