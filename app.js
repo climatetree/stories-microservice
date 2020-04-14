@@ -43,13 +43,6 @@ app.use((err, req, res, next) => {
 
 require('./db/db')();
 es.connectES();
-let storyService;
-if(es.esClient===null){
-    console.log("cannot connect to elasticsearch, using only mongodb instead.");
-    storyService=require('./routes/story.route.server');
-}else{
-    storyService =require('./routes/es.story.route.server');
-}
-
+const storyService = require('./routes/es.story.route.server');
 storyService(app);
 module.exports = app;
