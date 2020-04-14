@@ -8,9 +8,15 @@ findTaxonomyBySector =(sector)=>taxonomyModel.find({sector:{$regex: sector,$opti
 
 findTaxonomyByStrategy = (strategy)=>taxonomyModel.find({strategy:{$regex: strategy,$options:'i'}});
 
+findAllSector=()=>taxonomyModel.find({},{sector:1});
+
+findAllSolution=()=>taxonomyModel.find({},{solution:1});
+
 module.exports={
     findAllTaxonomy,
     findTaxonomyBySolution,
     findTaxonomyBySector,
-    findTaxonomyByStrategy
+    findTaxonomyByStrategy,
+    findAllSector,
+    findAllSolution
 };
