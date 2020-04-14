@@ -77,6 +77,26 @@ const getSortedFlagged = (numberOfStories) =>
         {$group: {"_id": "$_id","story_id":  { "$first": "$story_id" }, answers: {$push:"$flagged_by_users"}, size: {$sum:1}}},
         {$sort:{size:-1}}]).limit(parseInt(numberOfStories));
 
+const constructQuery=(condition)=>{
+    let result={};
+    if(condition.story_title!==undefined){
+        result['story_title']={$regex: condition.story_title,$options:'i'}
+    }
+    if(condition.placeID!==undefined){
+        result["place_ids"]={"$in":condition.placeID};
+    }
+    if(condition.solution!==undefined){
+        result["solution"]={"$in":condition.solution};
+    }
+    if(condition.strategy!==undefined){
+        result["strategy"]={"$in":condition.strategy};
+    }
+    if(condition.sector!==undefined){
+        result["sector"]={"$in":condition.sector};
+    }
+};
+
+const advancedSearch=(condition,limit,page)=>storyModel.find(constructQuery(condition)).skip((page-1)*limit).limit(limit);
 
 module.exports = {
     findAllStories,
@@ -97,5 +117,6 @@ module.exports = {
     unlikeStory,
     flagStory,
     unflagStory,
-    getSortedFlagged
+    getSortedFlagged,
+    advancedSearch
 };
