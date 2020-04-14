@@ -55,6 +55,7 @@ describe('End Points for Stories', () => {
         expect(result.length).toEqual(1);
     });
 
+
     it('can return all solutions in the database', async () => {
         const result = await taxonomyDao.findAllTaxonomy();
         expect(result.length).toEqual(3);
@@ -64,6 +65,7 @@ describe('End Points for Stories', () => {
         const result = await taxonomyDao.findAllSector();
         expect(result.length).toEqual(3);
     });
+
 
     describe('GET/',()=>{
         it('/v1/stories/taxonomy can return the taxonomy by solution in the database',  (done) => {
@@ -86,6 +88,7 @@ describe('End Points for Stories', () => {
                 .expect(200, done);
         });
 
+
         it('v1/stories/taxonomy/all/solution can return all solution by sector in the database',  (done) => {
             request(app).get('/v1/stories/taxonomy/all/solution').set('Accept', 'application/json')
                 .expect(200, done);
@@ -95,5 +98,6 @@ describe('End Points for Stories', () => {
             request(app).get('/v1/stories/taxonomy/all/sector').set('Accept', 'application/json')
                 .expect(200, done);
         });
+
     })
 });

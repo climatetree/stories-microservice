@@ -4,7 +4,9 @@ const { ObjectID } = require('mongodb');
 const storyDao = require('../dao/story.dao.server');
 const commentDao = require('../dao/comment.dao.server');
 const taxonomyDao=require('../dao/taxonomy.dao.server');
+
 const mediaTypeDao = require('../dao/media.dao.server');
+
 
 const role = require('../constants/role');
 let grabity = require("grabity");
@@ -442,15 +444,19 @@ module.exports = app => {
         taxonomyDao.findAllSolution().then(result=>res.json(result));
     };
 
+
     const findAllSector=(req,res)=>{
         taxonomyDao.findAllSector().then(result=>res.json(result));
     };
 
 
+
     app.get('/v1/stories', findAllStories);
     app.get('/v1/stories/story/:storyID', findStoryByStoryID);
     app.get('/v1/stories/place/:placeID',findStoryByPlaceID);
+
     app.get('/v1/stories/user/:userID',findStoryByUserID);
+
     app.get('/v1/stories/title/:title',findStoryByTitle);
     app.get('/v1/stories/topStories/:numberOfStories', findTopStories);
     app.get('/v1/stories/unrated', findUnratedStories);
@@ -480,9 +486,11 @@ module.exports = app => {
     app.get('/v1/stories/taxonomy/solution/:solution',findTaxonomyBySolution);
     app.get('/v1/stories/taxonomy/strategy/:strategy',findTaxonomyByStrategy);
     app.get('/v1/stories/taxonomy/sector/:sector',findTaxonomyBySector);
+
     app.get('/v1/stories/taxonomy/all/solution',findAllSolution);
     app.get('/v1/stories/taxonomy/all/sector',findAllSector);
 
     //Media types
     app.get('/v1/stories/mediaTypes', getAllMediaTypes);
+
 };   
