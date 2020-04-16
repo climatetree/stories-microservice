@@ -29,7 +29,6 @@
     "express": "^4.17.1",
     "grabity": "^1.0.5",
     "http-errors": "^1.7.3",
-    "minimist": "^1.2.5",
     "mongoosastic": "^4.6.0",
     "mongoose": "^5.9.9"
   },
@@ -45,6 +44,7 @@
     "eslint-config-node": "^4.0.0",
     "husky": "^4.2.5",
     "jest": "^25.3.0",
+    "minimist": "^1.2.5",
     "mongodb-memory-server": "^6.5.2",
     "supertest": "^4.0.2"
   }
