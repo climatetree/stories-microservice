@@ -77,7 +77,7 @@ const findTopStories=(numberOfStories,successfulCallback,failCallback)=>{
     storyModel.search({match_all: {}}, {
         "size": numberOfStories,
         "sort" : [
-            { "date" : {"order" : "asc"}}]
+            { "date" : {"order" : "desc"}}]
     },function(err,res){
         if(err)failCallback(err);
         successfulCallback(res.hits.hits);
