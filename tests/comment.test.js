@@ -2,7 +2,6 @@ const request = require('supertest');
 
 const dbHandler = require('./db.handler');
 const storyDao = require('../dao/es.story.dao.server');
-const storyModel = require('../models/story.model.server');
 const commentDao = require('../dao/comment.dao.server');
 const role = require('../constants/role');
 
@@ -21,7 +20,7 @@ describe('End Points for Stories', () => {
             agent = request.agent(server); // since the application is already listening, it should use the allocated port
             storyDao.createStory(story1,()=>{console.log("story 1 created")});
             storyDao.createStory(story2,()=>{console.log("story 2 created")});
-            setTimeout(done,4000);
+            setTimeout(done,2000);
         });
     });
 
@@ -37,7 +36,7 @@ describe('End Points for Stories', () => {
     /**
      * Mock data
      */
-    const story1 = new storyModel({
+    const story1 = {
         story_id: '5e4e197ee1bc5896994d2cb3',
         user_id: 101,
         posted_by: 'rameshRocks123',
@@ -60,8 +59,8 @@ describe('End Points for Stories', () => {
         strategy:['Buildings and Cities'],
         description:'NASA climatte change report',
         comments: [ ],liked_by_users:[],flagged_by_users:[]
-    });
-    const story2 = new storyModel({
+    };
+    const story2 = {
         story_id: '5e4e197ee1bc5896994d2cb7',
         posted_by: 'rameshRocks123',
         user_id: 102,
@@ -100,7 +99,7 @@ describe('End Points for Stories', () => {
         ] ,
           strategy:['Buildings and Cities'],
           description:'NASA climatte change report', liked_by_users:[],flagged_by_users:[]
-    });
+    };
 
     const comment1 = {
         user_id : 156,
@@ -119,7 +118,7 @@ describe('End Points for Stories', () => {
     /**
      * Test suite for functionality of comments on Stories
      */
-
+    const failCallback= err=>{console.log(err);expect(false).toBeTruthy();};
     it('can return all the comments in the database', async () => {
         const comments = [comment1, comment2];
         await commentDao.addComment(comment1.user_id, comment1.content, comment1.date,comment1.user_name);
@@ -148,32 +147,35 @@ describe('End Points for Stories', () => {
     });
 
     describe('POST/', () => {
+
         it('/v1/stories/story/comment - cannot a comment when story not found', (done) => {
-            request(app).post('/v1/stories/story/comment').send({
-                "storyId": "5e4e197ee1bc5896994d2cb9",
-                "userId": 123,
-                "content": "This is test comment",
-                "date": "2011-05-26T07:56:00.123Z",
-                "username": "testUser"
-            })
-                .set('Accept', 'application/json')
-                .expect(403, done);
+            storyDao.createStory(story1,createdStory=>setTimeout(()=>{
+                request(app).post('/v1/stories/story/comment').send({
+                                                                        "storyId": "5e4e197ee1bc5896994d2cb9",
+                                                                        "userId": 123,
+                                                                        "content": "This is test comment",
+                                                                        "date": "2011-05-26T07:56:00.123Z",
+                                                                        "username": "testUser"
+                                                                    })
+                    .set('Accept', 'application/json')
+                    .expect(403, done);
+            },1000),failCallback);
         });
 
         it('/v1/stories/story/comment - can add a comment when story is found', async (done) => {
+            await storyDao.createStory(story1,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
+                request(app).post('/v1/stories/story/comment').send({
+                                                    "storyId": story_id,
+                                                    "userId": 123,
+                                                    "content": "This is test comment",
+                                                    "date": "2011-05-26T07:56:00.123Z",
+                                                    "username":"testUser"
+                                                })
+                    .set('Accept', 'application/json')
+                    .expect(200, done);
+            },1000),failCallback);
 
-            const createdStory = await storyDao.createStory(story1);
-            const story_id = createdStory.story_id;
-
-            request(app).post('/v1/stories/story/comment').send({
-                "storyId": story_id,
-                "userId": 123,
-                "content": "This is test comment",
-                "date": "2011-05-26T07:56:00.123Z",
-                "username":"testUser"
-            })
-                .set('Accept', 'application/json')
-                .expect(200, done);
 
         });
     });
@@ -193,7 +195,7 @@ describe('End Points for Stories', () => {
 
         it('/v1/stories/story/comment - cannot delete a comment if the userId does not match', (done) => {
             request(app).delete('/v1/stories/story/comment').send({
-                "storyId": "5e52f1b01b45c660789837de",
+                "storyId": "5e52f1b01b45c660789837jk",
                 "userId": 456,
                 "commentId": "5e6db1e7d105af099c922fca",
                 "role": role.REGISTERED_USER
@@ -204,100 +206,67 @@ describe('End Points for Stories', () => {
         });
 
         it('/v1/stories/story/comment - user can delete a comment if the comment exists', async (done)  => {
-            const createdStory = await storyDao.createStory(story1);
-            const story_id = createdStory.story_id;
-
-            const comment = await request(app).post('/v1/stories/story/comment').send({
-                        "storyId": story_id,
-                        "userId": 123,
-                        "content": "This is test comment",
-                        "date": "2011-05-26T07:56:00.123Z",
-                        "username":"testUser"
-                    })
-                        .set('Accept', 'application/json');
-
-            request(app).delete('/v1/stories/story/comment').send({
-                "storyId": story_id,
-                "userId": comment.body[0].user_id,
-                "commentId": comment.body[0].comment_id,
-                "role": role.REGISTERED_USER})
-                .expect(200, done);
-
+            await storyDao.createStory(story1,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
+                request(app).post('/v1/stories/story/comment').send({
+                                                              "storyId": story_id,
+                                                              "userId": 123,
+                                                              "content": "This is test comment",
+                                                              "date": "2011-05-26T07:56:00.123Z",
+                                                              "username":"testUser"
+                                                                                  })
+                    .set('Accept', 'application/json').expect('Content-Type', /application\/json/)
+                    .end((err,comment)=>{
+                        request(app).delete('/v1/stories/story/comment').send({
+                                                              "storyId": story_id,
+                                                              "userId": comment.body.user_id,
+                                                              "commentId": comment.body.comment_id,
+                                                              "role": role.REGISTERED_USER})
+                            .expect(200, done);
+                    });
+            },1000),failCallback);
         });
 
         it('/v1/stories/story/comment - can delete a comment if moderator', async (done)  => {
-            const createdStory = await storyDao.createStory(story1);
-            const story_id = createdStory.story_id;
-
-            const comment = await request(app).post('/v1/stories/story/comment').send({
-                "storyId": story_id,
-                "userId": 123,
-                "content": "This is test comment",
-                "date": "2011-05-26T07:56:00.123Z",
-                "username":"testUser"
-            })
-                .set('Accept', 'application/json');
-
-            request(app).delete('/v1/stories/story/comment').send({
-                "storyId": story_id,
-                "userId": 1,
-                "commentId": comment.body[0].comment_id,
-                "role": role.MODERATOR})
-                .expect(200, done);
-
+            await storyDao.createStory(story2,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
+                request(app).post('/v1/stories/story/comment').send({
+                                      "storyId": story_id,
+                                      "userId": 123,
+                                      "content": "This is test comment",
+                                      "date": "2011-05-26T07:56:00.123Z",
+                                      "username":"testUser"
+                                      }).set('Accept', 'application/json').expect('Content-Type', /application\/json/)
+                    .end((err,comment)=>{
+                    request(app).delete('/v1/stories/story/comment').send({
+                                                  "storyId": story_id,
+                                                  "userId": 1,
+                                                  "commentId": comment.body.comment_id,
+                                                  "role": role.MODERATOR})
+                        .expect(200, done);
+                });
+            },1000),failCallback);
         });
 
         it('/v1/stories/story/comment - can delete a comment if admin', async (done)  => {
-            const createdStory = await storyDao.createStory(story1);
-            const story_id = createdStory.story_id;
-
-            const comment = await request(app).post('/v1/stories/story/comment').send({
-                "storyId": story_id,
-                "userId": 123,
-                "content": "This is test comment",
-                "date": "2011-05-26T07:56:00.123Z",
-                "username":"testUser"
-            })
-                .set('Accept', 'application/json');
-
-            request(app).delete('/v1/stories/story/comment').send({
-                "storyId": story_id,
-                "userId": 1,
-                "commentId": comment.body[0].comment_id,
-                "role": role.ADMIN})
-                .expect(200, done);
-
+            await storyDao.createStory(story1,createdStory=>setTimeout(()=>{
+                const story_id = createdStory.story_id;
+                request(app).post('/v1/stories/story/comment').send({
+                                                          "storyId": story_id,
+                                                          "userId": 123,
+                                                          "content": "This is test comment",
+                                                          "date": "2011-05-26T07:56:00.123Z",
+                                                          "username":"testUser"})
+                    .set('Accept', 'application/json').expect('Content-Type', /application\/json/)
+                    .end((err,comment)=>{
+                        request(app).delete('/v1/stories/story/comment').send({
+                                                          "storyId": story_id,
+                                                          "userId": 1,
+                                                          "commentId": comment.body.comment_id,
+                                                          "role": role.ADMIN})
+                            .expect(200, done);
+                    });
+            },1000),failCallback);
         });
-
-        // it('/v1/stories/story/comment - can delete a comment if moderator', async (done)  => {
-        //     const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
-        //     await storyDao.findAllStories(1,1,story=>{
-        //         if(story){
-        //             story[0].comments.push(createdComment);
-        //         }
-        //         request(app).delete('/v1/stories/story/comment').send({
-        //                       "storyId": story[0].story_id,
-        //                       "userId": comment2.user_id,
-        //                       "commentId": story[0].comments[0].comment_id,
-        //                       "role": role.MODERATOR})
-        //             .expect(200, done);
-        //     },err=>{console.log(err);expect(false).toBeTruthy();});
-        // });
-        //
-        // it('/v1/stories/story/comment - can delete a comment if an admin', async (done)  => {
-        //     const createdComment = await commentDao.addComment(comment2.user_id, comment2.content, comment2.date);
-        //     await storyDao.findAllStories(1,1,story=>{
-        //         if(story){
-        //             story[0].comments.push(createdComment);
-        //         }
-        //         request(app).delete('/v1/stories/story/comment').send({
-        //                       "storyId": story[0].story_id,
-        //                       "userId": comment2.user_id,
-        //                       "commentId": story[0].comments[0].comment_id,
-        //                       "role": role.ADMIN})
-        //             .expect(200, done);
-        //     },err=>{console.log(err);expect(false).toBeTruthy();});
-        // });
-
     });
 });
