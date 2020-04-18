@@ -75,5 +75,12 @@ toJson: {
 }
 });
 
-storySchema.plugin(mongoosastic,{"hydrate": true,hosts:["https://climatetree-elasticsearch.azurewebsites.net/"]});
+const setHosts=()=>{
+  let connObj={"hydrate": true,};
+  if(process.env.DOCKER_ENABLE_CI){
+    connObj.hosts=["https://climatetree-elasticsearch.azurewebsites.net/"]
+  }
+};
+
+storySchema.plugin(mongoosastic,setHosts());
 module.exports = storySchema;
