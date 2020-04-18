@@ -77,7 +77,7 @@ const findTopStories=(numberOfStories,successfulCallback,failCallback)=>{
     storyModel.search({match_all: {}}, {
         "size": numberOfStories,
         "sort" : [
-            { "date" : {"order" : "asc"}}]
+            { "date" : {"order" : "desc"}}]
     },function(err,res){
         if(err)failCallback(err);
         successfulCallback(res.hits.hits);
@@ -218,7 +218,7 @@ const advancedSearch=(condition,limit,page,successCallback,failCallback)=>{
 const findStoryByUserID=(userID,limit,page,successCallback,failCallback)=>{
     storyModel.search({match:{user_id:userID}},{from: (page - 1) * limit, size: limit},(err,res)=>{
         if(err)failCallback(err);
-        successCallback(res);
+        successCallback(res.hits.hits);
     })
 };
 

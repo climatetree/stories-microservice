@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const commentSchema = require('./comment.schema.server');
 const mongoosastic = require('mongoosastic');
-const es=require('../db/elasticsearch');
 
 var storySchema = mongoose.Schema({
 story_id: {
@@ -76,5 +75,13 @@ toJson: {
 }
 });
 
-storySchema.plugin(mongoosastic,{"hydrate": true},{"esClient":es.esClient});
+const setHosts=()=>{
+  let connObj={"hydrate": true,};
+  if(process.env.DOCKER_ENABLE_CI){
+    connObj.hosts=["https://climatetree-elasticsearch.azurewebsites.net/"]
+  }
+  return connObj;
+};
+
+storySchema.plugin(mongoosastic,setHosts());
 module.exports = storySchema;

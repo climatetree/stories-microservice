@@ -14,10 +14,10 @@ const addComment = (userId, comment, date, username) => {
     const commentId = ObjectID().str;
     return commentModel.create({
         comment_id: commentId,
-        date,
         user_id: userId,
+        user_name: username,
         content: comment,
-        user_name: username
+        date: date
     })
 };
 

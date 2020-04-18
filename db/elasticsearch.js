@@ -4,13 +4,13 @@ var esClient=null;
 
 const storyIndexInit=async ()=>{
     await esClient.indices.delete({
-                              index: '_all'
+                              index: 'storys'
                           }, function(err, res) {
 
         if (err) {
             console.error(err.message);
         } else {
-            console.log('Indexes have been deleted!');
+            console.log('Index storys has been deleted!');
         }
     });
     var stream = storyModel.synchronize(), count = 0;
