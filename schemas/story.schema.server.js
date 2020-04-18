@@ -80,6 +80,7 @@ const setHosts=()=>{
   if(process.env.DOCKER_ENABLE_CI){
     connObj.hosts=["https://climatetree-elasticsearch.azurewebsites.net/"]
   }
+  return connObj;
 };
 
 storySchema.plugin(mongoosastic,setHosts());
