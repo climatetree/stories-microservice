@@ -20,7 +20,7 @@ describe('End Points for Stories', () => {
             if (err) return done(err);
 
             agent = request.agent(server); // since the application is already listening, it should use the allocated port
-            setTimeout(done,500);
+            setTimeout(done,2000);
         });
     });
 
@@ -1184,7 +1184,7 @@ describe('End Points for Stories', () => {
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
-        
+
     });
 
     describe('DELETE/', () => {
@@ -1220,7 +1220,7 @@ describe('End Points for Stories', () => {
                 request(app).put('/v1/stories/' + story_id + '/like/' + user_id)
                     .set('Accept', 'application/json')
                     .expect(200, done);
-            },500),failCallback);
+            },1000),failCallback);
         });
 
         it('/v1/stories/:storyID/like/:userID - like a story when story not found', async (done) => {
@@ -1240,29 +1240,30 @@ describe('End Points for Stories', () => {
                 request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
                     .set('Accept', 'application/json')
                     .expect(200, done);
-            },500),failCallback);
+            },1000),failCallback);
 
         });
 
         it('/v1/stories/:storyID/unlike/:userID - unlike a story when userID is not available', async (done) => {
             const user_id = 1;
-            await storyDao.createStory(story2,createdStory=>{
+            await storyDao.createStory(story2,createdStory=>setTimeout(()=>{
                 const story_id = createdStory.story_id;
 
                 request(app).put('/v1/stories/' + story_id + '/unlike/' + user_id)
                     .set('Accept', 'application/json')
                     .expect(200, done);
-            },failCallback);
+            },1000),failCallback);
         });
 
         it('/v1/stories/:storyID/flag/:userID - flag a story', async (done) => {
             const user_id = 1;
-            const createdStory = await storyDao.createStory(story1, createdStory=>setTimeout(()=>{
+            await storyDao.createStory(story1, createdStory=>setTimeout(()=>{
+                console.log(createdStory);
                 const story_id = createdStory.story_id;
                 request(app).put('/v1/stories/' + story_id + '/flag/' + user_id)
                     .set('Accept', 'application/json')
                     .expect(200, done);
-            },500),failCallback);
+            },1000),failCallback);
         });
 
         it('/v1/stories/:storyID/flag/:userID - flag a story when story not found', async (done) => {
@@ -1292,7 +1293,7 @@ describe('End Points for Stories', () => {
                 request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
                     .set('Accept', 'application/json')
                     .expect(200, done);
-            },500),failCallback);
+            },1000),failCallback);
         });
 
         it('/v1/stories/:storyID/unflag/:userID - unflag a story when story not found', async (done) => {
@@ -1312,7 +1313,7 @@ describe('End Points for Stories', () => {
                 request(app).put('/v1/stories/' + story_id + '/unflag/' + user_id)
                     .set('Accept', 'application/json')
                     .expect(200, done);
-            },500),failCallback);
+            },1000),failCallback);
         });
 
         it('/v1/stories/:storyID/unflag/:userID - unflag a story when userID is malformed', async (done) => {
