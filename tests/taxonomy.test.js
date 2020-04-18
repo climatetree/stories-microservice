@@ -73,7 +73,9 @@ describe('End Points for Stories', () => {
                 .expect(200, done);
         });
 
-        it('/v1/stories/taxonomy/solution/:solution can return the taxonomy by solution in the database',  (done) => {
+        it('/v1/stories/taxonomy/solution/:solution can return the taxonomy by solution in the database',  async (done) => {
+            const test = await request(app).get('/v1/stories/taxonomy/solution/Insulation').set('Accept', 'application/json');
+            expect(test.body.length).toEqual(0);
             request(app).get('/v1/stories/taxonomy/solution/tmp1').set('Accept', 'application/json')
                 .expect(200, done);
         });

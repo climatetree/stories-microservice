@@ -1184,7 +1184,7 @@ describe('End Points for Stories', () => {
                 .expect('Content-Type', /json/)
                 .expect(400, done);
         });
-        
+
     });
 
     describe('DELETE/', () => {
