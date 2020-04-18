@@ -23,6 +23,6 @@ module.exports = function () {
         const mongoPORT = process.env.MONGO_PORT|| '27017';
         const dev_db_url = `mongodb://${mongoURL}:${mongoPORT}/climateTree`;
         mongoose.set('debug', true);
-        mongoose.connect(dev_db_url,{useNewUrlParser: true});
+        //mongoose.connect(dev_db_url,{useNewUrlParser: true});
     }
 };
