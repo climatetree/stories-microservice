@@ -186,17 +186,19 @@ const constructQuery=(condition)=>{
             }
         }
     }
+    const reduceFunc=(accumulator, currentValue) => accumulator.concat(currentValue.toLowerCase().split(" "));
+
     if(condition.placeID!==undefined){
         result.bool.filter.bool.must.push({terms:{place_ids:condition.placeID}});
     }
     if(condition.solution!==undefined){
-        result.bool.filter.bool.must.push({terms:{solution:condition.solution}});
+        result.bool.filter.bool.must.push({terms:{solution:condition.solution.reduce(reduceFunc,[])}});
     }
     if(condition.strategy!==undefined){
-        result.bool.filter.bool.must.push({terms:{strategy:condition.strategy}});
+        result.bool.filter.bool.must.push({terms:{strategy:condition.strategy.reduce(reduceFunc,[])}});
     }
     if(condition.sector!==undefined){
-        result.bool.filter.bool.must.push({terms:{sector:condition.sector}});
+        result.bool.filter.bool.must.push({terms:{sector:condition.sector.reduce(reduceFunc,[])}});
     }
     if(result.bool.filter.bool.must.length===0){
         delete result.bool.filter;
@@ -231,7 +233,7 @@ const findStoryBySolution = (solution, limit, page, successfulCallback, failCall
                               },
                               "filter": {
                                   "terms": {
-                                      "solution": [solution]
+                                      "solution": solution.toLowerCase().split(" ")
                                   }
                               }
                           }
@@ -251,7 +253,7 @@ const findStoryBySector = (sector, limit, page, successfulCallback, failCallback
                               },
                               "filter": {
                                   "terms": {
-                                      "sector": [sector]
+                                      "sector": sector.toLowerCase().split(" ")
                                   }
                               }
                           }
@@ -271,7 +273,7 @@ const findStoryByStrategy = (strategy, limit, page, successfulCallback, failCall
                               },
                               "filter": {
                                   "terms": {
-                                      "strategy": [strategy]
+                                      "strategy": strategy.toLowerCase().split(" ")
                                   }
                               }
                           }
