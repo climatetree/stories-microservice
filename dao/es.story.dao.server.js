@@ -5,10 +5,12 @@ const createStory = (story, successCallback, failCallback) => {
     model.save(function (err,res) {
         if (err) {
             failCallback(err);
+            return;
         }
         model.on('es-indexed', function (error, result) {
             if (error) {
                 failCallback(error);
+                return;
             }
             successCallback(res);
         })
@@ -17,7 +19,10 @@ const createStory = (story, successCallback, failCallback) => {
 
 const deleteStory=(storyID,successfulCallback,failCallback)=>{
     storyModel.findOneAndRemove({story_id:storyID},function(err,res){
-        if(err)failCallback(err);
+        if(err) {
+            failCallback(err);
+            return;
+        }
         successfulCallback(res);
     })
 };
@@ -25,7 +30,10 @@ const deleteStory=(storyID,successfulCallback,failCallback)=>{
 const updateStory=(storyId,newStory,successfulCallback,failCallback)=>{
     storyModel.findOneAndUpdate({story_id:storyId},newStory,{new:true,upsert:true},
                             function(err,res){
-                                if(err)failCallback(err);
+                                if(err){
+                                    failCallback(err);
+                                    return;
+                                }
                                 successfulCallback(res);
                             })
 };
@@ -38,6 +46,7 @@ const findAllStories = (limit, page, successCallback, failCallback) =>
         , function (err, res) {
             if (err) {
                 failCallback(err);
+                return;
             }
             successCallback(res.hits.hits);
         });
@@ -48,6 +57,7 @@ const findStoryByStoryID =
                           function (err, res) {
                               if (err) {
                                   failCallback(err);
+                                  return;
                               }
                               successfulCallback(res.hits.hits);
                           });
@@ -68,6 +78,7 @@ const findStoryByPlaceID = (placeID, limit, page, successfulCallback, failCallba
                       function (err, res) {
                           if (err) {
                               failCallback(err);
+                              return;
                           }
                           successfulCallback(res.hits.hits);
                       });
@@ -79,7 +90,10 @@ const findTopStories=(numberOfStories,successfulCallback,failCallback)=>{
         "sort" : [
             { "date" : {"order" : "desc"}}]
     },function(err,res){
-        if(err)failCallback(err);
+        if(err){
+            failCallback(err);
+            return;
+        }
         successfulCallback(res.hits.hits);
     })
 };
@@ -91,7 +105,10 @@ const findStoryByTitle=(title,limit,page,successfulCallback,failCallback)=>{
                 "fuzziness": "3"
             }
         }},{from: (page - 1) * limit, size: limit},(err,res)=>{
-        if(err)failCallback(err);
+        if(err){
+            failCallback(err);
+            return;
+        }
         successfulCallback(res.hits.hits);
     })
 };
@@ -103,14 +120,20 @@ const findStoryByDescription=(desc,limit,page,successfulCallback,failCallback)=>
                 "fuzziness": "3"
             }
         }},{from: (page - 1) * limit, size: limit},(err,res)=>{
-        if(err)failCallback(err);
+        if(err){
+            failCallback(err);
+            return;
+        }
         successfulCallback(res.hits.hits);
     })
 };
 
 const findUnratedStories=(limit,page,successfulCallback,failCallback)=>{
     storyModel.search({match:{rating:0}},{from: (page - 1) * limit, size: limit},(err,res)=>{
-        if(err)failCallback(err);
+        if(err){
+            failCallback(err);
+            return;
+        }
         successfulCallback(res.hits.hits);
     })
 };
@@ -170,7 +193,10 @@ const getSortedFlagged=(numberOfStories,successCallback,failCallback)=>{
                                   script:"doc.flagged_by_users.size()",
                                   order:"desc"}}}
                       ,(err,res)=>{
-        if(err)failCallback(err);
+        if(err){
+            failCallback(err);
+            return;
+        }
         successCallback(res.hits.hits);
     })
 };
@@ -211,6 +237,7 @@ const advancedSearch=(condition,limit,page,successCallback,failCallback)=>{
                       function (err, res) {
                           if (err) {
                               failCallback(err);
+                              return;
                           }
                           successCallback(res.hits.hits);
                       });
@@ -219,7 +246,10 @@ const advancedSearch=(condition,limit,page,successCallback,failCallback)=>{
 
 const findStoryByUserID=(userID,limit,page,successCallback,failCallback)=>{
     storyModel.search({match:{user_id:userID}},{from: (page - 1) * limit, size: limit},(err,res)=>{
-        if(err)failCallback(err);
+        if(err){
+            failCallback(err);
+            return;
+        }
         successCallback(res.hits.hits);
     })
 };
@@ -241,6 +271,7 @@ const findStoryBySolution = (solution, limit, page, successfulCallback, failCall
                       function (err, res) {
                           if (err) {
                               failCallback(err);
+                              return;
                           }
                           successfulCallback(res.hits.hits);
                       });
@@ -261,6 +292,7 @@ const findStoryBySector = (sector, limit, page, successfulCallback, failCallback
                       function (err, res) {
                           if (err) {
                               failCallback(err);
+                              return;
                           }
                           successfulCallback(res.hits.hits);
                       });
@@ -281,6 +313,7 @@ const findStoryByStrategy = (strategy, limit, page, successfulCallback, failCall
                       function (err, res) {
                           if (err) {
                               failCallback(err);
+                              return;
                           }
                           successfulCallback(res.hits.hits);
                       });
